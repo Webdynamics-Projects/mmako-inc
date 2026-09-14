@@ -24,6 +24,7 @@ npm run dev                  # http://localhost:3000
 | `npm run start` | Serve the production build locally |
 | `npm run lint` | ESLint |
 | `npm run typecheck` | TypeScript, no emit |
+| `npm run logo` | Regenerates the logo variants and favicons from `public/logo.png` |
 
 ---
 
@@ -36,10 +37,9 @@ before deploying.
 | Variable | Required | Purpose |
 | --- | --- | --- |
 | `RESEND_API_KEY` | Yes | Sends contact-form email. Create one at [resend.com/api-keys](https://resend.com/api-keys). |
-| `CONTACT_TO_EMAIL` | No | Inbox that receives enquiries. Defaults to `contact@mmakoinc.co.za`. |
+| `CONTACT_TO_EMAIL` | No | Inbox that receives enquiries. Defaults to `contact@mmakoinc.com`. |
 | `CONTACT_FROM_EMAIL` | No | The address Resend sends *from*. Its domain must be verified in Resend. Defaults to `onboarding@resend.dev`, which works for testing only. |
-| `NEXT_PUBLIC_WHATSAPP_NUMBER` | Yes | WhatsApp number in international format, digits only (e.g. `27821234567`). Powers the floating button and both WhatsApp links. |
-| `NEXT_PUBLIC_SITE_URL` | Yes | Canonical origin, e.g. `https://mmakoinc.co.za`. Used for `sitemap.xml`, `robots.txt` and Open Graph tags. |
+| `NEXT_PUBLIC_SITE_URL` | Yes | Canonical origin, e.g. `https://mmakoinc.com`. Used for `sitemap.xml`, `robots.txt` and Open Graph tags. |
 
 ### Setting up Resend
 
@@ -83,11 +83,64 @@ replace their bodies with the firm's own writing.
 
 ---
 
+## The logo
+
+> **`public/logo.png` is currently a placeholder**, not the firm's real
+> artwork. Replace it and run one command — see below.
+
+The site renders four generated files, all derived from a single source:
+
+| File | Where it's used |
+| --- | --- |
+| `public/logo.png` | **Source.** The logo as supplied. Never rendered directly. |
+| `public/logo-dark.png` | Full lockup, original colours — for light surfaces |
+| `public/logo-light.png` | Full lockup, reversed — footer |
+| `public/logo-mark-dark.png` | Monogram only, original colours |
+| `public/logo-mark-light.png` | Monogram only, reversed — header |
+| `app/icon.png`, `public/favicon.ico` | Browser and home-screen icons |
+
+### Replacing it
+
+```bash
+cp /path/to/your-logo.png public/logo.png
+npm run logo
+```
+
+That's it. The script strips the background, trims the empty margin, produces a
+reversed variant for the dark header and footer, splits the monogram off the
+wordmark, and rebuilds the favicons. It prints the resulting aspect ratios — if
+they differ from the `FULL` and `MARK` constants at the top of
+`components/Logo.tsx`, update those two numbers to match.
+
+Requirements for the source file: a PNG, 8-bit, not interlaced, dark artwork on
+a white or transparent background. The script says so plainly if it gets
+something it can't read.
+
+### Why the header doesn't use the full lockup
+
+The supplied logo is stacked — monogram above the wordmark. At the ~34px the
+header allows, "MMAKO LAW" becomes unreadable. So the header pairs the monogram
+with a typeset "Mmako Inc." wordmark, and the footer, which has vertical room,
+shows the full lockup as designed. `components/Logo.tsx` takes a `variant` prop
+(`"horizontal"` or `"lockup"`) to switch between them.
+
+### How the recolouring works
+
+The script classifies each pixel by hue and saturation: near-white low-saturation
+pixels become transparent, gold pixels (hue 25–65°) are left exactly as
+designed, and neutral dark pixels are recoloured to off-white using their own
+darkness as the alpha — so anti-aliased edges stay smooth rather than turning
+into a hard cutout. Those thresholds are named constants at the top of
+`scripts/make-logo-variants.mjs` if a different logo ever needs them adjusted.
+
+---
+
 ## Editing site content
 
 | What | Where |
 | --- | --- |
 | Firm name, email, address, nav links | `lib/site.ts` |
+| Logo | `public/logo.png`, then `npm run logo` |
 | Home / About / Services copy | `lib/content.ts` |
 | Per-page headings and metadata | the relevant `app/*/page.tsx` |
 | Colours, fonts, spacing tokens | `app/globals.css` (`@theme` block) |
@@ -108,8 +161,8 @@ wording can be revised without touching layout.
 - **Photography.** None yet. Dark sections use a textured gradient plus an
   abstract gold-line figure instead of stock imagery. Places where real
   photography should eventually go are marked with `TODO:` comments — see
-  `components/Hero.tsx`, `components/Logo.tsx` and `app/about/page.tsx` (which
-  has a deliberately empty slot for team photos and bios).
+  `components/Hero.tsx` and `app/about/page.tsx` (which has a deliberately empty
+  slot for team photos and bios).
 - **Motion.** One scroll reveal, in `components/Reveal.tsx`. It renders content
   *visible* in the server HTML and only hides it once JS has an
   `IntersectionObserver` ready, so nothing is invisible to crawlers or to users

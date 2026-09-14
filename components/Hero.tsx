@@ -1,6 +1,4 @@
 import { Button } from "@/components/Button";
-import { WhatsAppIcon } from "@/components/Icons";
-import { whatsappHref } from "@/lib/site";
 
 export function Hero() {
   return (
@@ -58,9 +56,8 @@ export function Hero() {
             <Button href="/contact" size="lg">
               Book a Consultation
             </Button>
-            <Button href={whatsappHref} external variant="outline" size="lg">
-              <WhatsAppIcon className="h-4 w-4" />
-              WhatsApp Us
+            <Button href="/services" variant="outline" size="lg">
+              Explore Our Services
             </Button>
           </div>
         </div>

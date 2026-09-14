@@ -39,7 +39,7 @@ function buildHtml(data: {
     <div style="max-width:560px;margin:0 auto;padding:32px 24px;">
       <div style="border-top:2px solid #c9a227;background:#ffffff;padding:28px;">
         <h1 style="margin:0 0 4px;font-size:18px;color:#0b0b0c;">New website enquiry</h1>
-        <p style="margin:0 0 20px;font-size:13px;color:#6b6a66;">Submitted via mmakoinc.co.za</p>
+        <p style="margin:0 0 20px;font-size:13px;color:#6b6a66;">Submitted via mmakoinc.com</p>
         <table style="width:100%;border-collapse:collapse;">
           ${row("Name", escapeHtml(data.name))}
           ${row("Email", `<a href="mailto:${escapeHtml(data.email)}" style="color:#8f731c;">${escapeHtml(data.email)}</a>`)}

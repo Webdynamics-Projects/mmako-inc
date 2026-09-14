@@ -46,7 +46,7 @@ export function Nav() {
         aria-label="Primary"
         className="mx-auto flex w-full max-w-6xl items-center justify-between px-5 py-4 sm:px-8 sm:py-5"
       >
-        <Logo />
+        <Logo height={34} priority />
 
         <ul className="hidden items-center gap-8 lg:flex">
           {navLinks.map((link) => (

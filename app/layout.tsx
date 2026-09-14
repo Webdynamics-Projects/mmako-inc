@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Fraunces, Inter } from "next/font/google";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
-import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { site, siteUrl } from "@/lib/site";
 import "./globals.css";
 
@@ -98,7 +97,6 @@ export default function RootLayout({
           {children}
         </main>
         <Footer />
-        <WhatsAppButton />
         <script
           type="application/ld+json"
           // Static, build-time constant — no user input reaches this string.

@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import { PageHero } from "@/components/PageHero";
 import { Section } from "@/components/Section";
 import { ContactForm } from "@/components/ContactForm";
-import { WhatsAppIcon } from "@/components/Icons";
-import { site, whatsappHref } from "@/lib/site";
+import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -58,21 +57,6 @@ export default function ContactPage() {
                     <br />
                     {site.address.city}, {site.address.postalCode}
                   </address>
-                </dd>
-              </div>
-
-              <div>
-                <dt className="text-sm text-warm-grey">WhatsApp</dt>
-                <dd className="mt-2">
-                  <a
-                    href={whatsappHref}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 border border-ink/20 px-4 py-2.5 text-sm text-ink transition-colors hover:border-gold hover:text-gold-dim"
-                  >
-                    <WhatsAppIcon className="h-4 w-4" />
-                    Message us
-                  </a>
                 </dd>
               </div>
             </dl>

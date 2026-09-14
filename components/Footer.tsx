@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Logo } from "@/components/Logo";
-import { site, navLinks, whatsappHref } from "@/lib/site";
+import { site, navLinks } from "@/lib/site";
 import { services } from "@/lib/content";
 
 export function Footer() {
@@ -11,18 +11,16 @@ export function Footer() {
       <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-8 sm:py-20">
         <div className="grid gap-12 md:grid-cols-12">
           <div className="md:col-span-5">
-            <Logo />
+            <Logo variant="lockup" height={76} />
             <p className="mt-5 max-w-sm text-sm leading-relaxed text-bone-300/70">
               Legal counsel built for how business actually moves — clear, fast,
               and focused on outcomes.
             </p>
             <a
-              href={whatsappHref}
-              target="_blank"
-              rel="noopener noreferrer"
+              href={`mailto:${site.email}`}
               className="mt-6 inline-flex items-center gap-2 text-sm text-gold transition-colors hover:text-gold-bright"
             >
-              Message us on WhatsApp
+              {site.email}
             </a>
           </div>
 
