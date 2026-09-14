@@ -1,0 +1,135 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   Mmako Inc design tokens
+   --------------------------------------------------------------------------- */
+@theme {
+  --color-ink: #0b0b0c;
+  --color-ink-800: #17171a;
+  --color-ink-700: #24242a;
+  --color-ink-600: #3a3a42;
+
+  --color-gold: #c9a227;
+  --color-gold-bright: #e0bc45;
+  /* Darkened so gold *text* clears WCAG AA (4.5:1) on every light surface,
+     including bone-200. The brighter --color-gold stays for rules, icons and
+     text on the dark surfaces, where it has plenty of contrast. */
+  --color-gold-dim: #806517;
+
+  --color-bone: #fafaf8;
+  --color-bone-200: #f1f0eb;
+  --color-bone-300: #e3e1d9;
+
+  --color-warm-grey: #6b6a66;
+  --color-warm-grey-light: #9a9892;
+
+  --font-display: var(--font-fraunces), ui-serif, Georgia, "Times New Roman", serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, sans-serif;
+
+  --ease-out-soft: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-bone);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-feature-settings: "cv02", "cv03", "cv04";
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Visible, on-brand focus ring for keyboard users across the dark/light split. */
+  :focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  ::selection {
+    background-color: var(--color-gold);
+    color: var(--color-ink);
+  }
+}
+
+@layer components {
+  /* Thin gold rule used as a section marker. */
+  .rule-gold {
+    display: block;
+    width: 2.5rem;
+    height: 1px;
+    background-color: var(--color-gold);
+  }
+
+  /* Textured dark surface for the hero and closing bands: a soft radial glow
+     plus a faint grid, so the dark sections have depth without photography. */
+  .surface-dark {
+    background-color: var(--color-ink);
+    background-image:
+      radial-gradient(
+        ellipse 80% 60% at 75% 0%,
+        rgba(201, 162, 39, 0.16),
+        transparent 60%
+      ),
+      radial-gradient(
+        ellipse 60% 50% at 0% 100%,
+        rgba(201, 162, 39, 0.07),
+        transparent 65%
+      ),
+      linear-gradient(rgba(255, 255, 255, 0.022) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px);
+    background-size: 100% 100%, 100% 100%, 72px 72px, 72px 72px;
+  }
+}
+
+@layer utilities {
+  /* Scroll reveal. The default state is visible; the JS in components/Reveal
+     only sets data-reveal="pending" once it has an observer ready to undo it. */
+  .reveal[data-reveal="pending"] {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  .reveal[data-revealed="true"] {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity 0.5s var(--ease-out-soft) var(--reveal-delay, 0ms),
+      transform 0.5s var(--ease-out-soft) var(--reveal-delay, 0ms);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .reveal[data-reveal="pending"] {
+    opacity: 1;
+    transform: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
