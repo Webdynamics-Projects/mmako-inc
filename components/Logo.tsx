@@ -5,8 +5,8 @@ import { site } from "@/lib/site";
 
 /* Intrinsic sizes of the generated assets. If scripts/make-logo-variants.mjs
    reports different aspect ratios after the logo is replaced, update these. */
-const FULL = { width: 618, height: 400 };
-const MARK = { width: 306, height: 236 };
+const FULL = { width: 458, height: 417 };
+const MARK = { width: 380, height: 278 };
 
 type LogoProps = {
   /** Which surface it sits on — picks the original or the reversed artwork. */
