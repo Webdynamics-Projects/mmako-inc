@@ -37,12 +37,12 @@ function buildHtml(data: {
 <html>
   <body style="margin:0;background:#fafaf8;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;">
     <div style="max-width:560px;margin:0 auto;padding:32px 24px;">
-      <div style="border-top:2px solid #c9a227;background:#ffffff;padding:28px;">
+      <div style="border-top:2px solid #b7965e;background:#ffffff;padding:28px;">
         <h1 style="margin:0 0 4px;font-size:18px;color:#0b0b0c;">New website enquiry</h1>
         <p style="margin:0 0 20px;font-size:13px;color:#6b6a66;">Submitted via mmakoinc.com</p>
         <table style="width:100%;border-collapse:collapse;">
           ${row("Name", escapeHtml(data.name))}
-          ${row("Email", `<a href="mailto:${escapeHtml(data.email)}" style="color:#8f731c;">${escapeHtml(data.email)}</a>`)}
+          ${row("Email", `<a href="mailto:${escapeHtml(data.email)}" style="color:#85693b;">${escapeHtml(data.email)}</a>`)}
           ${data.phone ? row("Phone", escapeHtml(data.phone)) : ""}
         </table>
         <div style="margin-top:20px;border-top:1px solid #e3e1d9;padding-top:20px;">

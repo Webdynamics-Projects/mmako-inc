@@ -39,7 +39,7 @@ export function Nav() {
     <header
       className={cn(
         "sticky top-0 z-50 bg-ink transition-shadow duration-300",
-        scrolled && "shadow-[0_1px_0_0_rgba(201,162,39,0.25)]",
+        scrolled && "shadow-[0_1px_0_0_rgba(183,150,94,0.25)]",
       )}
     >
       <nav

@@ -10,14 +10,14 @@ export function Hero() {
         className="pointer-events-none absolute -right-24 top-1/2 hidden h-[34rem] w-[34rem] -translate-y-1/2 opacity-[0.22] lg:block"
       >
         <svg viewBox="0 0 400 400" fill="none" className="h-full w-full">
-          <circle cx="200" cy="200" r="150" stroke="#C9A227" strokeWidth="0.75" />
-          <circle cx="200" cy="200" r="110" stroke="#C9A227" strokeWidth="0.75" />
-          <circle cx="200" cy="200" r="70" stroke="#C9A227" strokeWidth="0.5" />
-          <path d="M200 20v360" stroke="#C9A227" strokeWidth="0.5" />
-          <path d="M20 200h360" stroke="#C9A227" strokeWidth="0.5" />
+          <circle cx="200" cy="200" r="150" stroke="#B7965E" strokeWidth="0.75" />
+          <circle cx="200" cy="200" r="110" stroke="#B7965E" strokeWidth="0.75" />
+          <circle cx="200" cy="200" r="70" stroke="#B7965E" strokeWidth="0.5" />
+          <path d="M200 20v360" stroke="#B7965E" strokeWidth="0.5" />
+          <path d="M20 200h360" stroke="#B7965E" strokeWidth="0.5" />
           <path
             d="M96 96l208 208M304 96L96 304"
-            stroke="#C9A227"
+            stroke="#B7965E"
             strokeWidth="0.5"
           />
           <rect
@@ -25,7 +25,7 @@ export function Hero() {
             y="128"
             width="144"
             height="144"
-            stroke="#C9A227"
+            stroke="#B7965E"
             strokeWidth="0.75"
             transform="rotate(45 200 200)"
           />
@@ -41,7 +41,7 @@ export function Hero() {
             </span>
           </div>
 
-          <h1 className="text-[2.5rem] leading-[1.08] text-bone sm:text-6xl lg:text-[4.25rem]">
+          <h1 className="text-[2.375rem] leading-[1.12] text-bone sm:text-[3.25rem] lg:text-[4rem]">
             Legal counsel built for{" "}
             <span className="italic text-gold">how business actually moves</span>
           </h1>

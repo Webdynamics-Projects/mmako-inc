@@ -24,29 +24,21 @@ designer, a new hire — and it ends with the open items listed below.
 
 ## ⚠️ Read this before anything goes to print
 
-Four things are unresolved. Each affects finished artwork.
+Three things are unresolved. Each affects finished artwork.
 
-**1. The logo and the palette use different golds.** Every mark here is built from the designer's
-vector artwork, whose colours are `#272725` ink and `#B7965E` gold. The brand palette specifies
-`#C9A227` — a more saturated, yellower gold. Side by side the difference is obvious.
+> **Settled.** The palette now takes its gold from the logo artwork — `#B7965E` — so the mark and
+> everything around it agree. Gold Deep (`#85693B`) and Gold Bright (`#CFB78E`) were re-derived from
+> it at the same hue. The type system moved to **Montserrat**, the geometric sans the logo's own
+> wordmark is set in.
 
-| Gold | HEX | CMYK | On bone | On ink |
-| --- | --- | --- | --- | --- |
-| Artwork | `#B7965E` | 0 / 18 / 49 / 28 | 2.67:1 | 7.06:1 |
-| Palette | `#C9A227` | 0 / 19 / 81 / 21 | 2.31:1 | 8.13:1 |
-
-**Recommendation: adopt `#B7965E`.** The logo anchors the identity and the palette should follow it.
-Neither gold passes contrast as text on a light ground, so Gold Deep stays the substitute either
-way. It is a one-line change — say the word.
-
-**2. "Mmako Law" or "Mmako Inc."** The kit assumes the logo artwork is the brand mark and
+**1. "Mmako Law" or "Mmako Inc."** The kit assumes the logo artwork is the brand mark and
 *Mmako Inc.* is the written name used in all copy. Confirm this.
 
-**3. Company details are placeholders.** Registration number, VAT number and banking details appear
+**2. Company details are placeholders.** Registration number, VAT number and banking details appear
 as bracketed placeholders on the letterhead, invoice and legal templates. Supply them before
 anything is printed or issued.
 
-**4. The confidentiality notice needs sign-off.** The wording in the email signature is a reasonable
+**3. The confidentiality notice needs sign-off.** The wording in the email signature is a reasonable
 general form. It has not been reviewed against the firm's professional-indemnity or Legal Practice
 Council obligations.
 
@@ -71,10 +63,12 @@ on every page and cannot be edited by accident while typing. Grey bracketed text
 is a placeholder to type over. The heading styles appear in Word's Styles gallery, so the navigation
 pane and an inserted table of contents both work.
 
-**Fonts.** These use **Georgia** and **Arial**, not Fraunces and Inter. Word cannot be relied on to
-have the brand webfonts installed, and a document that falls back unpredictably on someone else's
-machine is worse than one that uses a substitute everywhere. This is the documented rule in
-`04 - TYPOGRAPHY/Secondary Font.md`.
+**Fonts.** These are set in **Montserrat**, the brand family. Word cannot load webfonts, so
+**install Montserrat on every machine in the firm** — it is free, from
+[Google Fonts](https://fonts.google.com/specimen/Montserrat): download, unzip, select the .ttf
+files, right-click → Install. Documents then match the brand exactly. Without it they fall back
+through `Montserrat, 'Century Gothic', Arial, sans-serif` — Century Gothic ships with Office on
+Windows and Mac. See `04 - TYPOGRAPHY/Secondary Font.md`.
 
 **To turn one into a reusable Word template:** open it, then *Save As* → *Word Template (.dotx)*.
 Word will then open a fresh copy each time instead of the original.

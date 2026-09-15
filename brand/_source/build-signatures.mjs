@@ -24,8 +24,10 @@ const GOLD_DEEP = colours.secondary[0].hex;
 const GREY = colours.secondary[2].hex;
 const RULE = colours.secondary[4].hex;
 
-const SANS = `${typography.office.body}, Helvetica, sans-serif`;
-const SERIF = `${typography.office.display}, 'Times New Roman', serif`;
+/* Montserrat first for anyone who has it installed, then the safe fallbacks.
+   Mail clients that ignore the first two land on Arial, which is fine. */
+const SANS = typography.office.stack;
+const SERIF = typography.office.stack;
 
 /* Hosted on the firm's own domain so it loads for every recipient. */
 const LOGO_URL = `${firm.url}/logo-signature.png`;

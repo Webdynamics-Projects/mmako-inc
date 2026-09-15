@@ -23,7 +23,7 @@ export function PageHero({
           </span>
         </div>
 
-        <h1 className="max-w-3xl text-[2.25rem] leading-[1.12] text-bone sm:text-5xl lg:text-[3.5rem]">
+        <h1 className="max-w-3xl text-[2.125rem] leading-[1.18] text-bone sm:text-[2.75rem] lg:text-[3.25rem]">
           {title}
         </h1>
 

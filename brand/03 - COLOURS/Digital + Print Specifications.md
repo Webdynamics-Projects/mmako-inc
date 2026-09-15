@@ -5,10 +5,10 @@
 | Colour | HEX | RGB | CMYK | Use |
 | --- | --- | --- | --- | --- |
 | **Mmako Ink** | `#0B0B0C` | 11, 11, 12 | 8 / 8 / 0 / 95 | Primary dark. Headers, footers, body text on light grounds, and the base for all dark surfaces. |
-| **Mmako Gold** | `#C9A227` | 201, 162, 39 | 0 / 19 / 81 / 21 | Brand accent. Rules, underlines, icon accents, button fills, the logo's diagonal. Never a large background fill. |
+| **Mmako Gold** | `#B7965E` | 183, 150, 94 | 0 / 18 / 49 / 28 | Brand accent, taken from the logo artwork itself. Rules, underlines, icon accents, button fills, the logo's diagonal. Never a large background fill. |
 | **Bone** | `#FAFAF8` | 250, 250, 248 | 0 / 0 / 1 / 2 | Primary light ground. Page and section backgrounds. |
-| **Gold Deep** | `#806517` | 128, 101, 23 | 0 / 21 / 82 / 50 | Gold text on light grounds. The brand gold fails WCAG AA contrast as small text — this is its accessible substitute. |
-| **Gold Bright** | `#E0BC45` | 224, 188, 69 | 0 / 16 / 69 / 12 | Hover and active states on dark grounds only. |
+| **Gold Deep** | `#85693B` | 133, 105, 59 | 0 / 21 / 56 / 48 | Gold text on light grounds. Derived from Mmako Gold by darkening at a fixed hue until it clears 4.5:1 on Bone 200 — the brand gold itself reaches only 2.4:1 there, so it must never be used for text on a light surface. |
+| **Gold Bright** | `#CFB78E` | 207, 183, 142 | 0 / 12 / 31 / 19 | Hover and active states on dark grounds only. A lift of Mmako Gold at the same hue. |
 | **Warm Grey** | `#6B6A66` | 107, 106, 102 | 0 / 1 / 5 / 58 | Secondary body text, captions, labels on light grounds. |
 | **Bone 200** | `#F1F0EB` | 241, 240, 235 | 0 / 0 / 2 / 5 | Alternating section grounds, table zebra striping, muted panels. |
 | **Bone 300** | `#E3E1D9` | 227, 225, 217 | 0 / 1 / 4 / 11 | Hairlines and dividers on light grounds. |
@@ -18,7 +18,7 @@
 
 **Mmako Ink** — For solid areas use a rich black build — C60 M50 Y40 K100. For text under 18pt use K100 only, to avoid registration fringing.
 
-**Mmako Gold** — Confirm against a printed draw-down — metallic-looking golds shift on uncoated stock.
+**Mmako Gold** — Read directly out of the supplied logo file, so it is the identity's true gold. Confirm against a printed draw-down — muted golds shift noticeably on uncoated stock.
 
 **Bone** — Do not print. Use the unprinted stock, or match to a warm white paper.
 
@@ -46,10 +46,10 @@ Contrast ratios against the two ground colours. Values of 4.5 or above pass WCAG
 | Colour | on Bone `#FAFAF8` | on Ink `#0B0B0C` |
 | --- | --- | --- |
 | Mmako Ink | 18.83:1 ✅ | 1.00:1 ❌ |
-| Mmako Gold | 2.31:1 ❌ | 8.13:1 ✅ |
+| Mmako Gold | 2.67:1 ❌ | 7.06:1 ✅ |
 | Bone | 1.00:1 ❌ | 18.83:1 ✅ |
-| Gold Deep | 5.30:1 ✅ | 3.55:1 ⚠️ large text only |
-| Gold Bright | 1.76:1 ❌ | 10.73:1 ✅ |
+| Gold Deep | 4.92:1 ✅ | 3.82:1 ⚠️ large text only |
+| Gold Bright | 1.86:1 ❌ | 10.13:1 ✅ |
 | Warm Grey | 5.18:1 ✅ | 3.63:1 ⚠️ large text only |
 | Bone 200 | 1.09:1 ❌ | 17.24:1 ✅ |
 | Bone 300 | 1.25:1 ❌ | 15.03:1 ✅ |

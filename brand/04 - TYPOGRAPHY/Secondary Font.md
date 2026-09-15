@@ -1,25 +1,33 @@
-# Secondary Font — Inter
+# Secondary Font
 
-- **Family:** Inter
-- **Classification:** Neo-grotesque sans, variable
-- **Licence:** SIL Open Font License 1.1 — free for commercial use, embeddable
-- **Source:** https://fonts.google.com/specimen/Inter
-- **Used for:** Body copy, UI, labels, tables, all long-form reading.
-- **Fallback stack:** `Arial, Helvetica, sans-serif`
+There isn't one. **Montserrat carries the whole system** — headings and body,
+screen and print.
 
-## Setting rules
+A single family is a deliberate choice, not an omission. The identity already
+carries contrast between the monogram's Didone serif and the wordmark's
+geometric sans; adding a third voice in the running text would muddy it. Weight,
+size and tracking do the work a second family would otherwise do.
 
-- Body copy sits at 16px / 1.7 on screen, 10pt / 15pt in print.
-- Uppercase eyebrow labels use 0.2em tracking. Never set uppercase without added tracking.
-- Line length stays between 60 and 75 characters for long-form reading.
-- Weight 200 and 300 are available but should not be used below 14px.
+## Weights in use
 
-## Office and email substitutes
+| Weight | Where |
+| --- | --- |
+| 600 | All headings, the eyebrow label at 500 |
+| 400 | Body copy, tables, captions, UI |
 
-Webfonts do not load in Microsoft Outlook, and embedding is unreliable across Word installations.
-In email signatures, Word documents and anything that leaves the firm as an editable file, use:
+## Word, Outlook and anything editable
 
-- **Georgia** in place of Fraunces
-- **Arial** in place of Inter
+Word and Outlook cannot load webfonts. Montserrat is free, so the fix is simple:
 
-These substitutes are already built into the supplied email signatures and document templates.
+**Install Montserrat on every machine in the firm.** Download it from
+[Google Fonts](https://fonts.google.com/specimen/Montserrat), unzip, select all the .ttf files, right-click →
+Install. Documents then match the brand exactly.
+
+Without it, the supplied templates fall back through this stack:
+
+```
+Montserrat, 'Century Gothic', Arial, sans-serif
+```
+
+Century Gothic ships with Microsoft Office on both Windows and Mac and is the
+closest geometric substitute. Arial is the last resort and is on everything.

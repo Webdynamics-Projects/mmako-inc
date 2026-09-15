@@ -70,9 +70,9 @@ export const colours = {
     },
     {
       name: "Mmako Gold",
-      hex: "#C9A227",
-      role: "Brand accent. Rules, underlines, icon accents, button fills, the logo's diagonal. Never a large background fill.",
-      print: "Confirm against a printed draw-down — metallic-looking golds shift on uncoated stock.",
+      hex: "#B7965E",
+      role: "Brand accent, taken from the logo artwork itself. Rules, underlines, icon accents, button fills, the logo's diagonal. Never a large background fill.",
+      print: "Read directly out of the supplied logo file, so it is the identity's true gold. Confirm against a printed draw-down — muted golds shift noticeably on uncoated stock.",
     },
     {
       name: "Bone",
@@ -84,13 +84,13 @@ export const colours = {
   secondary: [
     {
       name: "Gold Deep",
-      hex: "#806517",
-      role: "Gold text on light grounds. The brand gold fails WCAG AA contrast as small text — this is its accessible substitute.",
+      hex: "#85693B",
+      role: "Gold text on light grounds. Derived from Mmako Gold by darkening at a fixed hue until it clears 4.5:1 on Bone 200 — the brand gold itself reaches only 2.4:1 there, so it must never be used for text on a light surface.",
     },
     {
       name: "Gold Bright",
-      hex: "#E0BC45",
-      role: "Hover and active states on dark grounds only.",
+      hex: "#CFB78E",
+      role: "Hover and active states on dark grounds only. A lift of Mmako Gold at the same hue.",
     },
     {
       name: "Warm Grey",
@@ -117,36 +117,45 @@ export const colours = {
 
 export const typography = {
   primary: {
-    name: "Fraunces",
-    classification: "High-contrast display serif, variable",
+    name: "Montserrat",
+    classification: "Geometric sans, variable, with italics",
     licence: "SIL Open Font License 1.1 — free for commercial use, embeddable",
-    source: "https://fonts.google.com/specimen/Fraunces",
-    use: "Headlines, page titles, pull quotes, the typeset wordmark. Weight 500 by default.",
-    fallback: "Georgia, 'Times New Roman', serif",
+    source: "https://fonts.google.com/specimen/Montserrat",
+    use: "Headlines, page titles, pull quotes. Weight 600, tracking tightened.",
+    fallback: "'Segoe UI', system-ui, Arial, sans-serif",
   },
   secondary: {
-    name: "Inter",
-    classification: "Neo-grotesque sans, variable",
+    name: "Montserrat",
+    classification: "The same family at body weights",
     licence: "SIL Open Font License 1.1 — free for commercial use, embeddable",
-    source: "https://fonts.google.com/specimen/Inter",
-    use: "Body copy, UI, labels, tables, all long-form reading.",
-    fallback: "Arial, Helvetica, sans-serif",
+    source: "https://fonts.google.com/specimen/Montserrat",
+    use: "Body copy, UI, labels, tables. Weight 400, generous leading.",
+    fallback: "'Segoe UI', system-ui, Arial, sans-serif",
   },
-  /* Office and email cannot rely on webfonts — Outlook in particular ignores
-     them — so these substitutes are mandatory in those contexts. */
+  /* Word and Outlook cannot load webfonts. Montserrat is free, so the firm
+     should install it locally — then documents match the brand exactly. The
+     stack degrades to Century Gothic (a geometric face bundled with Office)
+     and finally Arial. */
   office: {
-    display: "Georgia",
-    body: "Arial",
+    display: "Montserrat",
+    body: "Montserrat",
+    stack: "Montserrat, 'Century Gothic', Arial, sans-serif",
   },
+  /*
+   * Retuned for Montserrat. It is wider and has a smaller x-height relative to
+   * its cap height than a neo-grotesque, so headings sit at 600 with tighter
+   * tracking, and body copy takes more leading to keep the measure readable.
+   */
   scale: [
-    { level: "Display", font: "Fraunces", web: "68px / 1.08", print: "34pt / 36pt", tracking: "-0.02em", use: "Homepage hero only" },
-    { level: "H1", font: "Fraunces", web: "44px / 1.15", print: "24pt / 28pt", tracking: "-0.02em", use: "Page titles" },
-    { level: "H2", font: "Fraunces", web: "32px / 1.2", print: "18pt / 22pt", tracking: "-0.02em", use: "Section headings" },
-    { level: "H3", font: "Fraunces", web: "22px / 1.3", print: "14pt / 18pt", tracking: "-0.01em", use: "Sub-headings, card titles" },
-    { level: "Body Large", font: "Inter", web: "18px / 1.7", print: "11pt / 16pt", tracking: "0", use: "Intros, standfirsts" },
-    { level: "Body", font: "Inter", web: "16px / 1.7", print: "10pt / 15pt", tracking: "0", use: "Default reading size" },
-    { level: "Small", font: "Inter", web: "14px / 1.6", print: "9pt / 13pt", tracking: "0", use: "Captions, table cells, footnotes" },
-    { level: "Eyebrow", font: "Inter", web: "12px / 1.4", print: "7.5pt / 11pt", tracking: "0.2em", use: "Uppercase section labels above headings" },
+    { level: "Display", weight: 600, web: "64px / 1.12", print: "32pt / 36pt", tracking: "-0.025em", use: "Homepage hero only" },
+    { level: "H1", weight: 600, web: "52px / 1.18", print: "26pt / 31pt", tracking: "-0.025em", use: "Page titles" },
+    { level: "H2", weight: 600, web: "44px / 1.15", print: "22pt / 26pt", tracking: "-0.02em", use: "Section headings" },
+    { level: "H3", weight: 600, web: "28px / 1.3", print: "14pt / 18pt", tracking: "-0.02em", use: "Service and article titles" },
+    { level: "H4", weight: 600, web: "18px / 1.45", print: "11pt / 16pt", tracking: "-0.01em", use: "Card titles" },
+    { level: "Body Large", weight: 400, web: "18px / 1.75", print: "11pt / 17pt", tracking: "0", use: "Intros, standfirsts" },
+    { level: "Body", weight: 400, web: "16px / 1.75", print: "10pt / 16pt", tracking: "0", use: "Default reading size" },
+    { level: "Small", weight: 400, web: "14px / 1.65", print: "9pt / 14pt", tracking: "0", use: "Captions, table cells, footnotes" },
+    { level: "Eyebrow", weight: 500, web: "12px / 1.4", print: "7.5pt / 11pt", tracking: "0.2em", use: "Uppercase section labels above headings" },
   ],
 };
 

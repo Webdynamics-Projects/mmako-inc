@@ -2,9 +2,9 @@
  * Builds the editable Word templates.
  *
  * These are the documents the firm types into, so they are .docx rather than
- * PDF. Every one carries the same branded header and footer, and uses the
- * brand's Office substitute faces (Georgia for Fraunces, Arial for Inter) —
- * Word cannot be relied on to have the webfonts installed.
+ * PDF. Every one carries the same branded header and footer, and is set in
+ * Montserrat — the brand family, which is free and should be installed on the
+ * firm's machines. Word falls back to Century Gothic then Arial without it.
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -26,8 +26,12 @@ const RULE = colours.secondary[4].hex.replace("#", "");
 const PANEL = colours.secondary[3].hex.replace("#", "");
 const FILL = "B9B7B0"; // placeholder text
 
-const SERIF = typography.office.display; // Georgia
-const SANS = typography.office.body;     // Arial
+/* Word cannot load webfonts, so these name the family directly. Montserrat is
+   free — the firm should install it on their machines and these documents then
+   match the brand exactly. Word falls back on its own if it is missing; the
+   documented fallback is Century Gothic, then Arial. */
+const SERIF = typography.office.display; // Montserrat, at heading weights
+const SANS = typography.office.body;     // Montserrat, at body weight
 
 const LOGO = fs.readFileSync(path.join("brand", "_source", "assets", "word-logo.png"));
 const LOGO_W = 96;                       // px at 96dpi ≈ 25mm
@@ -143,11 +147,11 @@ function doc(children, { pageNumbers = false, title } = {}) {
       },
       paragraphStyles: [
         { id: "Title", name: "Title", basedOn: "Normal", next: "Normal", quickFormat: true,
-          run: { font: SERIF, size: 40, color: INK }, paragraph: { spacing: { after: 160 } } },
+          run: { font: SERIF, size: 40, color: INK, bold: true }, paragraph: { spacing: { after: 160 } } },
         { id: "Heading1", name: "Heading 1", basedOn: "Normal", next: "Normal", quickFormat: true,
-          run: { font: SERIF, size: 26, color: INK }, paragraph: { spacing: { before: 320, after: 120 }, outlineLevel: 0 } },
+          run: { font: SERIF, size: 26, color: INK, bold: true }, paragraph: { spacing: { before: 320, after: 120 }, outlineLevel: 0 } },
         { id: "Heading2", name: "Heading 2", basedOn: "Normal", next: "Normal", quickFormat: true,
-          run: { font: SERIF, size: 22, color: INK }, paragraph: { spacing: { before: 260, after: 100 }, outlineLevel: 1 } },
+          run: { font: SERIF, size: 22, color: INK, bold: true }, paragraph: { spacing: { before: 260, after: 100 }, outlineLevel: 1 } },
         { id: "Heading3", name: "Heading 3", basedOn: "Normal", next: "Normal", quickFormat: true,
           run: { font: SANS, size: 19, color: INK, bold: true }, paragraph: { spacing: { before: 200, after: 80 }, outlineLevel: 2 } },
       ],
@@ -170,7 +174,7 @@ function doc(children, { pageNumbers = false, title } = {}) {
 const signOff = () => [
   p(t("Yours faithfully,"), { before: 320 }),
   p(t(""), { after: 520 }),
-  p(t(d.name, { font: SERIF, size: 22, color: INK }), { after: 40 }),
+  p(t(d.name, { font: SERIF, size: 22, color: INK, bold: true }), { after: 40 }),
   p(t(`${d.title}  |  ${firm.name}`, { size: 14, bold: true, caps: true, color: GOLD_DEEP, spacing: 28 })),
 ];
 
@@ -225,11 +229,11 @@ const letterhead = () => [
 
 /* 2. General document template — adds a title block, styles and page numbers. */
 const template = () => [
-  p(t("[Document title]", { font: SERIF, size: 40, color: INK }), { after: 100 }),
+  p(t("[Document title]", { font: SERIF, size: 40, color: INK, bold: true }), { after: 100 }),
   p(fill("[Subtitle or matter reference]"), { after: 320 }),
-  p(t("Heading 1", { font: SERIF, size: 26, color: INK }), { heading: HeadingLevel.HEADING_1 }),
+  p(t("Heading 1", { font: SERIF, size: 26, color: INK, bold: true }), { heading: HeadingLevel.HEADING_1 }),
   p(fill("[Body text. The Heading 1, 2 and 3 styles are set up in the Styles gallery, so a table of contents and the navigation pane both work.]")),
-  p(t("Heading 2", { font: SERIF, size: 22, color: INK }), { heading: HeadingLevel.HEADING_2 }),
+  p(t("Heading 2", { font: SERIF, size: 22, color: INK, bold: true }), { heading: HeadingLevel.HEADING_2 }),
   p(fill("[Body text.]")),
   p(t("Heading 3", { size: 19, bold: true, color: INK }), { heading: HeadingLevel.HEADING_3 }),
   p(fill("[Body text.]")),
@@ -258,7 +262,7 @@ const legalOpinion = () => [
     borders: noBorders,
     rows: [new TableRow({
       children: [cell([
-        p(t("Legal Opinion", { font: SERIF, size: 32, color: INK }), { after: 160 }),
+        p(t("Legal Opinion", { font: SERIF, size: 32, color: INK, bold: true }), { after: 160 }),
         layoutTable([new TableRow({
           children: [
             cell([label("Prepared for"), p(fill("[Client]"), { after: 0 })], { width: 3000 }),
@@ -281,7 +285,7 @@ const legalOpinion = () => [
     ["7. Recommended next steps", "[What the client should do, in order of priority.]"],
     ["8. Limitations", "[Scope, assumptions relied on, and that this opinion is for the addressee only.]"],
   ].flatMap(([h, b]) => [
-    p(t(h, { font: SERIF, size: 22, color: INK }), { heading: HeadingLevel.HEADING_2 }),
+    p(t(h, { font: SERIF, size: 22, color: INK, bold: true }), { heading: HeadingLevel.HEADING_2 }),
     p(fill(b)),
   ]),
   ...signOff(),
@@ -297,7 +301,7 @@ const invoice = () => [
         p(fill("[Address]"), { after: 0 }), p(fill("VAT: [Client VAT no.]"), { after: 0 }),
       ], { width: 5000 }),
       cell([
-        p(t("Invoice", { font: SERIF, size: 34, color: INK }), { align: R, after: 160 }),
+        p(t("Invoice", { font: SERIF, size: 34, color: INK, bold: true }), { align: R, after: 160 }),
         ...[["Invoice no.", "[INV-0000]"], ["Date", "[DD/MM/YYYY]"],
             ["Due", "[DD/MM/YYYY]"], ["Matter", "[Matter ref]"]].map(([k, v]) =>
           p([t(`${k}   `, { size: 16, color: GREY }), fill(v, { size: 16 })], { align: R, after: 40 })),
@@ -360,7 +364,7 @@ const invoice = () => [
 
 /* 6. Proposal */
 const proposal = () => [
-  p(t("Proposal", { font: SERIF, size: 44, color: INK }), { after: 60 }),
+  p(t("Proposal", { font: SERIF, size: 44, color: INK, bold: true }), { after: 60 }),
   p(fill("[Matter or engagement name]", { size: 22 }), { after: 240 }),
   layoutTable([new TableRow({
     children: [
@@ -375,10 +379,10 @@ const proposal = () => [
     ["2. What we propose to do", "[The work, broken into phases with what each delivers.]"],
     ["3. What is not included", "[Explicit exclusions — this is what prevents scope disputes later.]"],
   ].flatMap(([h, b]) => [
-    p(t(h, { font: SERIF, size: 22, color: INK }), { heading: HeadingLevel.HEADING_2 }),
+    p(t(h, { font: SERIF, size: 22, color: INK, bold: true }), { heading: HeadingLevel.HEADING_2 }),
     p(fill(b)),
   ]),
-  p(t("4. Fees", { font: SERIF, size: 22, color: INK }), { heading: HeadingLevel.HEADING_2 }),
+  p(t("4. Fees", { font: SERIF, size: 22, color: INK, bold: true }), { heading: HeadingLevel.HEADING_2 }),
   dataTable(
     [{ text: "Phase" }, { text: "Basis" }, { text: "Fee (ZAR, excl. VAT)", align: R }],
     [4600, 2600, 2000],
@@ -391,7 +395,7 @@ const proposal = () => [
     ["5. Timing", "[Start date, key milestones, and what we need from the client to hold them.]"],
     ["6. Terms", "[Payment terms, disbursements, and how either side can end the engagement.]"],
   ].flatMap(([h, b]) => [
-    p(t(h, { font: SERIF, size: 22, color: INK }), { heading: HeadingLevel.HEADING_2 }),
+    p(t(h, { font: SERIF, size: 22, color: INK, bold: true }), { heading: HeadingLevel.HEADING_2 }),
     p(fill(b)),
   ]),
   hairline(),

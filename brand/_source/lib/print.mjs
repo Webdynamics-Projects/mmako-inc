@@ -10,16 +10,20 @@ export const GREY = colours.secondary[2].hex;
 export const BONE_200 = colours.secondary[3].hex;
 export const RULE = colours.secondary[4].hex;
 
+/* One family throughout. DISPLAY and SANS stay as separate names so a template
+   reads clearly, but both resolve to Montserrat — headings differ by weight
+   and tracking, not by face. */
 export const DISPLAY = `'${typography.primary.name}', ${typography.primary.fallback}`;
 export const SANS = `'${typography.secondary.name}', ${typography.secondary.fallback}`;
 
 export const baseCss = `
-  body{font-family:${SANS};color:${INK};-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body{font-family:${SANS};color:${INK};line-height:1.6;
+       -webkit-print-color-adjust:exact;print-color-adjust:exact}
   .page{position:relative;overflow:hidden;background:${BONE}}
   .eyebrow{font-size:7.5pt;letter-spacing:.2em;text-transform:uppercase;color:${GOLD_DEEP};font-weight:500}
   .rule-gold{background:${GOLD};height:2px;border:0}
   .hair{background:${RULE};height:1px;border:0}
-  h1,h2,h3{font-family:${DISPLAY};font-weight:500;letter-spacing:-.02em;margin:0}
+  h1,h2,h3{font-family:${DISPLAY};font-weight:600;letter-spacing:-.025em;margin:0}
   p{margin:0}
   .muted{color:${GREY}}
   table{border-collapse:collapse}

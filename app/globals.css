@@ -9,12 +9,14 @@
   --color-ink-700: #24242a;
   --color-ink-600: #3a3a42;
 
-  --color-gold: #c9a227;
-  --color-gold-bright: #e0bc45;
-  /* Darkened so gold *text* clears WCAG AA (4.5:1) on every light surface,
-     including bone-200. The brighter --color-gold stays for rules, icons and
-     text on the dark surfaces, where it has plenty of contrast. */
-  --color-gold-dim: #806517;
+  --color-gold: #b7965e;
+  --color-gold-bright: #cfb78e;
+  /* Derived from --color-gold by darkening at a fixed hue until it clears WCAG
+     AA (4.5:1) on Bone 200, the darkest light ground. Gold *text* on a light
+     surface uses this; --color-gold itself only reaches 2.4:1 there. The base
+     gold stays for rules, icons and text on dark surfaces, where it has
+     plenty of contrast. */
+  --color-gold-dim: #85693b;
 
   --color-bone: #fafaf8;
   --color-bone-200: #f1f0eb;
@@ -23,8 +25,12 @@
   --color-warm-grey: #6b6a66;
   --color-warm-grey-light: #9a9892;
 
-  --font-display: var(--font-fraunces), ui-serif, Georgia, "Times New Roman", serif;
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  /* One family carries the whole system. The serif in the identity lives in the
+     logo's monogram; the type is geometric sans throughout, which is what the
+     logo's own wordmark is set in. Both tokens are kept so display and body can
+     diverge later without touching every component. */
+  --font-display: var(--font-montserrat), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-sans: var(--font-montserrat), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
 
   --ease-out-soft: cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -39,15 +45,19 @@
     background-color: var(--color-bone);
     color: var(--color-ink);
     font-family: var(--font-sans);
-    font-feature-settings: "cv02", "cv03", "cv04";
+    /* Montserrat runs wide, so body copy gets a little more leading than the
+       previous face needed to keep the measure comfortable. */
+    line-height: 1.75;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
   }
 
   h1, h2, h3, h4 {
     font-family: var(--font-display);
-    font-weight: 500;
-    letter-spacing: -0.02em;
+    /* Montserrat is geometric and fairly light in the middle weights, so
+       headings sit at 600 and take tighter tracking than a serif would. */
+    font-weight: 600;
+    letter-spacing: -0.025em;
     text-wrap: balance;
   }
 
@@ -84,12 +94,12 @@
     background-image:
       radial-gradient(
         ellipse 80% 60% at 75% 0%,
-        rgba(201, 162, 39, 0.16),
+        rgba(183, 150, 94, 0.16),
         transparent 60%
       ),
       radial-gradient(
         ellipse 60% 50% at 0% 100%,
-        rgba(201, 162, 39, 0.07),
+        rgba(183, 150, 94, 0.07),
         transparent 65%
       ),
       linear-gradient(rgba(255, 255, 255, 0.022) 1px, transparent 1px),

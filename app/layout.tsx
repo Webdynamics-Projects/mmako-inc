@@ -1,23 +1,20 @@
 import type { Metadata } from "next";
-import { Fraunces, Inter } from "next/font/google";
+import { Montserrat } from "next/font/google";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { site, siteUrl } from "@/lib/site";
 import "./globals.css";
 
-/* Display face for headings — high-contrast serif for gravitas. */
-const fraunces = Fraunces({
+/*
+ * Montserrat carries the whole type system — headings and body. It is the
+ * geometric sans the logo's own wordmark is set in, so the type and the mark
+ * read as one thing. Variable, with italic, loaded as a single family.
+ */
+const montserrat = Montserrat({
   subsets: ["latin"],
   display: "swap",
-  variable: "--font-fraunces",
-  axes: ["SOFT", "WONK", "opsz"],
-});
-
-/* Body face — clean, highly legible sans. */
-const inter = Inter({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-inter",
+  variable: "--font-montserrat",
+  style: ["normal", "italic"],
 });
 
 export const metadata: Metadata = {
@@ -84,7 +81,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en-ZA" className={`${fraunces.variable} ${inter.variable}`}>
+    <html lang="en-ZA" className={montserrat.variable}>
       <body className="flex min-h-screen flex-col">
         <a
           href="#main"

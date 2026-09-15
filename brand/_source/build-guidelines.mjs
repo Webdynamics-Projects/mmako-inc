@@ -181,48 +181,75 @@ const face = (t) => `- **Family:** ${t.name}
 - **Licence:** ${t.licence}
 - **Source:** ${t.source}
 - **Used for:** ${t.use}
-- **Fallback stack:** \`${t.fallback}\``;
+- **Web fallback stack:** \`${t.fallback}\`
+- **Office / email stack:** \`${typography.office.stack}\``;
 
 md(D4, "Primary Font.md", `# Primary Font — ${typography.primary.name}\n\n${face(typography.primary)}\n
 ## Why this face
 
-A high-contrast serif carries the gravitas a law firm needs without the stuffiness of a traditional
-legal typeface. Fraunces is variable, so weight and optical size can be tuned per context, and it is
-free to embed in documents and on the web.
+Montserrat is the geometric sans the logo's own wordmark is set in, so the type
+and the mark read as one thing rather than two decisions. The serif in the
+identity lives where it belongs — in the monogram — and everything set in type
+is Montserrat.
+
+It is variable, covers 300 to 700 with true italics, and is free to embed in
+documents and on the web.
 
 ## Setting rules
 
-- Headings are set at weight 500. Avoid the heaviest weights — they read as shouting.
-- Tracking is tightened slightly on large sizes (−0.02em) and left alone below 20px.
-- Never set body copy in Fraunces. It is a display face.
+- Headings sit at **weight 600**. 700 reads as shouting; 500 goes limp at large sizes.
+- Tracking is **tightened** on headings — −0.025em at display size, easing to −0.01em
+  by H4. Montserrat is drawn loose by default and headings look gappy untracked.
+- Body copy is **weight 400** with **1.75 line-height**. The face is wide and its
+  x-height modest, so it needs more leading than a neo-grotesque would.
 - Italic is reserved for emphasis inside a headline, as in the homepage hero.
+- Never set body copy below 14px. Geometric sans loses legibility faster than a
+  humanist face as it shrinks.
 `);
 
-md(D4, "Secondary Font.md", `# Secondary Font — ${typography.secondary.name}\n\n${face(typography.secondary)}\n
-## Setting rules
+md(D4, "Secondary Font.md", `# Secondary Font
 
-- Body copy sits at 16px / 1.7 on screen, 10pt / 15pt in print.
-- Uppercase eyebrow labels use 0.2em tracking. Never set uppercase without added tracking.
-- Line length stays between 60 and 75 characters for long-form reading.
-- Weight 200 and 300 are available but should not be used below 14px.
+There isn't one. **${typography.primary.name} carries the whole system** — headings and body,
+screen and print.
 
-## Office and email substitutes
+A single family is a deliberate choice, not an omission. The identity already
+carries contrast between the monogram's Didone serif and the wordmark's
+geometric sans; adding a third voice in the running text would muddy it. Weight,
+size and tracking do the work a second family would otherwise do.
 
-Webfonts do not load in Microsoft Outlook, and embedding is unreliable across Word installations.
-In email signatures, Word documents and anything that leaves the firm as an editable file, use:
+## Weights in use
 
-- **${typography.office.display}** in place of ${typography.primary.name}
-- **${typography.office.body}** in place of ${typography.secondary.name}
+| Weight | Where |
+| --- | --- |
+| 600 | All headings, the eyebrow label at 500 |
+| 400 | Body copy, tables, captions, UI |
 
-These substitutes are already built into the supplied email signatures and document templates.
+## Word, Outlook and anything editable
+
+Word and Outlook cannot load webfonts. Montserrat is free, so the fix is simple:
+
+**Install Montserrat on every machine in the firm.** Download it from
+[Google Fonts](${typography.primary.source}), unzip, select all the .ttf files, right-click →
+Install. Documents then match the brand exactly.
+
+Without it, the supplied templates fall back through this stack:
+
+\`\`\`
+${typography.office.stack}
+\`\`\`
+
+Century Gothic ships with Microsoft Office on both Windows and Mac and is the
+closest geometric substitute. Arial is the last resort and is on everything.
 `);
 
 md(D4, "Typography Hierarchy.md", `# Typography Hierarchy
 
-| Level | Face | Screen | Print | Tracking | Use |
+All ${typography.primary.name}. The levels differ by weight, size and tracking.
+
+| Level | Weight | Screen | Print | Tracking | Use |
 | --- | --- | --- | --- | --- | --- |
 ${typography.scale.map((s) =>
-  `| **${s.level}** | ${s.font} | ${s.web} | ${s.print} | ${s.tracking} | ${s.use} |`).join("\n")}
+  `| **${s.level}** | ${s.weight} | ${s.web} | ${s.print} | ${s.tracking} | ${s.use} |`).join("\n")}
 
 ## Rules
 
@@ -231,6 +258,8 @@ ${typography.scale.map((s) =>
 - The eyebrow label is not a heading. It labels the section that follows and carries no
   heading semantics in markup.
 - Body copy is never centred over more than two lines.
+- Uppercase is always tracked. Montserrat's caps are wide already; set without
+  added tracking they look accidental rather than deliberate.
 `);
 
 /* ===================== 05 - VISUAL SYSTEM =============================== */
@@ -391,7 +420,7 @@ const rows = (list, per = 4) => {
 };
 
 const cover = `<div class="page" style="background-color:${P.INK};
-  background-image:radial-gradient(ellipse 80% 60% at 75% 0%, rgba(201,162,39,.18), transparent 60%);
+  background-image:radial-gradient(ellipse 80% 60% at 75% 0%, rgba(183,150,94,.18), transparent 60%);
   justify-content:space-between;padding:26mm 22mm">
   <div style="display:flex;flex-direction:column;align-items:flex-start">
     ${P.logoImg("lockup", "light", 62, "mm")}
@@ -401,7 +430,7 @@ const cover = `<div class="page" style="background-color:${P.INK};
     <div style="font-family:${P.DISPLAY};font-size:30pt;line-height:34pt;color:${P.BONE}">
       Brand Guidelines</div>
     <div style="font-family:${P.SANS};font-size:10pt;color:rgba(227,225,217,.65);margin-top:5mm">
-      ${firm.name} &nbsp;·&nbsp; Version 1.1 &nbsp;·&nbsp; ${new Date().toLocaleDateString("en-ZA", { month: "long", year: "numeric" })}
+      ${firm.name} &nbsp;·&nbsp; Version 1.2 &nbsp;·&nbsp; ${new Date().toLocaleDateString("en-ZA", { month: "long", year: "numeric" })}
     </div>
   </div>
 </div>`;
@@ -509,15 +538,25 @@ const body = [
     On dark grounds Mmako Gold is fine, at
     <strong>${contrast(colours.primary[1].hex, colours.primary[0].hex).toFixed(2)}:1</strong>.</p>
     <table class="tbl">
-      <tr><th>Colour</th><th>On Bone</th><th>On Ink</th><th>Verdict</th></tr>
+      <tr><th>Colour</th><th>On Bone</th><th>On Ink</th><th>Safe as text on</th></tr>
       ${allColours.map((c) => {
         const ob = contrast(c.hex, colours.primary[2].hex);
         const oi = contrast(c.hex, colours.primary[0].hex);
-        const best = Math.max(ob, oi);
-        return `<tr><td>${c.name}</td><td>${ob.toFixed(2)}:1</td><td>${oi.toFixed(2)}:1</td>
-          <td>${best >= 4.5 ? "Body text" : best >= 3 ? "Large text only" : "Non-text only"}</td></tr>`;
+        /* Graded per ground — a colour that passes on ink says nothing about
+           whether it passes on bone, so the two are never merged. */
+        const grade = (v) => v >= 4.5 ? "AA" : v >= 3 ? "large only" : "—";
+        const safe = [
+          ob >= 4.5 ? "Bone" : ob >= 3 ? "Bone (large)" : null,
+          oi >= 4.5 ? "Ink" : oi >= 3 ? "Ink (large)" : null,
+        ].filter(Boolean);
+        return `<tr><td>${c.name}</td>
+          <td>${ob.toFixed(2)}:1 &nbsp;<span style="color:${P.GREY}">${grade(ob)}</span></td>
+          <td>${oi.toFixed(2)}:1 &nbsp;<span style="color:${P.GREY}">${grade(oi)}</span></td>
+          <td>${safe.length ? safe.join(", ") : "Neither — non-text use only"}</td></tr>`;
       }).join("")}
     </table>
+    <p style="font-size:7.5pt;color:${P.GREY};margin-top:2mm">AA = passes 4.5:1 for body text.
+    "large only" = passes 3:1, so 24px / 18pt and above. "—" = not usable as text on that ground.</p>
     <h2>Print</h2>
     ${allColours.filter((c) => c.print).map((c) => `<p><strong>${c.name}</strong> — ${c.print}</p>`).join("")}
     <div class="note"><strong>CMYK values are arithmetic, not colour-managed.</strong> They will shift
@@ -526,31 +565,39 @@ const body = [
     guessed PMS number would be worse than supplying none.</div>`),
 
   pg("04 — Typography", `<h1>Typography</h1>
-    <table style="width:100%;margin-bottom:6mm"><tr>
+    <p class="lead">One family carries the whole system. ${typography.primary.name} is the geometric
+    sans the logo's own wordmark is set in, so the type and the mark read as one thing.</p>
+    <table style="width:100%;margin:6mm 0"><tr>
       <td style="width:50%;padding-right:5mm;vertical-align:top">
-        <div style="font-family:${P.DISPLAY};font-size:46pt;line-height:46pt;color:${P.INK}">Aa</div>
-        <h3 style="margin-top:3mm">${typography.primary.name}</h3>
-        <p style="font-size:8pt">${typography.primary.classification}<br>
-        ${typography.primary.use}<br><em>${typography.primary.licence}</em></p>
+        <div style="font-family:${P.DISPLAY};font-weight:600;letter-spacing:-.03em;
+                    font-size:46pt;line-height:48pt;color:${P.INK}">Aa</div>
+        <h3 style="margin-top:3mm">Weight 600 — headings</h3>
+        <p style="font-size:8pt">Tracking tightened, −0.025em at display size easing to −0.01em by H4.
+        Montserrat is drawn loose; headings look gappy untracked.</p>
       </td>
       <td style="width:50%;vertical-align:top">
-        <div style="font-family:${P.SANS};font-size:46pt;line-height:46pt;color:${P.INK}">Aa</div>
-        <h3 style="margin-top:3mm">${typography.secondary.name}</h3>
-        <p style="font-size:8pt">${typography.secondary.classification}<br>
-        ${typography.secondary.use}<br><em>${typography.secondary.licence}</em></p>
+        <div style="font-family:${P.SANS};font-weight:400;font-size:46pt;line-height:48pt;color:${P.INK}">Aa</div>
+        <h3 style="margin-top:3mm">Weight 400 — body</h3>
+        <p style="font-size:8pt">1.75 line-height on screen. The face is wide with a modest
+        x-height, so it needs more leading than a neo-grotesque.</p>
       </td>
     </tr></table>
+    <p style="font-size:8pt;color:${P.GREY}">${typography.primary.classification} &nbsp;·&nbsp;
+      ${typography.primary.licence}</p>
     <h2>Hierarchy</h2>
     <table class="tbl">
-      <tr><th>Level</th><th>Face</th><th>Screen</th><th>Print</th><th>Use</th></tr>
-      ${typography.scale.map((s) => `<tr><td><strong>${s.level}</strong></td><td>${s.font}</td>
-        <td>${s.web}</td><td>${s.print}</td><td>${s.use}</td></tr>`).join("")}
+      <tr><th>Level</th><th>Weight</th><th>Screen</th><th>Print</th><th>Tracking</th><th>Use</th></tr>
+      ${typography.scale.map((s) => `<tr><td><strong>${s.level}</strong></td><td>${s.weight}</td>
+        <td>${s.web}</td><td>${s.print}</td><td>${s.tracking}</td><td>${s.use}</td></tr>`).join("")}
     </table>
-    <div class="note"><strong>Office and email substitutes.</strong> Webfonts do not load in Outlook
-    and embed unreliably in Word. Use <strong>${typography.office.display}</strong> for
-    ${typography.primary.name} and <strong>${typography.office.body}</strong> for
-    ${typography.secondary.name} in signatures, Word documents and anything editable that leaves the
-    firm. The supplied templates already do this.</div>`),
+    <div class="note"><strong>There is no second family.</strong> The identity already carries
+    contrast between the monogram's Didone serif and the wordmark's geometric sans — a third voice
+    in the running text would muddy it. Weight, size and tracking do the work a second family
+    would otherwise do.<br><br>
+    <strong>Word and Outlook cannot load webfonts.</strong> Montserrat is free, so install it on
+    every machine in the firm and documents match the brand exactly. Without it the supplied
+    templates fall back through <code>${typography.office.stack}</code> — Century Gothic ships with
+    Office on Windows and Mac; Arial is on everything.</div>`),
 
   pg("05 — Visual System", `<h1>Visual system</h1>
     <p class="lead">The system is deliberately small. Four elements carry it.</p>
@@ -639,34 +686,23 @@ const body = [
     </table>`),
 
   pg("Open items", `<h1>Before this goes to print</h1>
-    <p class="lead">Four things must be settled. Each affects finished artwork.</p>
-    <h3>1. The logo and the palette use different colours</h3>
-    <p>Every mark in this kit is now built from the designer's own vector artwork. Reading the
-    colours out of that file gives <strong>#272725</strong> for the ink and
-    <strong>#B7965E</strong> for the gold. The brand palette in section 03 specifies
-    <strong>${colours.primary[1].hex.toUpperCase()}</strong> — a more saturated, yellower gold.
-    Side by side the difference is obvious, and a firm whose logo and website use different golds
-    looks unconsidered.</p>
-    <table class="tbl">
-      <tr><th>Gold</th><th>HEX</th><th>CMYK</th><th>On bone</th><th>On ink</th></tr>
-      <tr><td>Artwork</td><td>#B7965E</td><td>0 / 18 / 49 / 28</td><td>2.67:1</td><td>7.06:1</td></tr>
-      <tr><td>Palette</td><td>${colours.primary[1].hex.toUpperCase()}</td><td>0 / 19 / 81 / 21</td><td>2.31:1</td><td>8.13:1</td></tr>
-    </table>
-    <p><strong>Recommendation:</strong> adopt the artwork's #B7965E as the brand gold. The logo is
-    the identity's anchor, and a palette should follow it rather than the other way round. Neither
-    gold passes contrast as text on a light ground, so Gold Deep stays the substitute either way.
-    This is a one-line change to the palette; say the word.</p>
-    <h3>2. Mmako Law or Mmako Inc.</h3>
+    <p class="lead">Three things must be settled. Each affects finished artwork.</p>
+    <div class="note" style="margin:0 0 6mm"><strong>Settled since version 1.1.</strong> The palette
+    now takes its gold straight from the logo artwork — <strong>#B7965E</strong> — so the mark and
+    everything around it finally agree. Gold Deep and Gold Bright were re-derived from it at the
+    same hue. Separately, the whole type system moved to Montserrat, the geometric sans the logo's
+    own wordmark is set in.</div>
+    <h3>1. Mmako Law or Mmako Inc.</h3>
     <p>The naming rule on page 2 assumes the logo is the brand mark and Mmako Inc. the written name.
     Confirm it.</p>
-    <h3>3. Company details are placeholders</h3>
+    <h3>2. Company details are placeholders</h3>
     <p>Registration number, VAT number and banking details appear as bracketed placeholders on the
     letterhead, invoice and legal templates. Supply them before anything is printed or issued.</p>
-    <h3>4. The confidentiality notice needs sign-off</h3>
+    <h3>3. The confidentiality notice needs sign-off</h3>
     <p>The wording in the email signature is a reasonable general form. It has not been reviewed
     against the firm's professional-indemnity or Legal Practice Council obligations.</p>
-    <div class="note">This document is version 1.1. Once the four items above are closed, reissue it
-    as version 1.2 and circulate that as the governing version.</div>`),
+    <div class="note">This document is version 1.2. Once the three items above are closed, reissue
+    it as version 1.3 and circulate that as the governing version.</div>`),
 ].join("");
 
 fs.writeFileSync(path.join(D10, "Mmako Inc. Brand Guidelines.pdf"),
