@@ -23,6 +23,19 @@ both flagged where they come up.
    *Adjust GitHub App Permissions* and add it.
 4. Import the repository.
 
+> **The repository does not need to be public.** Vercel deploys private
+> repositories on every plan, the free one included, and this one should stay
+> private — it holds the client's logo artwork, brand kit, letterhead and legal
+> document templates. A repo missing from the import list is a permissions
+> problem, not a visibility one: `Webdynamics-Projects` is an organisation, so
+> the Vercel GitHub App needs access granted to this repo, and an organisation
+> owner has to approve it. Do that at GitHub → the org's **Settings → GitHub
+> Apps → Vercel → Configure**, under *Repository access*.
+
+> **A note on plan choice.** Vercel's Hobby plan is for non-commercial use, and
+> a law firm's production website is commercial. Raise Pro with the client as a
+> line item up front rather than leaving it to surface later.
+
 **Build settings: change nothing.** Vercel detects Next.js and gets all of it
 right. For the record, the correct values are:
 
