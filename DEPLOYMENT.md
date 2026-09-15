@@ -49,7 +49,7 @@ environments (Production, Preview, Development) unless noted.
 | --- | --- | --- |
 | `NEXT_PUBLIC_SITE_URL` | `https://mmakoinc.com` | Yes |
 | `RESEND_API_KEY` | From [resend.com/api-keys](https://resend.com/api-keys) | Yes, for the contact form |
-| `CONTACT_TO_EMAIL` | `contact@mmakoinc.com` | Optional — this is the default |
+| `CONTACT_TO_EMAIL` | `info@mmakoinc.com` | Optional — this is the default |
 | `CONTACT_FROM_EMAIL` | Leave unset for now — see section 6 | No |
 
 ### Two things that will bite you otherwise
@@ -125,9 +125,50 @@ before spending time on DNS, or the domain will go green and serve nothing.
 
 ## 4. Point GoDaddy at Vercel
 
-In GoDaddy: **My Products → Domains →** `mmakoinc.com` **→ DNS → Manage DNS**.
+### First: disconnect GoDaddy's own website
+
+Buying a domain at GoDaddy usually brings a **Websites + Marketing** (Airo) site
+with it, and GoDaddy often publishes one automatically. It is a real, live site —
+a light-coloured template with a stock photo and a heading like *Justice for
+Every Client* — and while it is connected, GoDaddy manages this domain's web
+records on its behalf. Editing the `A` record by hand is not enough: the builder
+can put its own records back.
+
+Check at **My Products** (`account.godaddy.com/products`). On this domain it
+appears as **Websites + Marketing Free**, publishing to
+`mmakoinc.godaddysites.com`. Open it with **Manage**, then go to **Website** in
+the left-hand menu.
+
+What you are looking for is a site card marked **PUBLISHED** — typically a
+*Coming Soon Site*, which despite the name is a complete page with a stock photo
+and placeholder copy. Use the gear on that card (the same one appears on the
+Dashboard next to the `godaddysites.com` address) and choose **Unpublish**, or
+**Delete site** if the firm has no use for it, which is cleaner because it cannot
+come back. GoDaddy relabels these controls periodically, so go by the words
+*Unpublish* and *Delete site* rather than by a fixed menu path.
+
+**Two buttons will undo all of this**, and both sit in the obvious place:
+**Publish Site** on the Website page, and **Connect Domain** on the Domain page.
+Either one re-attaches the domain to the builder.
+
+Unpublishing does not release the DNS on its own — it only stops the records
+being reset. Fix the records afterwards, in the order given below.
+
+While you are in the domain's settings, check **Forward Domain** too. Domain
+forwarding is stored separately from the DNS records and silently overrides
+them. It must be **off** for both the apex and `www`. (A response with no
+`location` header rules forwarding out — see the troubleshooting section.)
+
+> **How to recognise this.** A GoDaddy builder site on the free plan shows a
+> promotional bar across the very top of the page — *"Go from idea to live site
+> in minutes"*, with a **Start for free** button. That bar is never part of your
+> site. If it is visible on `mmakoinc.com`, GoDaddy is still serving the domain.
+> The *Last published* date on the site card is the other tell: if it is recent,
+> that publish is what reset the DNS.
 
 ### Delete the parked records first
+
+In GoDaddy: **My Products → Domains →** `mmakoinc.com` **→ DNS → Manage DNS**.
 
 This is the step people miss. A new GoDaddy domain ships with records that point
 at GoDaddy's parking page, and adding Vercel's records alongside them does not
@@ -162,10 +203,9 @@ Only the `A` on `@` and the `CNAME` on `www` have anything to do with web
 hosting. If a record is not one of those two, do not touch it.
 
 > Seeing `MX` records and a `v=spf1` TXT here is useful information: it means
-> email is already configured on the domain, so `contact@mmakoinc.com` is
-> probably a working mailbox already. It is also why section 6 verifies Resend
-> on a **subdomain** — adding Resend to this apex SPF record would put the
-> firm's existing mail at risk.
+> email is already configured on the domain, so `info@mmakoinc.com` may well be
+> a working mailbox already. Note that `v=spf1` record — a domain may carry only
+> one, and section 6 depends on leaving it exactly as it is.
 
 ### Add Vercel's records
 
@@ -278,35 +318,137 @@ domain it can only send from Resend's test address.
 
 ### Now — get it working
 
-1. Sign up at [resend.com](https://resend.com).
+1. Sign up at [resend.com](https://resend.com). **Note which address you sign
+   up with** — it decides who can receive mail until step 2 below is done.
 2. **API Keys → Create API Key**, sending permission is enough.
 3. Put it in Vercel as `RESEND_API_KEY` and **redeploy**.
 4. Leave `CONTACT_FROM_EMAIL` unset. The code falls back to
    `onboarding@resend.dev`, which works immediately.
+5. Set `CONTACT_TO_EMAIL` to **the address the Resend account was created
+   with**, and redeploy.
 
-At this point the form delivers to `contact@mmakoinc.com`, but the "from"
-address is Resend's, and deliverability is mediocre.
+Step 5 is not optional, and it is the step that catches people out. While the
+form sends from `onboarding@resend.dev`, Resend is in its sandbox mode, and
+sandbox mode **only delivers to the account owner's own address**. Anything
+else is rejected outright. So a form pointed at `info@mmakoinc.com` fails even
+though the API key is correct, the deploy succeeded and Resend records the
+attempt — the request is authenticated and then refused.
+
+The symptom is exact: the visitor sees *"We couldn't send your message"*, the
+route logs a 502, and in Resend the key's **Total uses** counter goes up while
+**Logs** shows the rejection and nothing arrives. A key with uses on the clock
+and no mail delivered is this, not a missing key.
+
+This state is for testing only. The "from" address is Resend's, deliverability
+is mediocre, and enquiries land in one person's inbox. Move on to verifying the
+domain.
 
 ### Then — verify the domain
 
-1. Resend → **Domains → Add Domain**. Use a subdomain —
-   **`send.mmakoinc.com`** — not the apex. Resend recommends this, and it keeps
-   the firm's normal email unaffected.
-2. Resend shows several DNS records. Depending on when the domain was created
-   these are either TXT + MX records, or CNAMEs. Add them in GoDaddy exactly as
-   shown, at the names given.
-3. Wait for Resend to show **Verified** — usually under 15 minutes.
-4. Only then set `CONTACT_FROM_EMAIL=website@send.mmakoinc.com` in Vercel and
-   **redeploy**.
+1. Resend → **Domains → Add Domain**. Enter **`mmakoinc.com`** — the apex.
+2. Open **Advanced options** and leave **Custom Return-Path** as `send`. Do not
+   blank it. That field is what keeps this setup away from the firm's live mail,
+   for the reason given below.
+3. Leave **Tracking Subdomain** empty. The tracking checkboxes below it are
+   greyed out while it is — there is nowhere to rewrite links to — so *Enable
+   click tracking* appearing ticked is inert, and the field is not worth filling
+   in to get at it. Click tracking only ever rewrites `http(s)` links, and the
+   only link this notification contains is a `mailto:` to the enquirer, so there
+   is nothing for it to act on. The setting is editable in the domain's own
+   settings later if that ever changes.
+4. Resend offers **Auto configure** or **Manual setup**. Choose **Manual
+   setup**. Auto configure signs into GoDaddy over Domain Connect and writes
+   the records itself, which is fine on an empty domain — but this one already
+   carries the firm's live `MX`, `v=spf1`, DKIM and `_dmarc` records, and those
+   are precisely the ones an automated merge has to make a judgement about,
+   with no chance to review it first. It also means granting a third party
+   write access to a client's DNS. Manual setup is three records.
+5. Resend shows the DNS records to add. Their values paste in unchanged; their
+   **names do not** — see below.
+6. Wait for Resend to show **Verified** — usually under 15 minutes.
+7. Only then set `CONTACT_FROM_EMAIL=website@mmakoinc.com` in Vercel, remove
+   `CONTACT_TO_EMAIL` (`info@mmakoinc.com` is the default), and **redeploy**.
+   Verifying the domain is what lifts the sandbox restriction, so this is the
+   point at which the firm's own inbox can receive enquiries.
+
+**Why the apex is safe here, despite having live email on it.** The usual
+advice is to verify a subdomain, because adding a second `v=spf1` TXT record to
+a domain that already has one is an SPF `PermError` — it breaks authentication
+for *all* mail from that domain, the firm's existing mail included. That danger
+is real, but the Custom Return-Path avoids it. With a return path of `send`, the
+envelope sender becomes `send.mmakoinc.com`, so SPF is checked against that
+subdomain and Resend's SPF record goes **on `send`, not on the apex**. The only
+record added at the apex is DKIM, which is additive and conflicts with nothing.
+DMARC still aligns: DKIM signs as `mmakoinc.com` directly, and `send.` aligns
+with the apex under relaxed alignment, which is the default.
+
+**The one real trade-off.** A verified apex lets that API key send as *any*
+address at `mmakoinc.com`, including `dalen@`. A verified subdomain limits it to
+`@send.mmakoinc.com`. Neither is wrong; the apex trades a little blast radius
+for a sender address that reads properly. Keep the key in Vercel's environment
+variables and out of the repository either way.
+
+**The three records.** What Resend asks for on this domain:
+
+| Type | Name | Value | Priority |
+| --- | --- | --- | --- |
+| TXT | `resend._domainkey` | the DKIM public key, `p=MIGfMA…` | — |
+| MX | `send` | `feedback-smtp.<region>.amazonses.com` | 10 |
+| TXT | `send` | `v=spf1 include:amazonses.com ~all` | — |
+
+Note where the SPF record sits: on `send`, not on `@`. That is the return path
+working as intended, and it is what leaves the firm's apex SPF alone.
+
+**Entering the names.** Resend displays these names already relative to the
+domain — `resend._domainkey`, not `resend._domainkey.mmakoinc.com` — which is
+the same form GoDaddy's **Name** field wants, so they go in exactly as shown.
+If a name ever does appear fully qualified, strip the `.mmakoinc.com` from the
+end before entering it: GoDaddy appends the domain itself, so the full form
+becomes `send.mmakoinc.com.mmakoinc.com` and verifies as nothing. `@` means
+"nothing in front of the domain".
+
+**Copy the values with the copy button.** Resend truncates them on screen with
+`[…]`, and the DKIM key is long. It must go in as one unbroken string — an
+added space or line break fails verification without saying why.
+
+GoDaddy has no *Auto* TTL — its dropdown starts at **1/2 Hour**, which is the
+one to pick. A short TTL means a mistyped record can be corrected in half an
+hour rather than a day. There is no need to raise it afterwards; these records
+do not change.
+
+Before saving each row, check the **Name** has no stray space (`resend._domainkey`,
+not `resend. _domainkey`) and press End in the **Value** field to confirm the
+whole string is there — the DKIM key should end `wIDAQAB`. A truncated key is
+the usual reason verification never completes.
+
+> **Leave *Enable Receiving* switched off.** This setup only sends. Turning it
+> on adds `MX` records at the apex, which is where the firm's inbound mail is
+> already routed — that would break it.
+
+> **Never add a second `v=spf1` record to the apex.** The firm already has one.
+> If Resend asks for an apex SPF record, the Custom Return-Path has been blanked
+> — go back and set it to `send`. Resend's SPF belongs on `send.mmakoinc.com`,
+> where nothing else is claiming it.
+
+> **The domain already has a `_dmarc` record.** Do not add a second one; DMARC
+> has the same one-record rule as SPF. The existing policy covers this mail
+> already, so if Resend suggests a `_dmarc` record, skip it.
 
 > **Do not set `CONTACT_FROM_EMAIL` before the domain verifies.** Resend rejects
 > mail from an unverified domain, the route returns 502, and the visitor sees
 > "We couldn't send your message." The fallback only protects you while the
 > variable is unset.
 
+> **Why `website@` and not `info@`.** The notification is sent *to*
+> `info@mmakoinc.com`. Sending it from the same address makes it self-addressed
+> mail, which reads oddly in a thread and is treated with suspicion by some
+> filters. `website@` or `noreply@` is clearer, and no reply ever goes there:
+> the route sets `replyTo` to the enquirer's own address, so replying reaches
+> the client.
+
 ### Getting the mail
 
-`contact@mmakoinc.com` has to be a real mailbox that someone reads — Google
+`info@mmakoinc.com` has to be a real mailbox that someone reads — Google
 Workspace, Microsoft 365, or GoDaddy's own email. That is separate from Resend,
 which only *sends*. If the mailbox is set up at GoDaddy or Google, it will add
 its own MX records; leave those alone when editing DNS.
@@ -348,6 +490,105 @@ Production** on an earlier build — no redeploy needed.
 | Vercel stuck on *Invalid Configuration* | Parked GoDaddy records still present, or a typo | Re-check section 4; `dig +short mmakoinc.com A` should return only Vercel's IP |
 | Site loads but `sitemap.xml` shows the wrong domain | `NEXT_PUBLIC_SITE_URL` set after deploying | Redeploy |
 | Contact form says "isn't available right now" | `RESEND_API_KEY` missing | Add it in Vercel, redeploy |
-| Contact form says "We couldn't send your message" | Resend rejected it — usually an unverified `CONTACT_FROM_EMAIL` | Unset it, redeploy, finish verification first |
+| Contact form says "We couldn't send your message" | Resend rejected it — an unverified `CONTACT_FROM_EMAIL`, or sandbox mode refusing the recipient | Check Resend → **Logs** for the reason; see section 6 |
+| Form fails but the Resend key shows recent **uses** | The key is fine and the call is reaching Resend — it is being **rejected**, not dropped | Almost always sandbox mode: `CONTACT_TO_EMAIL` must be the Resend account's own address until the domain verifies |
 | Certificate warning after DNS resolves | Vercel hasn't finished issuing | Wait ~15 minutes; then Settings → Domains → **Refresh** |
-| Old site still showing | DNS cached locally | Try a different network or mobile data; TTL has to expire |
+| Old site still showing | GoDaddy still serving the domain, or DNS cached locally | Work through *The domain still shows the GoDaddy page* below |
+
+### The domain still shows the GoDaddy page
+
+Vercel says *Ready*, the domain says *Valid Configuration*, and the browser still
+shows a GoDaddy template. Work through these in order — each step rules something
+out, so do not skip ahead.
+
+**1. Is the deployment itself fine?**
+
+Open the project's own Vercel address, `https://mmako-inc.vercel.app`. If the
+real site loads there, the build and the app are correct and the problem is
+entirely in the domain path — carry on. If it does *not* load there, the problem
+is the deployment rather than DNS; go back to section 1.
+
+**2. What is actually answering the domain?**
+
+Every response Vercel serves carries an `x-vercel-id` header. GoDaddy's does not.
+
+```
+curl -sI https://mmakoinc.com | grep -i "server\|x-vercel-id\|location"
+```
+
+On Windows, in PowerShell:
+
+```
+(Invoke-WebRequest https://mmakoinc.com -MaximumRedirection 0).Headers
+```
+
+- `server: Vercel`, or any `x-vercel-id` → **Vercel is serving the domain.** The
+  page in your browser is a cached copy. Go to step 4.
+- `server: DPS/...` → **GoDaddy's website builder is hosting the domain.** DPS is
+  its Digital Presence Service. Disconnect the builder — see section 4.
+- A `location:` header pointing at a `godaddysites.com` or `.godaddy.com`
+  address → **domain forwarding is on.** Turn it off — see section 4. No
+  `location` header means forwarding is *not* the cause, even when GoDaddy is
+  clearly answering.
+- Anything else that is not Vercel → GoDaddy is still in the request path. Go to
+  step 3.
+
+**3. What does _your_ machine resolve the domain to?**
+
+A green result on `dnschecker.org` describes public resolvers, not your laptop.
+
+```
+nslookup mmakoinc.com          # Windows
+dig +short mmakoinc.com A      # macOS / Linux
+```
+
+The only answer should be the single IP shown in your Vercel dashboard.
+
+Knowing whose IP you are looking at saves a lot of guessing:
+
+| Answer | Whose it is |
+| --- | --- |
+| `216.198.79.1` (or whatever your dashboard shows) | Vercel — correct |
+| `13.248.243.5`, `76.223.105.230` | AWS Global Accelerator, which is what GoDaddy's **website builder** puts in front of customer domains |
+| `76.76.21.21` | Vercel's **legacy** shared IP — see the note below |
+| `Parked` GoDaddy IPs | the domain is still parked; the record was never changed |
+
+- **Two IPs come back, neither of them Vercel's** → GoDaddy has **reverted** your
+  `A` record. This is the builder doing it, not you mis-saving: it validated
+  when you set it, which is why Vercel and `dnschecker.org` went green, and was
+  overwritten afterwards. Disconnect the builder first (section 4), *then* set
+  the record again — in that order, or it will be overwritten a second time.
+- **Two IPs come back, one of them Vercel's** → a second `A` record on `@`
+  survived the edit. Delete the one that is not Vercel's.
+- **A GoDaddy IP comes back** → the record either never saved, or the website
+  builder or forwarding put it back. Re-do section 4, starting with *disconnect
+  GoDaddy's own website*.
+- **The correct IP comes back** → this is cache. Go to step 4.
+
+**4. Clear your own cache.**
+
+```
+ipconfig /flushdns                                              # Windows
+sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder   # macOS
+```
+
+Then hard-refresh the page: **Ctrl+Shift+R**, or **Cmd+Shift+R** on a Mac. If the
+old page persists, try a private window, and then a phone **with WiFi switched
+off** — mobile data goes through a different resolver entirely. That last test is
+the honest one: if the phone on mobile data shows the correct site, the setup is
+working and everything else is cache that will expire by itself.
+
+> **Why some networks lag.** The old GoDaddy records carried their own TTL before
+> you changed anything — often an hour, sometimes 24. Any resolver that fetched
+> the old answer shortly before the change keeps it for that full period, and
+> nothing you do at GoDaddy shortens it. It is normal for the site to be live on
+> one network and stale on another for a day, and it clears on its own.
+
+> **A note on GoDaddy's Airo assistant.** Asked about this, it diagnoses the
+> apex `A` record correctly and then recommends setting it to `76.76.21.21`.
+> That is Vercel's legacy shared IP, from before per-project addresses; the
+> value in your Vercel dashboard is the one Vercel validates the domain
+> against. It also reports the problem as "a DNS issue, not a GoDaddy template
+> issue", which is a false split — it is a DNS issue *caused by* the template.
+> Decline its offer to make the change: it would write the wrong address, and
+> the builder would overwrite it at the next publish regardless.

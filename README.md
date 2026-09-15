@@ -37,7 +37,7 @@ before deploying.
 | Variable | Required | Purpose |
 | --- | --- | --- |
 | `RESEND_API_KEY` | Yes | Sends contact-form email. Create one at [resend.com/api-keys](https://resend.com/api-keys). |
-| `CONTACT_TO_EMAIL` | No | Inbox that receives enquiries. Defaults to `contact@mmakoinc.com`. |
+| `CONTACT_TO_EMAIL` | No | Inbox that receives enquiries. Defaults to `info@mmakoinc.com`. |
 | `CONTACT_FROM_EMAIL` | No | The address Resend sends *from*. Its domain must be verified in Resend. Defaults to `onboarding@resend.dev`, which works for testing only. |
 | `NEXT_PUBLIC_SITE_URL` | Yes | Canonical origin, e.g. `https://mmakoinc.com`. Used for `sitemap.xml`, `robots.txt` and Open Graph tags. |
 
