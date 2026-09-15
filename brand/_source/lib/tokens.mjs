@@ -15,7 +15,7 @@ export const firm = {
   tagline: "Modern Legal Partner",
   domain: "mmakoinc.com",
   url: "https://mmakoinc.com",
-  email: "contact@mmakoinc.com",
+  email: "info@mmakoinc.com",
   address: {
     line1: "4A Pioneer Road",
     line2: "Irene Security Estate",

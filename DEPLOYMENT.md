@@ -49,7 +49,7 @@ environments (Production, Preview, Development) unless noted.
 | --- | --- | --- |
 | `NEXT_PUBLIC_SITE_URL` | `https://mmakoinc.com` | Yes |
 | `RESEND_API_KEY` | From [resend.com/api-keys](https://resend.com/api-keys) | Yes, for the contact form |
-| `CONTACT_TO_EMAIL` | `contact@mmakoinc.com` | Optional — this is the default |
+| `CONTACT_TO_EMAIL` | `info@mmakoinc.com` | Optional — this is the default |
 | `CONTACT_FROM_EMAIL` | Leave unset for now — see section 6 | No |
 
 ### Two things that will bite you otherwise
@@ -203,7 +203,7 @@ Only the `A` on `@` and the `CNAME` on `www` have anything to do with web
 hosting. If a record is not one of those two, do not touch it.
 
 > Seeing `MX` records and a `v=spf1` TXT here is useful information: it means
-> email is already configured on the domain, so `contact@mmakoinc.com` is
+> email is already configured on the domain, so `info@mmakoinc.com` is
 > probably a working mailbox already. It is also why section 6 verifies Resend
 > on a **subdomain** — adding Resend to this apex SPF record would put the
 > firm's existing mail at risk.
@@ -319,14 +319,30 @@ domain it can only send from Resend's test address.
 
 ### Now — get it working
 
-1. Sign up at [resend.com](https://resend.com).
+1. Sign up at [resend.com](https://resend.com). **Note which address you sign
+   up with** — it decides who can receive mail until step 2 below is done.
 2. **API Keys → Create API Key**, sending permission is enough.
 3. Put it in Vercel as `RESEND_API_KEY` and **redeploy**.
 4. Leave `CONTACT_FROM_EMAIL` unset. The code falls back to
    `onboarding@resend.dev`, which works immediately.
+5. Set `CONTACT_TO_EMAIL` to **the address the Resend account was created
+   with**, and redeploy.
 
-At this point the form delivers to `contact@mmakoinc.com`, but the "from"
-address is Resend's, and deliverability is mediocre.
+Step 5 is not optional, and it is the step that catches people out. While the
+form sends from `onboarding@resend.dev`, Resend is in its sandbox mode, and
+sandbox mode **only delivers to the account owner's own address**. Anything
+else is rejected outright. So a form pointed at `info@mmakoinc.com` fails even
+though the API key is correct, the deploy succeeded and Resend records the
+attempt — the request is authenticated and then refused.
+
+The symptom is exact: the visitor sees *"We couldn't send your message"*, the
+route logs a 502, and in Resend the key's **Total uses** counter goes up while
+**Logs** shows the rejection and nothing arrives. A key with uses on the clock
+and no mail delivered is this, not a missing key.
+
+This state is for testing only. The "from" address is Resend's, deliverability
+is mediocre, and enquiries land in one person's inbox. Move on to verifying the
+domain.
 
 ### Then — verify the domain
 
@@ -337,8 +353,11 @@ address is Resend's, and deliverability is mediocre.
    these are either TXT + MX records, or CNAMEs. Add them in GoDaddy exactly as
    shown, at the names given.
 3. Wait for Resend to show **Verified** — usually under 15 minutes.
-4. Only then set `CONTACT_FROM_EMAIL=website@send.mmakoinc.com` in Vercel and
-   **redeploy**.
+4. Only then set `CONTACT_FROM_EMAIL=website@send.mmakoinc.com` in Vercel, set
+   `CONTACT_TO_EMAIL=info@mmakoinc.com` (or simply remove it, since that is the
+   default), and **redeploy**. Verifying the domain is what lifts the sandbox
+   restriction, so this is the point at which the firm's own inbox can receive
+   enquiries.
 
 > **Do not set `CONTACT_FROM_EMAIL` before the domain verifies.** Resend rejects
 > mail from an unverified domain, the route returns 502, and the visitor sees
@@ -347,7 +366,7 @@ address is Resend's, and deliverability is mediocre.
 
 ### Getting the mail
 
-`contact@mmakoinc.com` has to be a real mailbox that someone reads — Google
+`info@mmakoinc.com` has to be a real mailbox that someone reads — Google
 Workspace, Microsoft 365, or GoDaddy's own email. That is separate from Resend,
 which only *sends*. If the mailbox is set up at GoDaddy or Google, it will add
 its own MX records; leave those alone when editing DNS.
@@ -389,7 +408,8 @@ Production** on an earlier build — no redeploy needed.
 | Vercel stuck on *Invalid Configuration* | Parked GoDaddy records still present, or a typo | Re-check section 4; `dig +short mmakoinc.com A` should return only Vercel's IP |
 | Site loads but `sitemap.xml` shows the wrong domain | `NEXT_PUBLIC_SITE_URL` set after deploying | Redeploy |
 | Contact form says "isn't available right now" | `RESEND_API_KEY` missing | Add it in Vercel, redeploy |
-| Contact form says "We couldn't send your message" | Resend rejected it — usually an unverified `CONTACT_FROM_EMAIL` | Unset it, redeploy, finish verification first |
+| Contact form says "We couldn't send your message" | Resend rejected it — an unverified `CONTACT_FROM_EMAIL`, or sandbox mode refusing the recipient | Check Resend → **Logs** for the reason; see section 6 |
+| Form fails but the Resend key shows recent **uses** | The key is fine and the call is reaching Resend — it is being **rejected**, not dropped | Almost always sandbox mode: `CONTACT_TO_EMAIL` must be the Resend account's own address until the domain verifies |
 | Certificate warning after DNS resolves | Vercel hasn't finished issuing | Wait ~15 minutes; then Settings → Domains → **Refresh** |
 | Old site still showing | GoDaddy still serving the domain, or DNS cached locally | Work through *The domain still shows the GoDaddy page* below |
 

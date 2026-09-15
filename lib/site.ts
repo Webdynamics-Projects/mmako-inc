@@ -9,7 +9,7 @@ export const site = {
   tagline: "Modern Legal Partner",
   description:
     "Mmako Inc. is a South African business law firm giving founders, growing companies and individuals legal support that is clear, fast and focused on outcomes.",
-  email: "contact@mmakoinc.com",
+  email: "info@mmakoinc.com",
   address: {
     line1: "4A Pioneer Road",
     line2: "Irene Security Estate",
