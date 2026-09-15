@@ -222,6 +222,22 @@ the advantage of querying from several countries at once.
 You want Vercel's IP and Vercel's CNAME target back, **and nothing else**. An
 extra IP alongside them means an old record survived.
 
+### One resolver lagging is normal
+
+A checker that queries from many locations will often show most of them green
+and one or two returning nothing. That is usually **negative caching**, not a
+broken record: between deleting the old A record and adding the new one, the
+apex briefly had no A record at all, and any resolver that queried in that
+window cached the empty answer. How long it holds is set by the zone's SOA
+minimum — about an hour on GoDaddy.
+
+It clears without intervention. It is worth knowing which resolver is affected,
+though: if it is a major ISP in the client's own country, they may well be the
+first person to report the site as down.
+
+To avoid the gap entirely next time, **edit** the existing record rather than
+deleting it and adding a replacement.
+
 ---
 
 ## 5. Apex or www — pick one
