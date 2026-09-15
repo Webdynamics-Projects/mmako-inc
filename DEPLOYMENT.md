@@ -350,14 +350,36 @@ domain.
    **`send.mmakoinc.com`** — not the apex. Resend recommends this, and it keeps
    the firm's normal email unaffected.
 2. Resend shows several DNS records. Depending on when the domain was created
-   these are either TXT + MX records, or CNAMEs. Add them in GoDaddy exactly as
-   shown, at the names given.
+   these are either TXT + MX records, or CNAMEs. **Their values go in
+   unchanged, but their names do not** — see below.
 3. Wait for Resend to show **Verified** — usually under 15 minutes.
 4. Only then set `CONTACT_FROM_EMAIL=website@send.mmakoinc.com` in Vercel, set
    `CONTACT_TO_EMAIL=info@mmakoinc.com` (or simply remove it, since that is the
    default), and **redeploy**. Verifying the domain is what lifts the sandbox
    restriction, so this is the point at which the firm's own inbox can receive
    enquiries.
+
+**Entering the names at GoDaddy.** Resend prints each record's name in full,
+as `send.mmakoinc.com` or `resend._domainkey.send.mmakoinc.com`. GoDaddy's
+**Name** field is always relative to the domain you are editing and appends
+`.mmakoinc.com` itself, so pasting the full name creates
+`send.mmakoinc.com.mmakoinc.com`, which verifies as nothing. Drop the
+`.mmakoinc.com` from the end of each name and enter what is left:
+
+| Resend shows | Type into GoDaddy's Name field |
+| --- | --- |
+| `send.mmakoinc.com` | `send` |
+| `resend._domainkey.send.mmakoinc.com` | `resend._domainkey.send` |
+| `_dmarc.send.mmakoinc.com` | `_dmarc.send` |
+
+This is the same convention as the `@` you used for the apex — `@` simply means
+"nothing in front of the domain". Values are pasted verbatim; only names are
+shortened.
+
+> **Every record here sits under `send.`** — none of them touch the apex. If a
+> step ever asks you to edit the existing `TXT @` record starting `v=spf1`, stop:
+> that is the firm's live mail, and this setup is on a subdomain precisely so it
+> stays untouched.
 
 > **Do not set `CONTACT_FROM_EMAIL` before the domain verifies.** Resend rejects
 > mail from an unverified domain, the route returns 502, and the visitor sees
