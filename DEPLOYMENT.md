@@ -356,10 +356,17 @@ domain.
    only link this notification contains is a `mailto:` to the enquirer, so there
    is nothing for it to act on. The setting is editable in the domain's own
    settings later if that ever changes.
-4. Resend shows the DNS records to add. Their values paste in unchanged; their
+4. Resend offers **Auto configure** or **Manual setup**. Choose **Manual
+   setup**. Auto configure signs into GoDaddy over Domain Connect and writes
+   the records itself, which is fine on an empty domain — but this one already
+   carries the firm's live `MX`, `v=spf1`, DKIM and `_dmarc` records, and those
+   are precisely the ones an automated merge has to make a judgement about,
+   with no chance to review it first. It also means granting a third party
+   write access to a client's DNS. Manual setup is three records.
+5. Resend shows the DNS records to add. Their values paste in unchanged; their
    **names do not** — see below.
-5. Wait for Resend to show **Verified** — usually under 15 minutes.
-6. Only then set `CONTACT_FROM_EMAIL=website@mmakoinc.com` in Vercel, remove
+6. Wait for Resend to show **Verified** — usually under 15 minutes.
+7. Only then set `CONTACT_FROM_EMAIL=website@mmakoinc.com` in Vercel, remove
    `CONTACT_TO_EMAIL` (`info@mmakoinc.com` is the default), and **redeploy**.
    Verifying the domain is what lifts the sandbox restriction, so this is the
    point at which the firm's own inbox can receive enquiries.
