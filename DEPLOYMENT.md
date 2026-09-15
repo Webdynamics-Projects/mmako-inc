@@ -104,6 +104,11 @@ project. The dropdown itself says as much, noting that the older
 `76.76.21.21` and `cname.vercel-dns.com` still work but are no longer what it
 recommends. Use the copy icon beside each value.
 
+The CNAME is shown ending in a period. That is only how Vercel prints it — there
+is nothing to change in Vercel, and the **Edit** button does something else
+entirely (it sets whether the domain serves the site or redirects). The period
+matters only when you type the value into GoDaddy; section 4 covers it.
+
 ### Before you leave this screen
 
 Check which domain is **Production** and which shows a **308** redirect arrow.
@@ -144,10 +149,11 @@ carry email and domain verification.
 | A | `@` | the IP from your Vercel dashboard | 600 seconds |
 | CNAME | `www` | the CNAME target from your Vercel dashboard | 600 seconds |
 
-**Drop the trailing dot.** Vercel writes the CNAME target as
-`something.vercel-dns-017.com.` — the final period is the formal way of marking
-a fully-qualified name. GoDaddy appends it itself and will reject or silently
-strip it if you paste it in. Enter the value without it.
+**Drop the trailing dot — in GoDaddy's *Points to* field.** Vercel displays the
+CNAME target as `something.vercel-dns-017.com.`; the final period is the formal
+way of marking a fully-qualified name, and it is display only. When you paste
+the value into GoDaddy, leave the period off — GoDaddy appends it itself and
+will reject or silently strip it. There is nothing to remove on the Vercel side.
 
 **Do not cross the two.** The apex takes only the A record; `www` takes only the
 CNAME. A CNAME on `@` is invalid DNS and will break the domain.
@@ -185,8 +191,20 @@ otherwise Google sees two sites with identical content.
 to it. It is shorter, it is what's already set as the default in the code, and
 it matches the email addresses.
 
-In Vercel → Settings → Domains, set `www.mmakoinc.com` to **Redirect to
-mmakoinc.com** (307 is fine; Vercel upgrades it once the config settles).
+In Vercel → Settings → Domains, each domain has an **Edit** button opening a
+panel with two radio options: *Connect to an environment* and *Redirect to
+Another Domain*. Set them in this order, so the two are never pointing at each
+other:
+
+1. **`mmakoinc.com`** → *Connect to an environment* → **Production** → Save.
+2. **`www.mmakoinc.com`** → *Redirect to Another Domain* → **mmakoinc.com**,
+   leaving *307 Temporary Redirect* → Save.
+
+A new Vercel project often arrives configured the other way round, with `www`
+serving Production and the apex redirecting to it. Check which one shows
+**Production** and which shows a **308** arrow before assuming.
+
+No redeploy is needed for this — it is routing, not build output.
 
 If the client prefers `www` as primary instead, that's fine — but then
 `NEXT_PUBLIC_SITE_URL` must be changed to `https://www.mmakoinc.com` **and the
