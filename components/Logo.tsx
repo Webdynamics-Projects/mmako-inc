@@ -14,11 +14,55 @@ import { site } from "@/lib/site";
  */
 
 /* Aspect ratios of the generated files, from the artwork's own geometry. */
-const RATIO = { lockup: 1.337, horizontal: 4.283 } as const;
+export const LOGO_RATIO = { lockup: 1.337, horizontal: 4.283 } as const;
+const RATIO = LOGO_RATIO;
 
 /* Intrinsic dimensions are set on the <img> so the browser reserves the right
    box before the file loads, whatever CSS height is applied. */
 const INTRINSIC_HEIGHT = 100;
+
+type MarkProps = {
+  tone?: "dark" | "light";
+  variant?: "lockup" | "horizontal";
+  height?: number;
+  heightClassName?: string;
+  priority?: boolean;
+  className?: string;
+};
+
+/**
+ * The mark on its own, with no link around it.
+ *
+ * Exported so the header can hold two marks inside a single anchor and
+ * cross-fade between them — two separate <Logo> links to the same href would
+ * put a duplicate home link in the tab order.
+ */
+export function LogoMark({
+  tone = "dark",
+  variant = "horizontal",
+  height = 34,
+  heightClassName,
+  priority = false,
+  className,
+}: MarkProps) {
+  const suffix = tone === "dark" ? "-light" : "";
+  const src = variant === "horizontal"
+    ? `/logo-mark${suffix}.svg`
+    : `/logo${suffix}.svg`;
+
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={src}
+      alt=""
+      width={Math.round(INTRINSIC_HEIGHT * RATIO[variant])}
+      height={INTRINSIC_HEIGHT}
+      style={heightClassName ? undefined : { height: `${height}px` }}
+      fetchPriority={priority ? "high" : undefined}
+      className={cn("w-auto select-none", heightClassName, className)}
+    />
+  );
+}
 
 type LogoProps = {
   tone?: "dark" | "light";
@@ -43,11 +87,6 @@ export function Logo({
   priority = false,
   className,
 }: LogoProps) {
-  const suffix = tone === "dark" ? "-light" : "";
-  const src = variant === "horizontal"
-    ? `/logo-mark${suffix}.svg`
-    : `/logo${suffix}.svg`;
-
   return (
     <Link
       href="/"
@@ -57,17 +96,12 @@ export function Logo({
       )}
       aria-label={`${site.name} — home`}
     >
-      {/* A plain <img>: next/image adds no value for SVG, which it passes
-          through unoptimised anyway. */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={src}
-        alt=""
-        width={Math.round(INTRINSIC_HEIGHT * RATIO[variant])}
-        height={INTRINSIC_HEIGHT}
-        style={heightClassName ? undefined : { height: `${height}px` }}
-        fetchPriority={priority ? "high" : undefined}
-        className={cn("w-auto select-none", heightClassName)}
+      <LogoMark
+        tone={tone}
+        variant={variant}
+        height={height}
+        heightClassName={heightClassName}
+        priority={priority}
       />
     </Link>
   );
