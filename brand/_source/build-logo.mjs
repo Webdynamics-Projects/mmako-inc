@@ -2,7 +2,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { firm, colours } from "./lib/tokens.mjs";
-import { monogramSvg, MONO, WORDMARK } from "./lib/logo.mjs";
+import { monogramSvg, MONO, LOCKUP, WORDMARK } from "./lib/logo.mjs";
 import { renderPng, closeBrowser } from "./lib/render.mjs";
 
 const OUT = path.join("brand", "02 - LOGO");
@@ -24,8 +24,8 @@ const write = (dir, file, data) => {
 const css = `
 .stage{display:inline-flex;flex-direction:column;align-items:center;padding:8px}
 .row{display:inline-flex;align-items:center;gap:34px;padding:8px}
-.word{font-family:Inter,Arial,sans-serif;font-weight:320;letter-spacing:0.26em;white-space:nowrap;
-      text-indent:0.26em;line-height:1}
+.word{font-family:Inter,Arial,sans-serif;font-weight:300;letter-spacing:${LOCKUP.tracking}em;
+      white-space:nowrap;text-indent:${LOCKUP.tracking}em;line-height:1}
 .rule{height:3px}
 `;
 
@@ -35,22 +35,25 @@ const monogramImg = (mode, h) =>
   }">`;
 
 /** The supplied stacked lockup: monogram over wordmark over rule. */
-const lockupBody = (mode) => {
+const lockupBody = (mode, h = 300) => {
   const ink = mode === "white" ? "#FFFFFF" : mode === "black" ? "#000000" : INK;
   const gold = mode === "white" ? "#FFFFFF" : mode === "black" ? "#000000" : GOLD;
+  const w = h * (MONO.width / MONO.height);
   return `<div class="stage" id="art">
-    ${monogramImg(mode, 276)}
-    <div class="word" style="font-size:56px;color:${ink};margin-top:44px">${WORDMARK}</div>
-    <div class="rule" style="width:150px;background:${gold};margin-top:30px"></div>
+    ${monogramImg(mode, h)}
+    <div class="word" style="font-size:${(h * LOCKUP.wordmarkSize).toFixed(1)}px;color:${ink};
+         margin-top:${(h * LOCKUP.wordmarkGap).toFixed(1)}px">${WORDMARK}</div>
+    <div class="rule" style="width:${(w * LOCKUP.ruleWidth).toFixed(1)}px;background:${gold};
+         margin-top:${(h * LOCKUP.ruleGap).toFixed(1)}px"></div>
   </div>`;
 };
 
 /** Horizontal lockup: monogram beside the wordmark, for tight headers. */
-const horizontalBody = (mode) => {
+const horizontalBody = (mode, h = 150) => {
   const ink = mode === "white" ? "#FFFFFF" : mode === "black" ? "#000000" : INK;
   return `<div class="row" id="art">
-    ${monogramImg(mode, 132)}
-    <div class="word" style="font-size:40px;color:${ink}">${WORDMARK}</div>
+    ${monogramImg(mode, h)}
+    <div class="word" style="font-size:${(h * 0.28).toFixed(1)}px;color:${ink}">${WORDMARK}</div>
   </div>`;
 };
 
@@ -116,24 +119,45 @@ function lockupSvg(mode) {
   const gold = mode === "white" ? "#FFFFFF" : mode === "black" ? "#000000" : GOLD;
   const inner = monogramSvg(mode, { ink: INK, gold: GOLD })
     .replace(/^[\s\S]*?<svg[^>]*>/, "").replace(/<\/svg>\s*$/, "");
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 460" width="560" height="460" role="img" aria-label="${firm.markName} logo">
-  <g transform="translate(90 0)">${inner}</g>
-  <text x="280" y="372" text-anchor="middle" font-family="Inter, Arial, sans-serif"
-        font-size="56" font-weight="320" letter-spacing="14.6" fill="${ink}">${WORDMARK}</text>
-  <rect x="205" y="416" width="150" height="3" fill="${gold}"/>
+
+  const h = MONO.height;
+  const fs = h * LOCKUP.wordmarkSize;
+  const wordTop = h + h * LOCKUP.wordmarkGap;
+  const baseline = wordTop + fs * 0.727;            // Inter's cap height
+  const ruleY = baseline + h * LOCKUP.ruleGap;
+  const ruleW = MONO.width * LOCKUP.ruleWidth;
+  const boxW = Math.round(MONO.width * 1.56);       // the wordmark is the widest element
+  const boxH = Math.round(ruleY + 8);
+  const cx = boxW / 2;
+
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${boxW} ${boxH}" width="${boxW}" height="${boxH}" role="img" aria-label="${firm.markName} logo">
+  <g transform="translate(${((boxW - MONO.width) / 2).toFixed(1)} 0)">${inner}</g>
+  <text x="${cx.toFixed(1)}" y="${baseline.toFixed(1)}" text-anchor="middle"
+        font-family="Inter, Arial, sans-serif" font-size="${fs.toFixed(1)}" font-weight="300"
+        letter-spacing="${(fs * LOCKUP.tracking).toFixed(2)}"
+        fill="${ink}">${WORDMARK}</text>
+  <rect x="${(cx - ruleW / 2).toFixed(1)}" y="${ruleY.toFixed(1)}" width="${ruleW.toFixed(1)}" height="3" fill="${gold}"/>
 </svg>
 `;
 }
 
 function horizontalSvg(mode) {
   const ink = mode === "white" ? "#FFFFFF" : mode === "black" ? "#000000" : INK;
-  const scale = 132 / MONO.height;
   const inner = monogramSvg(mode, { ink: INK, gold: GOLD })
     .replace(/^[\s\S]*?<svg[^>]*>/, "").replace(/<\/svg>\s*$/, "");
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 140" width="660" height="140" role="img" aria-label="${firm.markName} logo">
-  <g transform="translate(0 4) scale(${scale.toFixed(4)})">${inner}</g>
-  <text x="216" y="84" font-family="Inter, Arial, sans-serif"
-        font-size="40" font-weight="320" letter-spacing="10.4" fill="${ink}">${WORDMARK}</text>
+
+  const h = 140;
+  const scale = h / MONO.height;
+  const markW = MONO.width * scale;
+  const gap = h * 0.26;
+  const fs = h * 0.28;
+  const textX = markW + gap;
+  const boxW = Math.round(textX + fs * 9.2 * (0.62 + LOCKUP.tracking));
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${boxW} ${h}" width="${boxW}" height="${h}" role="img" aria-label="${firm.markName} logo">
+  <g transform="scale(${scale.toFixed(4)})">${inner}</g>
+  <text x="${textX.toFixed(1)}" y="${(h * 0.6).toFixed(1)}" font-family="Inter, Arial, sans-serif"
+        font-size="${fs.toFixed(1)}" font-weight="300"
+        letter-spacing="${(fs * LOCKUP.tracking).toFixed(2)}" fill="${ink}">${WORDMARK}</text>
 </svg>
 `;
 }

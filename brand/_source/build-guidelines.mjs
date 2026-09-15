@@ -610,11 +610,14 @@ const body = [
     </ul>`),
 
   pg("06–09 — Applications", `<h1>Applications</h1>
-    <p class="lead">Every item below is supplied as a finished file in the kit.</p>
+    <p class="lead">Every item below is supplied as a finished file in the kit. Anything the firm
+    types into is supplied as an editable Word document; anything a printer produces is supplied as
+    a print-ready PDF.</p>
     <h2>Stationery</h2>
     <table class="tbl">
       <tr><th>Item</th><th>Size</th><th>Format</th></tr>
-      <tr><td>Letterhead</td><td>A4 — 210 × 297 mm</td><td>PDF + PNG preview</td></tr>
+      <tr><td>Letterhead</td><td>A4 — 210 × 297 mm</td><td><strong>Word (.docx)</strong> + PDF + PNG preview</td></tr>
+      <tr><td>Document template</td><td>A4, with page numbers and heading styles</td><td><strong>Word (.docx)</strong></td></tr>
       <tr><td>Business card</td><td>90 × 50 mm trim, 96 × 56 mm with bleed</td><td>PDF, front and back</td></tr>
       <tr><td>Envelope</td><td>DL — 220 × 110 mm</td><td>PDF</td></tr>
       <tr><td>Compliment slip</td><td>210 × 99 mm</td><td>PDF</td></tr>
@@ -623,10 +626,10 @@ const body = [
     <h2>Legal documents</h2>
     <table class="tbl">
       <tr><th>Item</th><th>Format</th></tr>
-      <tr><td>Legal letter template</td><td>A4 PDF + PNG preview</td></tr>
-      <tr><td>Legal opinion template</td><td>A4 PDF + PNG preview</td></tr>
-      <tr><td>Invoice</td><td>A4 PDF + PNG preview</td></tr>
-      <tr><td>Proposal / quotation</td><td>A4 PDF + PNG preview</td></tr>
+      <tr><td>Legal letter template</td><td><strong>Word (.docx)</strong> + A4 PDF + PNG preview</td></tr>
+      <tr><td>Legal opinion template</td><td><strong>Word (.docx)</strong> + A4 PDF + PNG preview</td></tr>
+      <tr><td>Invoice</td><td><strong>Word (.docx)</strong> + A4 PDF + PNG preview</td></tr>
+      <tr><td>Proposal / quotation</td><td><strong>Word (.docx)</strong> + A4 PDF + PNG preview</td></tr>
     </table>
     <h2>Digital</h2>
     <table class="tbl">

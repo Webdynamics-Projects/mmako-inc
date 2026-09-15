@@ -7,23 +7,47 @@
  * in the kit's README.
  */
 
-/* Monogram paths in a 380 × 276 box, taken from the logo artwork. */
-export const MONO = { width: 380, height: 276 };
+/*
+ * Monogram paths, traced from the supplied artwork.
+ *
+ * The letterform is a high-contrast Didone M: thin stems with fine bracketed
+ * serifs, one thick left diagonal and one hairline right diagonal meeting at a
+ * vertex just above the baseline. Proportions follow the source — 250 × 200,
+ * a ratio of 1.25.
+ */
+export const MONO = { width: 250, height: 200 };
 
 export const monogramPaths = {
-  /* The gold diagonal accent. Drawn first; the letterform overlaps it. */
-  accent: "M 70 148 L 124 148 L 186 276 L 132 276 Z",
-  /* The letterform: two serifed stems, a thick diagonal and a hairline diagonal. */
+  /* The gold accent: a slender tapered slash running at the diagonal's own
+     angle (0.49 horizontal per unit of descent), parallel to the thick diagonal and
+     just left of it, its top corner tucked behind the letterform and its foot
+     cut on a slight angle at the baseline. */
+  accent: "M 43 96 L 71 96 L 114 196 L 96 204 Z",
+  /* The letterform. Drawn as overlapping parts rather than one outline, which
+     keeps each stroke's weight independently adjustable. */
   letter: [
-    "M 30 16 L 60 16 L 60 254 L 30 254 Z",
-    "M 8 0 L 82 0 L 82 16 L 8 16 Z",
-    "M 0 254 L 90 254 L 90 272 L 0 272 Z",
-    "M 30 0 L 96 0 L 202 256 L 162 256 Z",
-    "M 326 0 L 342 0 L 192 256 L 176 256 Z",
-    "M 320 16 L 350 16 L 350 254 L 320 254 Z",
-    "M 298 0 L 372 0 L 372 16 L 298 16 Z",
-    "M 290 254 L 380 254 L 380 272 L 290 272 Z",
+    /* left stem, then its top and foot serifs */
+    "M 18 0 L 32 0 L 32 194 L 18 194 Z",
+    "M 4 0 L 46 0 L 46 6 L 4 6 Z",
+    "M 0 188 L 50 188 L 50 200 L 0 200 Z",
+    /* thick left diagonal, top-left down to the vertex */
+    "M 18 0 L 58 0 L 144 196 L 114 196 Z",
+    /* hairline right diagonal, vertex up to the top right */
+    "M 214 0 L 226 0 L 142 196 L 130 196 Z",
+    /* right stem, then its top and foot serifs */
+    "M 212 0 L 230 0 L 230 194 L 212 194 Z",
+    "M 200 0 L 244 0 L 244 6 L 200 6 Z",
+    "M 196 188 L 250 188 L 250 200 L 196 200 Z",
   ],
+};
+
+/** Lockup metrics, expressed as a share of the monogram, taken from the source. */
+export const LOCKUP = {
+  wordmarkSize: 0.200,   // font-size ÷ monogram height
+  wordmarkGap: 0.205,    // space under the monogram ÷ monogram height
+  tracking: 0.44,        // em
+  ruleWidth: 0.41,       // ÷ monogram width
+  ruleGap: 0.10,         // space under the wordmark ÷ monogram height
 };
 
 /**

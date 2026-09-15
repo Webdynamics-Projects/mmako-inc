@@ -47,6 +47,35 @@ Council obligations.
 
 ---
 
+## The Word templates
+
+Anything the firm **types into** is supplied as an editable `.docx`. Anything a **printer**
+produces is supplied as a print-ready PDF. Several items exist in both forms.
+
+| File | Where | What it is |
+| --- | --- | --- |
+| `Mmako Inc - Letterhead.docx` | 06 - STATIONERY/Letterhead | Branded header and footer, empty body. Start typing. |
+| `Mmako Inc - Document Template.docx` | 06 - STATIONERY/Letterhead | The same chrome plus page numbers, a title block and Heading 1–3 styles. Use this for anything running to more than one page. |
+| `Mmako Inc - Legal Letter.docx` | 07 - LEGAL DOCUMENTS | Addressee and date block, RE line, structured body, sign-off. |
+| `Mmako Inc - Legal Opinion.docx` | 07 - LEGAL DOCUMENTS | Eight-section opinion structure, from instructions through to limitations. |
+| `Mmako Inc - Invoice.docx` | 07 - LEGAL DOCUMENTS | Line-item table, totals with VAT, banking panel. |
+| `Mmako Inc - Proposal.docx` | 07 - LEGAL DOCUMENTS | Scope, exclusions, fee table, terms, signature block. |
+
+**How they are built.** Headers and footers are set in the Word header/footer layer, so they repeat
+on every page and cannot be edited by accident while typing. Grey bracketed text — `[like this]` —
+is a placeholder to type over. The heading styles appear in Word's Styles gallery, so the navigation
+pane and an inserted table of contents both work.
+
+**Fonts.** These use **Georgia** and **Arial**, not Fraunces and Inter. Word cannot be relied on to
+have the brand webfonts installed, and a document that falls back unpredictably on someone else's
+machine is worse than one that uses a substitute everywhere. This is the documented rule in
+`04 - TYPOGRAPHY/Secondary Font.md`.
+
+**To turn one into a reusable Word template:** open it, then *Save As* → *Word Template (.dotx)*.
+Word will then open a fresh copy each time instead of the original.
+
+---
+
 ## Installing the email signatures
 
 Two signatures are supplied, in `06 - STATIONERY/Email Signature/`.

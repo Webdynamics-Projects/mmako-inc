@@ -8,6 +8,7 @@ const steps = [
   "build-documents.mjs",
   "build-digital-office.mjs",
   "build-guidelines.mjs",
+  "build-word.mjs",
 ];
 
 for (const step of steps) {

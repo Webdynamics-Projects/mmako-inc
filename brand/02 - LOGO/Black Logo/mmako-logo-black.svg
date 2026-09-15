@@ -1,18 +1,20 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 460" width="560" height="460" role="img" aria-label="MMAKO LAW logo">
-  <g transform="translate(90 0)">
-  <path d="M 70 148 L 124 148 L 186 276 L 132 276 Z" fill="#000000"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 390 298" width="390" height="298" role="img" aria-label="MMAKO LAW logo">
+  <g transform="translate(70.0 0)">
+  <path d="M 43 96 L 71 96 L 114 196 L 96 204 Z" fill="#000000"/>
   <g fill="#000000">
-    <path d="M 30 16 L 60 16 L 60 254 L 30 254 Z"/>
-    <path d="M 8 0 L 82 0 L 82 16 L 8 16 Z"/>
-    <path d="M 0 254 L 90 254 L 90 272 L 0 272 Z"/>
-    <path d="M 30 0 L 96 0 L 202 256 L 162 256 Z"/>
-    <path d="M 326 0 L 342 0 L 192 256 L 176 256 Z"/>
-    <path d="M 320 16 L 350 16 L 350 254 L 320 254 Z"/>
-    <path d="M 298 0 L 372 0 L 372 16 L 298 16 Z"/>
-    <path d="M 290 254 L 380 254 L 380 272 L 290 272 Z"/>
+    <path d="M 18 0 L 32 0 L 32 194 L 18 194 Z"/>
+    <path d="M 4 0 L 46 0 L 46 6 L 4 6 Z"/>
+    <path d="M 0 188 L 50 188 L 50 200 L 0 200 Z"/>
+    <path d="M 18 0 L 58 0 L 144 196 L 114 196 Z"/>
+    <path d="M 214 0 L 226 0 L 142 196 L 130 196 Z"/>
+    <path d="M 212 0 L 230 0 L 230 194 L 212 194 Z"/>
+    <path d="M 200 0 L 244 0 L 244 6 L 200 6 Z"/>
+    <path d="M 196 188 L 250 188 L 250 200 L 196 200 Z"/>
   </g>
 </g>
-  <text x="280" y="372" text-anchor="middle" font-family="Inter, Arial, sans-serif"
-        font-size="56" font-weight="320" letter-spacing="14.6" fill="#000000">MMAKO LAW</text>
-  <rect x="205" y="416" width="150" height="3" fill="#000000"/>
+  <text x="195.0" y="270.1" text-anchor="middle"
+        font-family="Inter, Arial, sans-serif" font-size="40.0" font-weight="300"
+        letter-spacing="17.60"
+        fill="#000000">MMAKO LAW</text>
+  <rect x="143.8" y="290.1" width="102.5" height="3" fill="#000000"/>
 </svg>
