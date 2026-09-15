@@ -79,8 +79,16 @@ and check the site works before touching DNS.
 3. Vercel will offer a redirect configuration. Pick one — section 5.
 4. Also add `www.mmakoinc.com`.
 
-Vercel now shows the DNS records to create, marked *Invalid Configuration* until
-they resolve. **Leave this screen open** — you'll copy from it in the next step.
+Both domains now sit there with a red **Invalid Configuration** badge. That is
+expected — it stays until DNS resolves.
+
+### Where the records actually are
+
+Next to each badge is a small **View DNS configuration** dropdown. Click it and
+the records expand inline. **That is what you copy into GoDaddy.**
+
+Expand **both rows** — the apex and the `www` subdomain need different records.
+Ignore the `*.vercel.app` row entirely; it needs no DNS.
 
 Expect something like:
 
@@ -90,7 +98,20 @@ Expect something like:
 | `www.mmakoinc.com` | CNAME | `www` | `cname.vercel-dns.com` |
 
 Newer projects are sometimes given a different CNAME target (`cname.vercel-dns-0.com`
-and regional variants exist). **Copy what your dashboard shows, not what's above.**
+and regional variants exist). **Copy what the View DNS configuration dropdown
+shows, not what's above.**
+
+### Before you leave this screen
+
+Check which domain is **Production** and which shows a **308** redirect arrow.
+Whichever serves Production is the primary — and it has to match
+`NEXT_PUBLIC_SITE_URL`. Section 5 covers this; it is the easiest thing here to
+get subtly wrong, because the site works either way while the sitemap and every
+canonical tag quietly point at the other host.
+
+Also confirm the `*.vercel.app` row is **not** showing *No Deployment*. If it
+is, the first production build has not landed — fix that in **Deployments**
+before spending time on DNS, or the domain will go green and serve nothing.
 
 ---
 
