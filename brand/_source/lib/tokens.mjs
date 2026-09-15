@@ -6,10 +6,10 @@
  */
 
 export const firm = {
-  /* The logo artwork reads "MMAKO LAW" — that is the brand mark. "Mmako Inc."
-     is the legal entity and the name used in all written copy. See the naming
-     rule in the brand guidelines. */
-  markName: "MMAKO LAW",
+  /* The logo artwork reads "MMAKO INC.", which is also the name used in all
+     written copy — mark and copy agree. "Mmako Incorporated" is the full legal
+     entity, used in copyright lines and contractual documents. */
+  markName: "MMAKO INC.",
   name: "Mmako Inc.",
   legalName: "Mmako Incorporated",
   tagline: "Modern Legal Partner",
@@ -51,8 +51,8 @@ export const people = {
  * palette below, which is an open item — see the guidelines' last page.
  */
 export const artwork = {
-  ink: "#272725",
-  gold: "#B7965E",
+  ink: "#232321",
+  gold: "#BB9B66",
 };
 
 /**
@@ -70,7 +70,7 @@ export const colours = {
     },
     {
       name: "Mmako Gold",
-      hex: "#B7965E",
+      hex: "#BB9B66",
       role: "Brand accent, taken from the logo artwork itself. Rules, underlines, icon accents, button fills, the logo's diagonal. Never a large background fill.",
       print: "Read directly out of the supplied logo file, so it is the identity's true gold. Confirm against a printed draw-down — muted golds shift noticeably on uncoated stock.",
     },
@@ -89,7 +89,7 @@ export const colours = {
     },
     {
       name: "Gold Bright",
-      hex: "#CFB78E",
+      hex: "#D2BC96",
       role: "Hover and active states on dark grounds only. A lift of Mmako Gold at the same hue.",
     },
     {

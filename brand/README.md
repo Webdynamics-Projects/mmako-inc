@@ -24,21 +24,19 @@ designer, a new hire — and it ends with the open items listed below.
 
 ## ⚠️ Read this before anything goes to print
 
-Three things are unresolved. Each affects finished artwork.
+Two things are unresolved. Each affects finished artwork.
 
-> **Settled.** The palette now takes its gold from the logo artwork — `#B7965E` — so the mark and
-> everything around it agree. Gold Deep (`#85693B`) and Gold Bright (`#CFB78E`) were re-derived from
-> it at the same hue. The type system moved to **Montserrat**, the geometric sans the logo's own
-> wordmark is set in.
+> **Settled.** The firm supplied revised artwork whose wordmark reads **MMAKO INC.**, so the mark
+> and the written name now agree — the naming question is closed, and "Mmako Law" is retired. The
+> palette takes its gold from that artwork (`#BB9B66`), with Gold Deep (`#85693B`) and Gold Bright
+> (`#D2BC96`) re-derived at the same hue. The type system is **Montserrat**, the geometric sans the
+> logo's own wordmark is set in.
 
-**1. "Mmako Law" or "Mmako Inc."** The kit assumes the logo artwork is the brand mark and
-*Mmako Inc.* is the written name used in all copy. Confirm this.
-
-**2. Company details are placeholders.** Registration number, VAT number and banking details appear
+**1. Company details are placeholders.** Registration number, VAT number and banking details appear
 as bracketed placeholders on the letterhead, invoice and legal templates. Supply them before
 anything is printed or issued.
 
-**3. The confidentiality notice needs sign-off.** The wording in the email signature is a reasonable
+**2. The confidentiality notice needs sign-off.** The wording in the email signature is a reasonable
 general form. It has not been reviewed against the firm's professional-indemnity or Legal Practice
 Council obligations.
 

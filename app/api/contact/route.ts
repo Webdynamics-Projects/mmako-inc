@@ -37,7 +37,7 @@ function buildHtml(data: {
 <html>
   <body style="margin:0;background:#fafaf8;font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;">
     <div style="max-width:560px;margin:0 auto;padding:32px 24px;">
-      <div style="border-top:2px solid #b7965e;background:#ffffff;padding:28px;">
+      <div style="border-top:2px solid #bb9b66;background:#ffffff;padding:28px;">
         <h1 style="margin:0 0 4px;font-size:18px;color:#0b0b0c;">New website enquiry</h1>
         <p style="margin:0 0 20px;font-size:13px;color:#6b6a66;">Submitted via mmakoinc.com</p>
         <table style="width:100%;border-collapse:collapse;">

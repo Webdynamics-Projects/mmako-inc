@@ -3,7 +3,7 @@
 | Colour | HEX | RGB | CMYK | Use |
 | --- | --- | --- | --- | --- |
 | **Mmako Ink** | `#0B0B0C` | 11, 11, 12 | 8 / 8 / 0 / 95 | Primary dark. Headers, footers, body text on light grounds, and the base for all dark surfaces. |
-| **Mmako Gold** | `#B7965E` | 183, 150, 94 | 0 / 18 / 49 / 28 | Brand accent, taken from the logo artwork itself. Rules, underlines, icon accents, button fills, the logo's diagonal. Never a large background fill. |
+| **Mmako Gold** | `#BB9B66` | 187, 155, 102 | 0 / 17 / 45 / 27 | Brand accent, taken from the logo artwork itself. Rules, underlines, icon accents, button fills, the logo's diagonal. Never a large background fill. |
 | **Bone** | `#FAFAF8` | 250, 250, 248 | 0 / 0 / 1 / 2 | Primary light ground. Page and section backgrounds. |
 
 ## How the primary palette is used

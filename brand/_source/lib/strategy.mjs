@@ -111,11 +111,14 @@ export const voice = {
   },
 };
 
-export const namingRule = `The logo artwork reads MMAKO LAW. That is the brand mark, and it is never retyped
-or reset — it appears only as the supplied logo files.
+export const namingRule = `The firm is **Mmako Inc.** everywhere — in the logo and in writing. Page titles, email
+signatures, letterheads, invoices, legal documents and social posts all use Mmako Inc.
 
-In all written copy, the firm is Mmako Inc. Page titles, email signatures, letterheads, invoices,
-legal documents and social posts all use Mmako Inc. The full legal entity, Mmako Incorporated, is
-used in copyright lines, contractual documents and the email confidentiality notice.
+**Mmako Incorporated** is the full legal entity. Use it in copyright lines, contractual documents
+and the email confidentiality notice, and nowhere else.
 
-Never write "Mmako Law" as body text, and never set the words MMAKO LAW in type outside the logo.`;
+The logo's wordmark reads MMAKO INC. in capitals. That is artwork, not type: it appears only as the
+supplied logo files and is never retyped, reset in a font, or written in capitals in running text.
+
+The firm has previously been referred to as "Mmako Law". That name is retired. It should not appear
+in any new asset, document or post.`;
