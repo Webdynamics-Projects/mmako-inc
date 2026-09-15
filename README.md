@@ -177,12 +177,17 @@ colours, re-check contrast: the gold/black palette has little headroom.
 
 ---
 
-## Deploying to Vercel
+## Deploying
 
-1. Import the repository into Vercel. The framework preset is detected
-   automatically; no build settings need changing.
-2. Add the environment variables from the table above.
-3. Deploy.
+See **[DEPLOYMENT.md](DEPLOYMENT.md)** for the full walkthrough — Vercel project
+setup, environment variables, pointing the GoDaddy domain at Vercel, and getting
+Resend to send from the firm's own domain.
 
-`sitemap.xml` and `robots.txt` are generated at build time from
-`NEXT_PUBLIC_SITE_URL`, so make sure that's set to the production domain.
+Two things from it are worth knowing before you touch anything:
+
+- `NEXT_PUBLIC_SITE_URL` is **baked in at build time**. `sitemap.xml`,
+  `robots.txt` and every canonical and Open Graph URL come from it. Changing it
+  on Vercel does nothing until you redeploy.
+- It must match the host people actually land on. If the site serves from `www`
+  and this says the apex, every canonical tag and social preview points at the
+  wrong place.
