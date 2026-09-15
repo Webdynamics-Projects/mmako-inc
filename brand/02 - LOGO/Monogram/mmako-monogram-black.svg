@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 276" width="380" height="276" role="img" aria-label="Mmako Inc. monogram">
+  <path d="M 70 148 L 124 148 L 186 276 L 132 276 Z" fill="#000000"/>
+  <g fill="#000000">
+    <path d="M 30 16 L 60 16 L 60 254 L 30 254 Z"/>
+    <path d="M 8 0 L 82 0 L 82 16 L 8 16 Z"/>
+    <path d="M 0 254 L 90 254 L 90 272 L 0 272 Z"/>
+    <path d="M 30 0 L 96 0 L 202 256 L 162 256 Z"/>
+    <path d="M 326 0 L 342 0 L 192 256 L 176 256 Z"/>
+    <path d="M 320 16 L 350 16 L 350 254 L 320 254 Z"/>
+    <path d="M 298 0 L 372 0 L 372 16 L 298 16 Z"/>
+    <path d="M 290 254 L 380 254 L 380 272 L 290 272 Z"/>
+  </g>
+</svg>
