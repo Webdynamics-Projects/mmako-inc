@@ -349,10 +349,13 @@ domain.
 2. Open **Advanced options** and leave **Custom Return-Path** as `send`. Do not
    blank it. That field is what keeps this setup away from the firm's live mail,
    for the reason given below.
-3. Turn **off** *Enable click tracking*. It rewrites links in the message body
-   so they redirect through a tracking domain, which is pointless for an
-   internal notification and costs deliverability. Open tracking is off by
-   default; leave it there.
+3. Leave **Tracking Subdomain** empty. The tracking checkboxes below it are
+   greyed out while it is — there is nowhere to rewrite links to — so *Enable
+   click tracking* appearing ticked is inert, and the field is not worth filling
+   in to get at it. Click tracking only ever rewrites `http(s)` links, and the
+   only link this notification contains is a `mailto:` to the enquirer, so there
+   is nothing for it to act on. The setting is editable in the domain's own
+   settings later if that ever changes.
 4. Resend shows the DNS records to add. Their values paste in unchanged; their
    **names do not** — see below.
 5. Wait for Resend to show **Verified** — usually under 15 minutes.
