@@ -104,10 +104,10 @@ project. The dropdown itself says as much, noting that the older
 `76.76.21.21` and `cname.vercel-dns.com` still work but are no longer what it
 recommends. Use the copy icon beside each value.
 
-The CNAME is shown ending in a period. That is only how Vercel prints it — there
-is nothing to change in Vercel, and the **Edit** button does something else
-entirely (it sets whether the domain serves the site or redirects). The period
-matters only when you type the value into GoDaddy; section 4 covers it.
+The CNAME is shown ending in a period, which is just how a fully-qualified
+hostname is written. There is nothing to change in Vercel over it, and the
+**Edit** button does something else entirely — it sets whether the domain serves
+the site or redirects. Section 4 covers how to enter it at GoDaddy.
 
 ### Before you leave this screen
 
@@ -174,11 +174,14 @@ hosting. If a record is not one of those two, do not touch it.
 | A | `@` | the IP from your Vercel dashboard | 600 seconds |
 | CNAME | `www` | the CNAME target from your Vercel dashboard | 600 seconds |
 
-**Drop the trailing dot — in GoDaddy's *Points to* field.** Vercel displays the
-CNAME target as `something.vercel-dns-017.com.`; the final period is the formal
-way of marking a fully-qualified name, and it is display only. When you paste
-the value into GoDaddy, leave the period off — GoDaddy appends it itself and
-will reject or silently strip it. There is nothing to remove on the Vercel side.
+**About the trailing dot.** Vercel displays the CNAME target ending in a period —
+`something.vercel-dns-017.com.` — which is the formal way of writing a
+fully-qualified hostname. Type it into GoDaddy **without** the period.
+
+**GoDaddy will then show it back to you with the period on the end. That is
+correct — leave it.** GoDaddy normalises every hostname to its fully-qualified
+form for display; look at the other rows and you will see `secureserver.net.`,
+`domaincontrol.com.` and so on all ending the same way. The record is right.
 
 **Do not cross the two.** The apex takes only the A record; `www` takes only the
 CNAME. A CNAME on `@` is invalid DNS and will break the domain.
@@ -198,12 +201,26 @@ Vercel re-checks automatically. Records usually resolve in 10–30 minutes on a
 When it clears, Vercel issues the TLS certificate on its own — there is nothing
 to buy or install for HTTPS.
 
-Check progress from any machine:
+Check progress from your own machine — the answer has to come from the public
+internet, so this cannot be done from inside a build or a sandbox:
 
 ```bash
 dig +short mmakoinc.com A
 dig +short www.mmakoinc.com CNAME
 ```
+
+On Windows without `dig`:
+
+```powershell
+nslookup -type=A mmakoinc.com
+nslookup -type=CNAME www.mmakoinc.com
+```
+
+Or use a web checker such as [dnschecker.org](https://dnschecker.org), which has
+the advantage of querying from several countries at once.
+
+You want Vercel's IP and Vercel's CNAME target back, **and nothing else**. An
+extra IP alongside them means an old record survived.
 
 ---
 
