@@ -90,16 +90,19 @@ the records expand inline. **That is what you copy into GoDaddy.**
 Expand **both rows** — the apex and the `www` subdomain need different records.
 Ignore the `*.vercel.app` row entirely; it needs no DNS.
 
-Expect something like:
+You will see one record per row — an **A** record for the apex and a **CNAME**
+for `www`:
 
-| For | Type | Name | Value |
+| For | Type | Name | Value looks like |
 | --- | --- | --- | --- |
-| `mmakoinc.com` | A | `@` | `76.76.21.21` |
-| `www.mmakoinc.com` | CNAME | `www` | `cname.vercel-dns.com` |
+| `mmakoinc.com` | A | `@` | `216.198.79.1` |
+| `www.mmakoinc.com` | CNAME | `www` | `c803d432c3a4451b.vercel-dns-017.com.` |
 
-Newer projects are sometimes given a different CNAME target (`cname.vercel-dns-0.com`
-and regional variants exist). **Copy what the View DNS configuration dropdown
-shows, not what's above.**
+**Those are examples of the shape, not values to copy.** Vercel is expanding its
+IP range and now issues a per-project CNAME target — a hex string unique to your
+project. The dropdown itself says as much, noting that the older
+`76.76.21.21` and `cname.vercel-dns.com` still work but are no longer what it
+recommends. Use the copy icon beside each value.
 
 ### Before you leave this screen
 
@@ -140,6 +143,14 @@ carry email and domain verification.
 | --- | --- | --- | --- |
 | A | `@` | the IP from your Vercel dashboard | 600 seconds |
 | CNAME | `www` | the CNAME target from your Vercel dashboard | 600 seconds |
+
+**Drop the trailing dot.** Vercel writes the CNAME target as
+`something.vercel-dns-017.com.` — the final period is the formal way of marking
+a fully-qualified name. GoDaddy appends it itself and will reject or silently
+strip it if you paste it in. Enter the value without it.
+
+**Do not cross the two.** The apex takes only the A record; `www` takes only the
+CNAME. A CNAME on `@` is invalid DNS and will break the domain.
 
 GoDaddy's TTL dropdown offers *Custom* — set 600 (10 minutes) so mistakes are
 quick to correct. Raise it to an hour once everything is confirmed working.
