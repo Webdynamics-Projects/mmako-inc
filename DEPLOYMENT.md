@@ -134,23 +134,37 @@ Every Client* — and while it is connected, GoDaddy manages this domain's web
 records on its behalf. Editing the `A` record by hand is not enough: the builder
 can put its own records back.
 
-Check at **My Products**. If `mmakoinc.com` lists a *Websites + Marketing* or
-*Website Builder* product:
+Check at **My Products** (`account.godaddy.com/products`). On this domain it
+appears as **Websites + Marketing Free**, publishing to
+`mmakoinc.godaddysites.com`. Open it with **Manage**, then go to **Website** in
+the left-hand menu.
 
-1. Open it → **Settings → Domain** and **disconnect** the domain. Some plans call
-   this *Change domain* — move the builder site back to its free
-   `godaddysites.com` address.
-2. Better, if the firm is not using it: **unpublish or cancel** the product
-   outright. Nothing on it is needed — the real site is on Vercel.
+What you are looking for is a site card marked **PUBLISHED** — typically a
+*Coming Soon Site*, which despite the name is a complete page with a stock photo
+and placeholder copy. Use the gear on that card (the same one appears on the
+Dashboard next to the `godaddysites.com` address) and choose **Unpublish**, or
+**Delete site** if the firm has no use for it, which is cleaner because it cannot
+come back. GoDaddy relabels these controls periodically, so go by the words
+*Unpublish* and *Delete site* rather than by a fixed menu path.
 
-While you are in the domain's settings, check **Forwarding** too. Domain
+**Two buttons will undo all of this**, and both sit in the obvious place:
+**Publish Site** on the Website page, and **Connect Domain** on the Domain page.
+Either one re-attaches the domain to the builder.
+
+Unpublishing does not release the DNS on its own — it only stops the records
+being reset. Fix the records afterwards, in the order given below.
+
+While you are in the domain's settings, check **Forward Domain** too. Domain
 forwarding is stored separately from the DNS records and silently overrides
-them. It must be **off** for both the apex and `www`.
+them. It must be **off** for both the apex and `www`. (A response with no
+`location` header rules forwarding out — see the troubleshooting section.)
 
 > **How to recognise this.** A GoDaddy builder site on the free plan shows a
 > promotional bar across the very top of the page — *"Go from idea to live site
 > in minutes"*, with a **Start for free** button. That bar is never part of your
 > site. If it is visible on `mmakoinc.com`, GoDaddy is still serving the domain.
+> The *Last published* date on the site card is the other tell: if it is recent,
+> that publish is what reset the DNS.
 
 ### Delete the parked records first
 
