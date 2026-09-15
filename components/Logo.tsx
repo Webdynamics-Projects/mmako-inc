@@ -16,15 +16,21 @@ import { site } from "@/lib/site";
 /* Aspect ratios of the generated files, from the artwork's own geometry. */
 const RATIO = { lockup: 1.337, horizontal: 4.283 } as const;
 
+/* Intrinsic dimensions are set on the <img> so the browser reserves the right
+   box before the file loads, whatever CSS height is applied. */
+const INTRINSIC_HEIGHT = 100;
+
 type LogoProps = {
   tone?: "dark" | "light";
   /**
-   * "horizontal" is the monogram beside the wordmark — the only version that
-   * stays legible at header height. "lockup" is the full stacked mark.
+   * "lockup" is the full stacked mark — monogram, wordmark, rule. "horizontal"
+   * sets the monogram beside the wordmark, for bands too short for the stack.
    */
   variant?: "lockup" | "horizontal";
-  /** Rendered height in px; width follows the artwork's ratio. */
+  /** Fixed rendered height in px. Ignored when `heightClassName` is given. */
   height?: number;
+  /** Responsive Tailwind height classes, e.g. "h-[68px] sm:h-[88px]". */
+  heightClassName?: string;
   priority?: boolean;
   className?: string;
 };
@@ -33,6 +39,7 @@ export function Logo({
   tone = "dark",
   variant = "horizontal",
   height = 34,
+  heightClassName,
   priority = false,
   className,
 }: LogoProps) {
@@ -40,7 +47,6 @@ export function Logo({
   const src = variant === "horizontal"
     ? `/logo-mark${suffix}.svg`
     : `/logo${suffix}.svg`;
-  const width = Math.round(height * RATIO[variant]);
 
   return (
     <Link
@@ -52,17 +58,16 @@ export function Logo({
       aria-label={`${site.name} — home`}
     >
       {/* A plain <img>: next/image adds no value for SVG, which it passes
-          through unoptimised anyway. Width and height are set so the box is
-          reserved before load and nothing shifts. */}
+          through unoptimised anyway. */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={src}
         alt=""
-        width={width}
-        height={height}
-        style={{ height: `${height}px`, width: `${width}px` }}
+        width={Math.round(INTRINSIC_HEIGHT * RATIO[variant])}
+        height={INTRINSIC_HEIGHT}
+        style={heightClassName ? undefined : { height: `${height}px` }}
         fetchPriority={priority ? "high" : undefined}
-        className="select-none"
+        className={cn("w-auto select-none", heightClassName)}
       />
     </Link>
   );

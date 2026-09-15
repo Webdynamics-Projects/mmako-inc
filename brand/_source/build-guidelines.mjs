@@ -499,8 +499,10 @@ const body = [
     </ul>
     <h2>Which version to use</h2>
     <ul>
-      <li><strong>Primary (stacked)</strong> — covers, letterhead, folders, signage, anywhere with vertical room.</li>
-      <li><strong>Secondary (horizontal)</strong> — website header and any band under 60px tall.</li>
+      <li><strong>Primary (stacked)</strong> — covers, letterhead, folders, signage, the website
+        header, anywhere with vertical room.</li>
+      <li><strong>Secondary (horizontal)</strong> — bands too short for the stack: email headers,
+        narrow banners, anything under roughly 60px tall.</li>
       <li><strong>Monogram</strong> — favicon, social avatar, email signature, stamps and small marks.</li>
       <li><strong>Black / White</strong> — single-colour print, embroidery, etching, faxes, newspaper.</li>
     </ul>`),

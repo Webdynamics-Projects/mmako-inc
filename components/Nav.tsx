@@ -46,7 +46,13 @@ export function Nav() {
         aria-label="Primary"
         className="mx-auto flex w-full max-w-6xl items-center justify-between px-5 py-4 sm:px-8 sm:py-5"
       >
-        <Logo height={38} priority />
+        {/* The stacked lockup, so the wordmark sits under the monogram. It
+            needs real height to stay legible — at 88px the wordmark's cap
+            height is 9.1px and the mark is 118px wide, which clears the 120px
+            minimum in the brand guidelines once the rule's overhang is counted.
+            Mobile steps down to 68px; phone screens are 2–3× density, so the
+            wordmark still renders at 14–21 physical pixels there. */}
+        <Logo variant="lockup" heightClassName="h-[68px] sm:h-[88px]" priority />
 
         <ul className="hidden items-center gap-8 lg:flex">
           {navLinks.map((link) => (
