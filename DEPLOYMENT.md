@@ -448,6 +448,7 @@ Knowing whose IP you are looking at saves a lot of guessing:
 | --- | --- |
 | `216.198.79.1` (or whatever your dashboard shows) | Vercel — correct |
 | `13.248.243.5`, `76.223.105.230` | AWS Global Accelerator, which is what GoDaddy's **website builder** puts in front of customer domains |
+| `76.76.21.21` | Vercel's **legacy** shared IP — see the note below |
 | `Parked` GoDaddy IPs | the domain is still parked; the record was never changed |
 
 - **Two IPs come back, neither of them Vercel's** → GoDaddy has **reverted** your
@@ -480,3 +481,12 @@ working and everything else is cache that will expire by itself.
 > the old answer shortly before the change keeps it for that full period, and
 > nothing you do at GoDaddy shortens it. It is normal for the site to be live on
 > one network and stale on another for a day, and it clears on its own.
+
+> **A note on GoDaddy's Airo assistant.** Asked about this, it diagnoses the
+> apex `A` record correctly and then recommends setting it to `76.76.21.21`.
+> That is Vercel's legacy shared IP, from before per-project addresses; the
+> value in your Vercel dashboard is the one Vercel validates the domain
+> against. It also reports the problem as "a DNS issue, not a GoDaddy template
+> issue", which is a false split — it is a DNS issue *caused by* the template.
+> Decline its offer to make the change: it would write the wrong address, and
+> the builder would overwrite it at the next publish regardless.
