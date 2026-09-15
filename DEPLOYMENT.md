@@ -203,10 +203,9 @@ Only the `A` on `@` and the `CNAME` on `www` have anything to do with web
 hosting. If a record is not one of those two, do not touch it.
 
 > Seeing `MX` records and a `v=spf1` TXT here is useful information: it means
-> email is already configured on the domain, so `info@mmakoinc.com` is
-> probably a working mailbox already. It is also why section 6 verifies Resend
-> on a **subdomain** — adding Resend to this apex SPF record would put the
-> firm's existing mail at risk.
+> email is already configured on the domain, so `info@mmakoinc.com` may well be
+> a working mailbox already. Note that `v=spf1` record — a domain may carry only
+> one, and section 6 depends on leaving it exactly as it is.
 
 ### Add Vercel's records
 
@@ -346,22 +345,42 @@ domain.
 
 ### Then — verify the domain
 
-1. Resend → **Domains → Add Domain**. Use a subdomain —
-   **`send.mmakoinc.com`** — not the apex. Resend recommends this, and it keeps
-   the firm's normal email unaffected.
-2. Resend shows several DNS records. Depending on when the domain was created
-   these are either TXT + MX records, or CNAMEs. **Their values go in
-   unchanged, but their names do not** — see below.
-3. Wait for Resend to show **Verified** — usually under 15 minutes.
-4. Only then set `CONTACT_FROM_EMAIL=website@send.mmakoinc.com` in Vercel, set
-   `CONTACT_TO_EMAIL=info@mmakoinc.com` (or simply remove it, since that is the
-   default), and **redeploy**. Verifying the domain is what lifts the sandbox
-   restriction, so this is the point at which the firm's own inbox can receive
-   enquiries.
+1. Resend → **Domains → Add Domain**. Enter **`mmakoinc.com`** — the apex.
+2. Open **Advanced options** and leave **Custom Return-Path** as `send`. Do not
+   blank it. That field is what keeps this setup away from the firm's live mail,
+   for the reason given below.
+3. Turn **off** *Enable click tracking*. It rewrites links in the message body
+   so they redirect through a tracking domain, which is pointless for an
+   internal notification and costs deliverability. Open tracking is off by
+   default; leave it there.
+4. Resend shows the DNS records to add. Their values paste in unchanged; their
+   **names do not** — see below.
+5. Wait for Resend to show **Verified** — usually under 15 minutes.
+6. Only then set `CONTACT_FROM_EMAIL=website@mmakoinc.com` in Vercel, remove
+   `CONTACT_TO_EMAIL` (`info@mmakoinc.com` is the default), and **redeploy**.
+   Verifying the domain is what lifts the sandbox restriction, so this is the
+   point at which the firm's own inbox can receive enquiries.
 
-**Entering the names at GoDaddy.** Resend prints each record's name in full,
-as `send.mmakoinc.com` or `resend._domainkey.send.mmakoinc.com`. GoDaddy's
-**Name** field is always relative to the domain you are editing and appends
+**Why the apex is safe here, despite having live email on it.** The usual
+advice is to verify a subdomain, because adding a second `v=spf1` TXT record to
+a domain that already has one is an SPF `PermError` — it breaks authentication
+for *all* mail from that domain, the firm's existing mail included. That danger
+is real, but the Custom Return-Path avoids it. With a return path of `send`, the
+envelope sender becomes `send.mmakoinc.com`, so SPF is checked against that
+subdomain and Resend's SPF record goes **on `send`, not on the apex**. The only
+record added at the apex is DKIM, which is additive and conflicts with nothing.
+DMARC still aligns: DKIM signs as `mmakoinc.com` directly, and `send.` aligns
+with the apex under relaxed alignment, which is the default.
+
+**The one real trade-off.** A verified apex lets that API key send as *any*
+address at `mmakoinc.com`, including `dalen@`. A verified subdomain limits it to
+`@send.mmakoinc.com`. Neither is wrong; the apex trades a little blast radius
+for a sender address that reads properly. Keep the key in Vercel's environment
+variables and out of the repository either way.
+
+**Entering the names at GoDaddy.** Resend prints each record's name in full, as
+`send.mmakoinc.com` or `resend._domainkey.mmakoinc.com`. GoDaddy's **Name**
+field is always relative to the domain you are editing and appends
 `.mmakoinc.com` itself, so pasting the full name creates
 `send.mmakoinc.com.mmakoinc.com`, which verifies as nothing. Drop the
 `.mmakoinc.com` from the end of each name and enter what is left:
@@ -369,22 +388,33 @@ as `send.mmakoinc.com` or `resend._domainkey.send.mmakoinc.com`. GoDaddy's
 | Resend shows | Type into GoDaddy's Name field |
 | --- | --- |
 | `send.mmakoinc.com` | `send` |
-| `resend._domainkey.send.mmakoinc.com` | `resend._domainkey.send` |
-| `_dmarc.send.mmakoinc.com` | `_dmarc.send` |
+| `resend._domainkey.mmakoinc.com` | `resend._domainkey` |
+| `_dmarc.mmakoinc.com` | `_dmarc` (see below — one already exists) |
 
-This is the same convention as the `@` you used for the apex — `@` simply means
-"nothing in front of the domain". Values are pasted verbatim; only names are
+`@` means "nothing in front of the domain", so a record Resend shows as plain
+`mmakoinc.com` is entered as `@`. Values are pasted verbatim; only names are
 shortened.
 
-> **Every record here sits under `send.`** — none of them touch the apex. If a
-> step ever asks you to edit the existing `TXT @` record starting `v=spf1`, stop:
-> that is the firm's live mail, and this setup is on a subdomain precisely so it
-> stays untouched.
+> **Never add a second `v=spf1` record to the apex.** The firm already has one.
+> If Resend asks for an apex SPF record, the Custom Return-Path has been blanked
+> — go back and set it to `send`. Resend's SPF belongs on `send.mmakoinc.com`,
+> where nothing else is claiming it.
+
+> **The domain already has a `_dmarc` record.** Do not add a second one; DMARC
+> has the same one-record rule as SPF. The existing policy covers this mail
+> already, so if Resend suggests a `_dmarc` record, skip it.
 
 > **Do not set `CONTACT_FROM_EMAIL` before the domain verifies.** Resend rejects
 > mail from an unverified domain, the route returns 502, and the visitor sees
 > "We couldn't send your message." The fallback only protects you while the
 > variable is unset.
+
+> **Why `website@` and not `info@`.** The notification is sent *to*
+> `info@mmakoinc.com`. Sending it from the same address makes it self-addressed
+> mail, which reads oddly in a thread and is treated with suspicion by some
+> filters. `website@` or `noreply@` is clearer, and no reply ever goes there:
+> the route sets `replyTo` to the enquirer's own address, so replying reaches
+> the client.
 
 ### Getting the mail
 
