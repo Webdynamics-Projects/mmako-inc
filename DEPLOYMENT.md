@@ -388,22 +388,35 @@ address at `mmakoinc.com`, including `dalen@`. A verified subdomain limits it to
 for a sender address that reads properly. Keep the key in Vercel's environment
 variables and out of the repository either way.
 
-**Entering the names at GoDaddy.** Resend prints each record's name in full, as
-`send.mmakoinc.com` or `resend._domainkey.mmakoinc.com`. GoDaddy's **Name**
-field is always relative to the domain you are editing and appends
-`.mmakoinc.com` itself, so pasting the full name creates
-`send.mmakoinc.com.mmakoinc.com`, which verifies as nothing. Drop the
-`.mmakoinc.com` from the end of each name and enter what is left:
+**The three records.** What Resend asks for on this domain:
 
-| Resend shows | Type into GoDaddy's Name field |
-| --- | --- |
-| `send.mmakoinc.com` | `send` |
-| `resend._domainkey.mmakoinc.com` | `resend._domainkey` |
-| `_dmarc.mmakoinc.com` | `_dmarc` (see below — one already exists) |
+| Type | Name | Value | Priority |
+| --- | --- | --- | --- |
+| TXT | `resend._domainkey` | the DKIM public key, `p=MIGfMA…` | — |
+| MX | `send` | `feedback-smtp.<region>.amazonses.com` | 10 |
+| TXT | `send` | `v=spf1 include:amazonses.com ~all` | — |
 
-`@` means "nothing in front of the domain", so a record Resend shows as plain
-`mmakoinc.com` is entered as `@`. Values are pasted verbatim; only names are
-shortened.
+Note where the SPF record sits: on `send`, not on `@`. That is the return path
+working as intended, and it is what leaves the firm's apex SPF alone.
+
+**Entering the names.** Resend displays these names already relative to the
+domain — `resend._domainkey`, not `resend._domainkey.mmakoinc.com` — which is
+the same form GoDaddy's **Name** field wants, so they go in exactly as shown.
+If a name ever does appear fully qualified, strip the `.mmakoinc.com` from the
+end before entering it: GoDaddy appends the domain itself, so the full form
+becomes `send.mmakoinc.com.mmakoinc.com` and verifies as nothing. `@` means
+"nothing in front of the domain".
+
+**Copy the values with the copy button.** Resend truncates them on screen with
+`[…]`, and the DKIM key is long. It must go in as one unbroken string — an
+added space or line break fails verification without saying why.
+
+GoDaddy has no *Auto* TTL. Use 1 hour, or 600 seconds while you are still
+making changes.
+
+> **Leave *Enable Receiving* switched off.** This setup only sends. Turning it
+> on adds `MX` records at the apex, which is where the firm's inbound mail is
+> already routed — that would break it.
 
 > **Never add a second `v=spf1` record to the apex.** The firm already has one.
 > If Resend asks for an apex SPF record, the Custom Return-Path has been blanked
