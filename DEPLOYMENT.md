@@ -408,8 +408,14 @@ On Windows, in PowerShell:
 
 - `server: Vercel`, or any `x-vercel-id` → **Vercel is serving the domain.** The
   page in your browser is a cached copy. Go to step 4.
-- Anything else, or a `location:` header pointing at a `godaddysites.com` or
-  `.godaddy.com` address → **GoDaddy is still in the request path.** Go to step 3.
+- `server: DPS/...` → **GoDaddy's website builder is hosting the domain.** DPS is
+  its Digital Presence Service. Disconnect the builder — see section 4.
+- A `location:` header pointing at a `godaddysites.com` or `.godaddy.com`
+  address → **domain forwarding is on.** Turn it off — see section 4. No
+  `location` header means forwarding is *not* the cause, even when GoDaddy is
+  clearly answering.
+- Anything else that is not Vercel → GoDaddy is still in the request path. Go to
+  step 3.
 
 **3. What does _your_ machine resolve the domain to?**
 
@@ -422,8 +428,21 @@ dig +short mmakoinc.com A      # macOS / Linux
 
 The only answer should be the single IP shown in your Vercel dashboard.
 
-- **Two IPs come back** → a second `A` record on `@` survived the edit. Delete the
-  one that is not Vercel's.
+Knowing whose IP you are looking at saves a lot of guessing:
+
+| Answer | Whose it is |
+| --- | --- |
+| `216.198.79.1` (or whatever your dashboard shows) | Vercel — correct |
+| `13.248.243.5`, `76.223.105.230` | AWS Global Accelerator, which is what GoDaddy's **website builder** puts in front of customer domains |
+| `Parked` GoDaddy IPs | the domain is still parked; the record was never changed |
+
+- **Two IPs come back, neither of them Vercel's** → GoDaddy has **reverted** your
+  `A` record. This is the builder doing it, not you mis-saving: it validated
+  when you set it, which is why Vercel and `dnschecker.org` went green, and was
+  overwritten afterwards. Disconnect the builder first (section 4), *then* set
+  the record again — in that order, or it will be overwritten a second time.
+- **Two IPs come back, one of them Vercel's** → a second `A` record on `@`
+  survived the edit. Delete the one that is not Vercel's.
 - **A GoDaddy IP comes back** → the record either never saved, or the website
   builder or forwarding put it back. Re-do section 4, starting with *disconnect
   GoDaddy's own website*.
