@@ -411,8 +411,15 @@ becomes `send.mmakoinc.com.mmakoinc.com` and verifies as nothing. `@` means
 `[…]`, and the DKIM key is long. It must go in as one unbroken string — an
 added space or line break fails verification without saying why.
 
-GoDaddy has no *Auto* TTL. Use 1 hour, or 600 seconds while you are still
-making changes.
+GoDaddy has no *Auto* TTL — its dropdown starts at **1/2 Hour**, which is the
+one to pick. A short TTL means a mistyped record can be corrected in half an
+hour rather than a day. There is no need to raise it afterwards; these records
+do not change.
+
+Before saving each row, check the **Name** has no stray space (`resend._domainkey`,
+not `resend. _domainkey`) and press End in the **Value** field to confirm the
+whole string is there — the DKIM key should end `wIDAQAB`. A truncated key is
+the usual reason verification never completes.
 
 > **Leave *Enable Receiving* switched off.** This setup only sends. Turning it
 > on adds `MX` records at the apex, which is where the firm's inbound mail is
