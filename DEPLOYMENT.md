@@ -134,13 +134,38 @@ at GoDaddy's parking page, and adding Vercel's records alongside them does not
 work — DNS will return both and the site will resolve intermittently or not at
 all.
 
-Find and **delete or edit**:
+Two records need to change:
 
-- The **A** record with Name `@` pointing at a GoDaddy IP (often `Parked`).
-- The **CNAME** record with Name `www` pointing at `@` or a GoDaddy host.
+- The **A** record with Name `@` pointing at a GoDaddy IP (often labelled
+  `Parked`). Delete it, or edit it to Vercel's IP.
+- The **CNAME** with Name `www` pointing at `@`, `mmakoinc.com.` or a GoDaddy
+  host. **Editing this one is easier than deleting and re-adding** — change its
+  value to the Vercel target.
 
-Leave everything else alone — in particular any **MX** or **TXT** records, which
-carry email and domain verification.
+### Leave everything else alone
+
+A domain with email configured carries a lot of records that look unrelated to
+the website but are not safe to remove. On this domain that means:
+
+| Record | What it does |
+| --- | --- |
+| `NS` and `SOA` on `@` | Delegation. Cannot be removed anyway. |
+| `MX` on `@` | Where inbound mail goes. Deleting these stops mail arriving. |
+| `CNAME email` | Webmail. |
+| `CNAME ..._domainkey` (usually a pair) | **DKIM** — signs outgoing mail. Removing them makes mail fail authentication and land in spam. |
+| `TXT @` starting `v=spf1` | **SPF** — says who may send as this domain. |
+| `TXT _dmarc` | **DMARC** policy. |
+| `SRV _autodiscover._tcp` | Outlook client auto-setup. |
+| `CNAME _domainconnect` | GoDaddy's own setup tooling. |
+
+Only the `A` on `@` and the `CNAME` on `www` have anything to do with web
+hosting. If a record is not one of those two, do not touch it.
+
+> Seeing `MX` records and a `v=spf1` TXT here is useful information: it means
+> email is already configured on the domain, so `contact@mmakoinc.com` is
+> probably a working mailbox already. It is also why section 6 verifies Resend
+> on a **subdomain** — adding Resend to this apex SPF record would put the
+> firm's existing mail at risk.
 
 ### Add Vercel's records
 
