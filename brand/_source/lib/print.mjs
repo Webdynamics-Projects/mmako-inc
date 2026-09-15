@@ -1,5 +1,6 @@
-/** Shared styling for every print-ready template in the kit. */
+/** Shared styling and logo helpers for every template in the kit. */
 import { colours, typography } from "./tokens.mjs";
+import { lockupSvg, horizontalSvg, monogramSvg } from "./logo.mjs";
 
 export const INK = colours.primary[0].hex;
 export const GOLD = colours.primary[1].hex;
@@ -24,13 +25,41 @@ export const baseCss = `
   table{border-collapse:collapse}
 `;
 
-/** The stacked lockup, drawn inline so PDFs carry no external image. */
-export function lockup({ height = 64, tone = "dark", showWordmark = true, gap = 12 }) {
-  const ink = tone === "dark" ? INK : BONE;
-  const mono = tone === "dark" ? "monogram-ink" : "monogram-bone";
-  return `<div style="display:inline-flex;flex-direction:column;align-items:center">
-    <img src="${mono}" style="height:${height}px;width:auto;display:block">
-    ${showWordmark ? `<div style="font-family:${SANS};font-weight:320;letter-spacing:.26em;text-indent:.26em;
-      font-size:${(height * 0.2).toFixed(1)}px;color:${ink};margin-top:${gap}px;white-space:nowrap">MMAKO LAW</div>` : ""}
-  </div>`;
+/* ---------------------------------------------------------------------------
+   Logo helpers.
+
+   Every mark comes from the designer's own artwork, so nothing here composes a
+   lockup out of set type any more. `tone` picks the colourway: "light" reverses
+   the ink to bone for dark grounds; the gold is never altered.
+   --------------------------------------------------------------------------- */
+const uri = (svg) => `data:image/svg+xml;base64,${Buffer.from(svg).toString("base64")}`;
+const inkFor = (tone) => (tone === "light" ? { ink: BONE } : {});
+
+/** Stacked lockup — monogram, wordmark and rule, as supplied. */
+export const lockupUri = (tone = "dark") => uri(lockupSvg("colour", inkFor(tone)));
+
+/** Horizontal lockup — monogram beside the wordmark, for short bands. */
+export const horizontalUri = (tone = "dark") => uri(horizontalSvg("colour", inkFor(tone)));
+
+/** Monogram alone. */
+export const monoUri = (tone = "dark") => uri(monogramSvg("colour", inkFor(tone)));
+
+/** Aspect ratios, so callers can size by height and let width follow. */
+export const RATIO = {
+  lockup: ratioOf(lockupSvg("colour")),
+  horizontal: ratioOf(horizontalSvg("colour")),
+  mono: ratioOf(monogramSvg("colour")),
+};
+
+function ratioOf(svg) {
+  const [, , w, h] = svg.match(/viewBox="([\d.\- ]+)"/)[1].split(/\s+/).map(Number);
+  return w / h;
+}
+
+/** An <img> for the given mark at a fixed height, in whatever CSS unit. */
+export function logoImg(kind, tone, height, unit = "px") {
+  const src = kind === "mono" ? monoUri(tone)
+    : kind === "horizontal" ? horizontalUri(tone) : lockupUri(tone);
+  const w = (height * RATIO[kind]).toFixed(2);
+  return `<img src="${src}" style="height:${height}${unit};width:${w}${unit};display:block">`;
 }

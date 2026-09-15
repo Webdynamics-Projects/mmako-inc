@@ -45,6 +45,17 @@ export const people = {
 };
 
 /**
+ * The artwork's own colours, read straight out of the supplied logo file.
+ *
+ * These are facts about the logo, not choices. They differ from the brand
+ * palette below, which is an open item — see the guidelines' last page.
+ */
+export const artwork = {
+  ink: "#272725",
+  gold: "#B7965E",
+};
+
+/**
  * Colours. `role` drives the spec sheets; `print` notes override the naive
  * CMYK conversion where a straight conversion would be wrong on press.
  */

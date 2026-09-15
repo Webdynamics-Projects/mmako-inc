@@ -2,23 +2,15 @@
 import fs from "node:fs";
 import path from "node:path";
 import { firm, people } from "./lib/tokens.mjs";
-import { monogramSvg } from "./lib/logo.mjs";
 import { renderPdf, renderPng, closeBrowser } from "./lib/render.mjs";
 import * as P from "./lib/print.mjs";
 
 const OUT = path.join("brand", "06 - STATIONERY");
 const a = firm.address;
 
-const monoInk = `data:image/svg+xml;base64,${Buffer.from(monogramSvg("colour", { ink: P.INK, gold: P.GOLD })).toString("base64")}`;
-const monoBone = `data:image/svg+xml;base64,${Buffer.from(monogramSvg("colour", { ink: P.BONE, gold: P.GOLD })).toString("base64")}`;
-const mono = (tone) => (tone === "dark" ? monoInk : monoBone);
-
-const lockup = (h, tone, gap = 10) => `<div style="display:inline-flex;flex-direction:column;align-items:center">
-  <img src="${mono(tone)}" style="height:${h}mm;width:auto;display:block">
-  <div style="font-family:${P.SANS};font-weight:320;letter-spacing:.26em;text-indent:.26em;
-              font-size:${(h * 0.2).toFixed(2)}mm;color:${tone === "dark" ? P.INK : P.BONE};
-              margin-top:${gap * 0.35}mm;white-space:nowrap">MMAKO LAW</div>
-</div>`;
+/* The supplied lockup, sized by height in millimetres. */
+const lockup = (h, tone) => P.logoImg("lockup", tone === "dark" ? "dark" : "light", h, "mm");
+const monoInk = P.monoUri("dark");
 
 const save = (dir, file, buf) => {
   fs.mkdirSync(path.join(OUT, dir), { recursive: true });
@@ -70,7 +62,7 @@ const cardCss = P.baseCss + `
   .trim{position:absolute;inset:3mm;border:.25pt dashed rgba(0,0,0,.25)}
 `;
 const cardFront = `<div class="page" style="background:${P.INK}">
-  ${lockup(15, "light", 9)}
+  ${lockup(15, "light")}
 </div>`;
 const cardBack = `<div class="page" style="background:${P.BONE};display:block;padding:9mm 8mm">
   <div style="font-family:${P.DISPLAY};font-size:12pt;line-height:14pt;color:${P.INK}">${people.director.name}</div>
@@ -115,7 +107,7 @@ save("Envelope", "envelope-dl-220x110.pdf",
 const slipCss = P.baseCss + `@page{margin:0}.page{width:210mm;height:99mm;padding:14mm 20mm}`;
 const slipBody = `<div class="page">
   <table width="100%"><tr>
-    <td style="vertical-align:top">${lockup(13, "dark", 8)}</td>
+    <td style="vertical-align:top">${lockup(13, "dark")}</td>
     <td style="vertical-align:top;text-align:right">
       <div style="font-family:${P.DISPLAY};font-size:15pt;color:${P.INK}">With Compliments</div>
     </td>

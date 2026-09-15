@@ -31,7 +31,7 @@ const SANS = typography.office.body;     // Arial
 
 const LOGO = fs.readFileSync(path.join("brand", "_source", "assets", "word-logo.png"));
 const LOGO_W = 96;                       // px at 96dpi ≈ 25mm
-const LOGO_H = Math.round(LOGO_W / 1.3677);
+const LOGO_H = Math.round(LOGO_W / 1.345); // the artwork's lockup ratio
 
 const NONE = { style: BorderStyle.NONE, size: 0, color: "auto" };
 const noBorders = { top: NONE, bottom: NONE, left: NONE, right: NONE };

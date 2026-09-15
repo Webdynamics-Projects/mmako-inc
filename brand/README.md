@@ -24,24 +24,29 @@ designer, a new hire — and it ends with the open items listed below.
 
 ## ⚠️ Read this before anything goes to print
 
-Five things are unresolved. Each affects finished artwork.
+Four things are unresolved. Each affects finished artwork.
 
-**1. The logo files are a reconstruction.** Every asset here derives from a redrawn stand-in, not
-the designer's original artwork. See "Replacing the logo" below — one file and one command
-regenerates the entire kit.
+**1. The logo and the palette use different golds.** Every mark here is built from the designer's
+vector artwork, whose colours are `#272725` ink and `#B7965E` gold. The brand palette specifies
+`#C9A227` — a more saturated, yellower gold. Side by side the difference is obvious.
 
-**2. The gold does not match.** The supplied logo renders a softer, lighter gold than the brand's
-`#C9A227`. Either re-export the logo in the brand gold, or adopt the softer gold across the website
-and this kit. Both cannot stand.
+| Gold | HEX | CMYK | On bone | On ink |
+| --- | --- | --- | --- | --- |
+| Artwork | `#B7965E` | 0 / 18 / 49 / 28 | 2.67:1 | 7.06:1 |
+| Palette | `#C9A227` | 0 / 19 / 81 / 21 | 2.31:1 | 8.13:1 |
 
-**3. "Mmako Law" or "Mmako Inc."** The kit assumes the logo artwork is the brand mark and
+**Recommendation: adopt `#B7965E`.** The logo anchors the identity and the palette should follow it.
+Neither gold passes contrast as text on a light ground, so Gold Deep stays the substitute either
+way. It is a one-line change — say the word.
+
+**2. "Mmako Law" or "Mmako Inc."** The kit assumes the logo artwork is the brand mark and
 *Mmako Inc.* is the written name used in all copy. Confirm this.
 
-**4. Company details are placeholders.** Registration number, VAT number and banking details appear
+**3. Company details are placeholders.** Registration number, VAT number and banking details appear
 as bracketed placeholders on the letterhead, invoice and legal templates. Supply them before
 anything is printed or issued.
 
-**5. The confidentiality notice needs sign-off.** The wording in the email signature is a reasonable
+**4. The confidentiality notice needs sign-off.** The wording in the email signature is a reasonable
 general form. It has not been reviewed against the firm's professional-indemnity or Legal Practice
 Council obligations.
 
@@ -139,6 +144,17 @@ After rebuilding, check the aspect ratios the logo script prints against the con
 | `node brand/_source/build-documents.mjs` | 07 - LEGAL DOCUMENTS |
 | `node brand/_source/build-digital-office.mjs` | 08 - DIGITAL and 09 - OFFICE |
 | `node brand/_source/build-guidelines.mjs` | 01, 03, 04, 05 and the guidelines PDF |
+| `node brand/_source/build-word.mjs` | The six Word templates |
+
+The generators need two tools the website does not — install them together, since npm prunes
+`--no-save` packages that are not named in the same command:
+
+```bash
+npm install --no-save playwright docx
+```
+
+Playwright renders the PDFs and PNGs; `docx` writes the Word templates. Nobody *using* the kit
+needs either installed.
 
 Everything reads from `brand/_source/lib/tokens.mjs`. Change a colour, an address or a phone number
 there and it propagates through the whole kit on the next build — there is no second place to update.

@@ -2,14 +2,13 @@
 import fs from "node:fs";
 import path from "node:path";
 import { firm, people } from "./lib/tokens.mjs";
-import { monogramSvg } from "./lib/logo.mjs";
 import { renderPdf, renderPng, closeBrowser } from "./lib/render.mjs";
 import * as P from "./lib/print.mjs";
 
 const OUT = path.join("brand", "07 - LEGAL DOCUMENTS");
 const a = firm.address;
 const d = people.director;
-const monoInk = `data:image/svg+xml;base64,${Buffer.from(monogramSvg("colour", { ink: P.INK, gold: P.GOLD })).toString("base64")}`;
+
 
 const save = (dir, file, buf) => {
   fs.mkdirSync(path.join(OUT, dir), { recursive: true });
@@ -34,11 +33,7 @@ const css = P.baseCss + `
 
 /** Every document opens with the same masthead. */
 const head = () => `<table width="100%" style="margin-bottom:8mm"><tr>
-  <td style="vertical-align:top">
-    <img src="${monoInk}" style="height:15mm;width:auto;display:block">
-    <div style="font-family:${P.SANS};font-weight:320;letter-spacing:.26em;text-indent:.26em;
-                font-size:3mm;color:${P.INK};margin-top:3mm;white-space:nowrap">MMAKO LAW</div>
-  </td>
+  <td style="vertical-align:top">${P.logoImg("lockup", "dark", 21, "mm")}</td>
   <td style="vertical-align:top;text-align:right;font-size:7.5pt;line-height:12pt;color:${P.GREY}">
     ${a.line1}<br>${a.line2}<br>${a.city}, ${a.postalCode}<br>
     <span style="color:${P.GOLD_DEEP};font-weight:600">${firm.domain}</span>

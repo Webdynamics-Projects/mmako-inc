@@ -2,6 +2,10 @@
 import { execFileSync } from "node:child_process";
 
 const steps = [
+  /* Asset generators first — later steps embed what these produce. */
+  "build-website-logo.mjs",
+  "build-signature-logo.mjs",
+  "build-word-assets.mjs",
   "build-logo.mjs",
   "build-signatures.mjs",
   "build-stationery.mjs",

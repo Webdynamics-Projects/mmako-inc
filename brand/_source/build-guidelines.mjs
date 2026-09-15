@@ -6,12 +6,9 @@ import fs from "node:fs";
 import path from "node:path";
 import { firm, colours, typography, hexToRgb, hexToCmyk, contrast } from "./lib/tokens.mjs";
 import * as S from "./lib/strategy.mjs";
-import { monogramSvg } from "./lib/logo.mjs";
 import { renderPdf, renderPng, closeBrowser } from "./lib/render.mjs";
 import * as P from "./lib/print.mjs";
 
-const monoBone = `data:image/svg+xml;base64,${Buffer.from(monogramSvg("colour", { ink: P.BONE, gold: P.GOLD })).toString("base64")}`;
-const monoInk = `data:image/svg+xml;base64,${Buffer.from(monogramSvg("colour", { ink: P.INK, gold: P.GOLD })).toString("base64")}`;
 
 const md = (dir, file, body) => {
   fs.mkdirSync(dir, { recursive: true });
@@ -397,16 +394,14 @@ const cover = `<div class="page" style="background-color:${P.INK};
   background-image:radial-gradient(ellipse 80% 60% at 75% 0%, rgba(201,162,39,.18), transparent 60%);
   justify-content:space-between;padding:26mm 22mm">
   <div style="display:flex;flex-direction:column;align-items:flex-start">
-    <img src="${monoBone}" style="height:34mm;width:auto;display:block">
-    <div style="font-family:${P.SANS};font-weight:320;letter-spacing:.26em;text-indent:.26em;
-                font-size:6mm;color:${P.BONE};margin-top:7mm">MMAKO LAW</div>
+    ${P.logoImg("lockup", "light", 62, "mm")}
   </div>
   <div>
     <div style="width:26mm;height:1.2mm;background:${P.GOLD};margin-bottom:8mm"></div>
     <div style="font-family:${P.DISPLAY};font-size:30pt;line-height:34pt;color:${P.BONE}">
       Brand Guidelines</div>
     <div style="font-family:${P.SANS};font-size:10pt;color:rgba(227,225,217,.65);margin-top:5mm">
-      ${firm.name} &nbsp;·&nbsp; Version 1.0 &nbsp;·&nbsp; ${new Date().toLocaleDateString("en-ZA", { month: "long", year: "numeric" })}
+      ${firm.name} &nbsp;·&nbsp; Version 1.1 &nbsp;·&nbsp; ${new Date().toLocaleDateString("en-ZA", { month: "long", year: "numeric" })}
     </div>
   </div>
 </div>`;
@@ -452,20 +447,14 @@ const body = [
     <p class="lead">The primary logo is the stacked lockup: monogram, wordmark, gold rule.</p>
     <table style="width:100%;margin-top:6mm"><tr>
       <td style="width:50%;padding-right:4mm;vertical-align:top">
-        <div style="background:${P.BONE_200};padding:10mm;text-align:center">
-          <img src="${monoInk}" style="height:26mm;width:auto;display:inline-block">
-          <div style="font-family:${P.SANS};font-weight:320;letter-spacing:.26em;text-indent:.26em;
-                      font-size:4.2mm;color:${P.INK};margin-top:5mm">MMAKO LAW</div>
-          <div style="width:22mm;height:.7mm;background:${P.GOLD};margin:5mm auto 0"></div>
+        <div style="background:${P.BONE_200};padding:10mm;display:flex;justify-content:center">
+          ${P.logoImg("lockup", "dark", 44, "mm")}
         </div>
         <p style="font-size:7.5pt;color:${P.GREY};padding-top:2mm">Primary — on light</p>
       </td>
       <td style="width:50%;vertical-align:top">
-        <div style="background:${P.INK};padding:10mm;text-align:center">
-          <img src="${monoBone}" style="height:26mm;width:auto;display:inline-block">
-          <div style="font-family:${P.SANS};font-weight:320;letter-spacing:.26em;text-indent:.26em;
-                      font-size:4.2mm;color:${P.BONE};margin-top:5mm">MMAKO LAW</div>
-          <div style="width:22mm;height:.7mm;background:${P.GOLD};margin:5mm auto 0"></div>
+        <div style="background:${P.INK};padding:10mm;display:flex;justify-content:center">
+          ${P.logoImg("lockup", "light", 44, "mm")}
         </div>
         <p style="font-size:7.5pt;color:${P.GREY};padding-top:2mm">Primary — reversed</p>
       </td>
@@ -650,26 +639,34 @@ const body = [
     </table>`),
 
   pg("Open items", `<h1>Before this goes to print</h1>
-    <p class="lead">Five things must be settled. Each affects finished artwork.</p>
-    <h3>1. The logo files are a reconstruction</h3>
-    <p>Every asset in this kit derives from a redrawn stand-in, not the designer's original artwork.
-    Replace <code>public/logo.png</code> with the real file and re-run the build to regenerate the
-    whole kit.</p>
-    <h3>2. The gold does not match</h3>
-    <p>The supplied logo renders a softer, lighter gold than the brand's
-    <strong>${colours.primary[1].hex.toUpperCase()}</strong>. Either re-export the logo to the brand
-    gold, or adopt the softer gold across the website and this kit. They cannot both stand.</p>
-    <h3>3. Mmako Law or Mmako Inc.</h3>
+    <p class="lead">Four things must be settled. Each affects finished artwork.</p>
+    <h3>1. The logo and the palette use different colours</h3>
+    <p>Every mark in this kit is now built from the designer's own vector artwork. Reading the
+    colours out of that file gives <strong>#272725</strong> for the ink and
+    <strong>#B7965E</strong> for the gold. The brand palette in section 03 specifies
+    <strong>${colours.primary[1].hex.toUpperCase()}</strong> — a more saturated, yellower gold.
+    Side by side the difference is obvious, and a firm whose logo and website use different golds
+    looks unconsidered.</p>
+    <table class="tbl">
+      <tr><th>Gold</th><th>HEX</th><th>CMYK</th><th>On bone</th><th>On ink</th></tr>
+      <tr><td>Artwork</td><td>#B7965E</td><td>0 / 18 / 49 / 28</td><td>2.67:1</td><td>7.06:1</td></tr>
+      <tr><td>Palette</td><td>${colours.primary[1].hex.toUpperCase()}</td><td>0 / 19 / 81 / 21</td><td>2.31:1</td><td>8.13:1</td></tr>
+    </table>
+    <p><strong>Recommendation:</strong> adopt the artwork's #B7965E as the brand gold. The logo is
+    the identity's anchor, and a palette should follow it rather than the other way round. Neither
+    gold passes contrast as text on a light ground, so Gold Deep stays the substitute either way.
+    This is a one-line change to the palette; say the word.</p>
+    <h3>2. Mmako Law or Mmako Inc.</h3>
     <p>The naming rule on page 2 assumes the logo is the brand mark and Mmako Inc. the written name.
     Confirm it.</p>
-    <h3>4. Company details are placeholders</h3>
+    <h3>3. Company details are placeholders</h3>
     <p>Registration number, VAT number and banking details appear as bracketed placeholders on the
     letterhead, invoice and legal templates. Supply them before anything is printed or issued.</p>
-    <h3>5. The confidentiality notice needs sign-off</h3>
+    <h3>4. The confidentiality notice needs sign-off</h3>
     <p>The wording in the email signature is a reasonable general form. It has not been reviewed
     against the firm's professional-indemnity or Legal Practice Council obligations.</p>
-    <div class="note">This document is version 1.0. Once the five items above are closed, reissue it
-    as version 1.1 and circulate that as the governing version.</div>`),
+    <div class="note">This document is version 1.1. Once the four items above are closed, reissue it
+    as version 1.2 and circulate that as the governing version.</div>`),
 ].join("");
 
 fs.writeFileSync(path.join(D10, "Mmako Inc. Brand Guidelines.pdf"),

@@ -11,7 +11,7 @@ export function Footer() {
       <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-8 sm:py-20">
         <div className="grid gap-12 md:grid-cols-12">
           <div className="md:col-span-5">
-            <Logo variant="lockup" height={76} />
+            <Logo variant="lockup" height={84} />
             <p className="mt-5 max-w-sm text-sm leading-relaxed text-bone-300/70">
               Legal counsel built for how business actually moves — clear, fast,
               and focused on outcomes.

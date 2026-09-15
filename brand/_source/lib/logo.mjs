@@ -1,80 +1,139 @@
 /**
- * Logo geometry.
+ * The logo, built from the designer's own vector artwork.
  *
- * The monogram is pure path data, so it exports as a genuinely portable SVG
- * with no font dependency. The wordmark is set type — those lockups render
- * exactly to PNG, and their SVG form carries a font dependency that is noted
- * in the kit's README.
- */
-
-/*
- * Monogram paths, traced from the supplied artwork.
+ * brand/_source/logo/mmako-logo.svg is the authoritative source. Its paths are
+ * split into monogram, wordmark and rule by logo/extract.mjs, which writes the
+ * generated logo-paths.mjs that this module reads.
  *
- * The letterform is a high-contrast Didone M: thin stems with fine bracketed
- * serifs, one thick left diagonal and one hairline right diagonal meeting at a
- * vertex just above the baseline. Proportions follow the source — 250 × 200,
- * a ratio of 1.25.
+ * Because the wordmark is real outlines rather than set type, every SVG this
+ * module produces is font-independent — it renders identically everywhere, with
+ * nothing to install.
  */
-export const MONO = { width: 250, height: 200 };
+import { monogram, wordmark, rule, SOURCE_COLOURS } from "./logo-paths.mjs";
 
-export const monogramPaths = {
-  /* The gold accent: a slender tapered slash running at the diagonal's own
-     angle (0.49 horizontal per unit of descent), parallel to the thick diagonal and
-     just left of it, its top corner tucked behind the letterform and its foot
-     cut on a slight angle at the baseline. */
-  accent: "M 43 96 L 71 96 L 114 196 L 96 204 Z",
-  /* The letterform. Drawn as overlapping parts rather than one outline, which
-     keeps each stroke's weight independently adjustable. */
-  letter: [
-    /* left stem, then its top and foot serifs */
-    "M 18 0 L 32 0 L 32 194 L 18 194 Z",
-    "M 4 0 L 46 0 L 46 6 L 4 6 Z",
-    "M 0 188 L 50 188 L 50 200 L 0 200 Z",
-    /* thick left diagonal, top-left down to the vertex */
-    "M 18 0 L 58 0 L 144 196 L 114 196 Z",
-    /* hairline right diagonal, vertex up to the top right */
-    "M 214 0 L 226 0 L 142 196 L 130 196 Z",
-    /* right stem, then its top and foot serifs */
-    "M 212 0 L 230 0 L 230 194 L 212 194 Z",
-    "M 200 0 L 244 0 L 244 6 L 200 6 Z",
-    "M 196 188 L 250 188 L 250 200 L 196 200 Z",
-  ],
-};
+export { SOURCE_COLOURS };
 
-/** Lockup metrics, expressed as a share of the monogram, taken from the source. */
+/** Monogram dimensions, from the artwork. */
+export const MONO = { width: monogram.box.w, height: monogram.box.h };
+
+export const WORDMARK = "MMAKO LAW";
+
+/**
+ * Lockup proportions measured off the artwork, expressed relative to the
+ * monogram so any part can be reconstructed at any size.
+ */
 export const LOCKUP = {
-  wordmarkSize: 0.200,   // font-size ÷ monogram height
-  wordmarkGap: 0.205,    // space under the monogram ÷ monogram height
-  tracking: 0.44,        // em
-  ruleWidth: 0.41,       // ÷ monogram width
-  ruleGap: 0.10,         // space under the wordmark ÷ monogram height
+  wordmarkWidth: wordmark.box.w / monogram.box.w,
+  wordmarkSize: wordmark.box.h / monogram.box.h,
+  wordmarkGap: (wordmark.box.y - (monogram.box.y + monogram.box.h)) / monogram.box.h,
+  ruleWidth: rule.box.w / monogram.box.w,
+  ruleGap: (rule.box.y - (wordmark.box.y + wordmark.box.h)) / monogram.box.h,
 };
 
 /**
- * Returns the monogram as a standalone SVG string.
- * `mode` is "colour" (charcoal + gold), "black" or "white" — the one-colour
- * versions flatten the accent into the same ink as the letterform.
+ * Resolves a part's fill for the requested colourway.
+ * "colour" keeps ink and gold distinct; the one-colour modes flatten both.
  */
-export function monogramSvg(mode = "colour", { ink = "#0B0B0C", gold = "#C9A227" } = {}) {
-  const letterFill = mode === "white" ? "#FFFFFF" : mode === "black" ? "#000000" : ink;
-  const accentFill =
-    mode === "white" ? "#FFFFFF" : mode === "black" ? "#000000" : gold;
+function fillFor(part, mode, { ink, gold }) {
+  if (mode === "black") return "#000000";
+  if (mode === "white") return "#FFFFFF";
+  return part.fill === SOURCE_COLOURS.gold ? gold : ink;
+}
 
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${MONO.width} ${MONO.height}" width="${MONO.width}" height="${MONO.height}" role="img" aria-label="Mmako Inc. monogram">
-  <path d="${monogramPaths.accent}" fill="${accentFill}"/>
-  <g fill="${letterFill}">
-${monogramPaths.letter.map((d) => `    <path d="${d}"/>`).join("\n")}
+/**
+ * Emits one <path> per source colour, with that colour's subpaths concatenated.
+ *
+ * This grouping matters twice over. Within a colour, the even-odd rule is what
+ * makes a letter's counter a hole rather than a filled blob — splitting those
+ * subpaths apart fills the middle of every O and A. Across colours, keeping ink
+ * and gold as separate elements means that where the gold accent overlaps the
+ * letterform, the one-colour variants stay solid instead of punching a hole.
+ */
+const render = (parts, mode, palette) => {
+  const groups = new Map();
+  for (const part of parts) {
+    if (!groups.has(part.fill)) groups.set(part.fill, []);
+    groups.get(part.fill).push(part.d);
+  }
+  /* Ink first, gold over it, matching the artwork's own stacking order. */
+  const ordered = [...groups].sort(([f]) => (f === SOURCE_COLOURS.gold ? 1 : -1));
+  return ordered
+    .map(([fill, ds]) =>
+      `  <path d="${ds.join(" ")}" fill="${fillFor({ fill }, mode, palette)}" fill-rule="evenodd"` +
+      /* The artwork strokes each shape in its own fill colour at 0.25 units,
+         which thickens it very slightly. Preserved so output matches the
+         supplied file exactly rather than approximately. */
+      ` stroke="${fillFor({ fill }, mode, palette)}" stroke-width="0.25" stroke-linejoin="round"/>`)
+    .join("\n");
+};
+
+const defaults = { ink: SOURCE_COLOURS.ink, gold: SOURCE_COLOURS.gold };
+
+/** Wraps parts in an SVG whose viewBox is cropped to the given box. */
+function wrap(parts, box, mode, palette, label, pad = 0) {
+  const w = box.w + pad * 2;
+  const h = box.h + pad * 2;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${(box.x - pad).toFixed(3)} ${(box.y - pad).toFixed(3)} ${w.toFixed(3)} ${h.toFixed(3)}" width="${w.toFixed(0)}" height="${h.toFixed(0)}" role="img" aria-label="${label}">
+${render(parts, mode, palette)}
+</svg>
+`;
+}
+
+/** The monogram alone. */
+export function monogramSvg(mode = "colour", palette = {}) {
+  return wrap(monogram.parts, monogram.box, mode, { ...defaults, ...palette },
+    "Mmako Inc. monogram");
+}
+
+/** The wordmark alone. */
+export function wordmarkSvg(mode = "colour", palette = {}) {
+  return wrap(wordmark.parts, wordmark.box, mode, { ...defaults, ...palette },
+    "Mmako Law wordmark");
+}
+
+/** The full stacked lockup exactly as supplied: monogram, wordmark, rule. */
+export function lockupSvg(mode = "colour", palette = {}) {
+  const parts = [...monogram.parts, ...wordmark.parts, ...rule.parts];
+  const x0 = Math.min(monogram.box.x, wordmark.box.x, rule.box.x);
+  const x1 = Math.max(monogram.box.x + monogram.box.w, wordmark.box.x + wordmark.box.w,
+    rule.box.x + rule.box.w);
+  const y0 = monogram.box.y;
+  const y1 = rule.box.y + rule.box.h;
+  return wrap(parts, { x: x0, y: y0, w: x1 - x0, h: y1 - y0 }, mode,
+    { ...defaults, ...palette }, "Mmako Law logo");
+}
+
+/**
+ * Horizontal lockup — monogram beside the wordmark, for headers and any band
+ * too short for the stacked version. Composed from the same artwork.
+ */
+export function horizontalSvg(mode = "colour", palette = {}) {
+  const p = { ...defaults, ...palette };
+  const m = monogram.box;
+  const w = wordmark.box;
+
+  /* The wordmark is a wide, widely-tracked 8-letter word, so it cannot be scaled
+     up much before the lockup grows too long for a header. 0.21 of the
+     monogram's height is the point where it still reads at ~38px tall while the
+     whole mark stays around 4:1. */
+  const scale = (m.h * 0.21) / w.h;
+  const gap = m.h * 0.22;
+  const tx = m.w + gap;
+  const ty = (m.h - w.h * scale) / 2;
+  const boxW = tx + w.w * scale;
+
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${boxW.toFixed(3)} ${m.h.toFixed(3)}" width="${boxW.toFixed(0)}" height="${m.h.toFixed(0)}" role="img" aria-label="Mmako Law logo">
+  <g transform="translate(${(-m.x).toFixed(3)} ${(-m.y).toFixed(3)})">
+${render(monogram.parts, mode, p)}
+  </g>
+  <g transform="translate(${tx.toFixed(3)} ${ty.toFixed(3)}) scale(${scale.toFixed(5)}) translate(${(-w.x).toFixed(3)} ${(-w.y).toFixed(3)})">
+${render(wordmark.parts, mode, p)}
   </g>
 </svg>
 `;
 }
 
-/** Inline monogram markup for embedding inside a larger SVG or HTML page. */
-export function monogramMarkup(mode, palette, scale = 1, x = 0, y = 0) {
-  const inner = monogramSvg(mode, palette)
-    .replace(/^[\s\S]*?<svg[^>]*>/, "")
-    .replace(/<\/svg>\s*$/, "");
-  return `<g transform="translate(${x} ${y}) scale(${scale})">${inner}</g>`;
+/** Inline markup for embedding a component inside a larger SVG. */
+export function inlineSvg(svg) {
+  return svg.replace(/^[\s\S]*?<svg[^>]*>/, "").replace(/<\/svg>\s*$/, "");
 }
-
-export const WORDMARK = "MMAKO LAW";

@@ -42,8 +42,8 @@ const a = (href, text, color, extra = "") =>
 const newEmail = `<table cellpadding="0" cellspacing="0" border="0" width="560" style="border-collapse:collapse;font-family:${SANS};width:560px;max-width:560px;">
   <tr>
     <td width="138" style="padding:2px 22px 0 0;vertical-align:top;width:138px;">
-      <img src="${LOGO_URL}" width="116" height="85" alt="${firm.name}"
-           style="display:block;border:0;outline:none;text-decoration:none;width:116px;height:85px;">
+      <img src="${LOGO_URL}" width="116" height="87" alt="${firm.name}"
+           style="display:block;border:0;outline:none;text-decoration:none;width:116px;height:87px;">
     </td>
     <td style="padding:0 0 0 22px;border-left:2px solid ${GOLD};vertical-align:top;">
 

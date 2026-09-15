@@ -2,13 +2,12 @@
 import fs from "node:fs";
 import path from "node:path";
 import { firm } from "./lib/tokens.mjs";
-import { monogramSvg } from "./lib/logo.mjs";
 import { renderPng, renderPdf, closeBrowser } from "./lib/render.mjs";
 import * as P from "./lib/print.mjs";
 
 const a = firm.address;
-const monoBone = `data:image/svg+xml;base64,${Buffer.from(monogramSvg("colour", { ink: P.BONE, gold: P.GOLD })).toString("base64")}`;
-const monoInk = `data:image/svg+xml;base64,${Buffer.from(monogramSvg("colour", { ink: P.INK, gold: P.GOLD })).toString("base64")}`;
+const monoBone = P.monoUri("light");
+const monoInk = P.monoUri("dark");
 
 const save = (base, dir, file, buf) => {
   fs.mkdirSync(path.join(base, dir), { recursive: true });
@@ -26,11 +25,7 @@ const darkSurface = `
     linear-gradient(90deg, rgba(255,255,255,.022) 1px, transparent 1px);
   background-size:100% 100%,100% 100%,72px 72px,72px 72px;`;
 
-const lockup = (h, tone, gapPx) => `<div style="display:inline-flex;flex-direction:column;align-items:center">
-  <img src="${tone === "light" ? monoBone : monoInk}" style="height:${h}px;width:auto;display:block">
-  <div style="font-family:${P.SANS};font-weight:320;letter-spacing:.26em;text-indent:.26em;
-              font-size:${(h * 0.2).toFixed(1)}px;color:${tone === "light" ? P.BONE : P.INK};
-              margin-top:${gapPx}px;white-space:nowrap">MMAKO LAW</div></div>`;
+const lockup = (h, tone) => P.logoImg("lockup", tone, h, "px");
 
 const css = P.baseCss + `.canvas{display:flex;overflow:hidden;position:relative}`;
 
@@ -108,7 +103,7 @@ save(D, "Social Templates", "social-announcement-1080x1080.png", await png(`
 save(D, "Social Templates", "social-portrait-1080x1350.png", await png(`
   <div id="c" class="canvas" style="width:1080px;height:1350px;${darkSurface}
        flex-direction:column;justify-content:space-between;padding:90px">
-    ${lockup(110, "light", 22)}
+    ${lockup(110, "light")}
     <div>
       <div style="width:64px;height:2px;background:${P.GOLD};margin-bottom:40px"></div>
       <div style="font-family:${P.DISPLAY};font-size:72px;line-height:1.16;color:${P.BONE}">
@@ -126,14 +121,16 @@ save(D, "Social Templates", "social-portrait-1080x1350.png", await png(`
 save(D, "Email Assets", "email-header-600x180.png", await png(`
   <div id="c" class="canvas" style="width:600px;height:180px;${darkSurface}
        align-items:center;padding:0 44px">
-    ${lockup(64, "light", 12)}
+    ${lockup(64, "light")}
     <div style="margin-left:auto;text-align:right;font-family:${P.SANS};font-size:13px;
                 letter-spacing:.2em;text-transform:uppercase;color:${P.GOLD}">${firm.tagline}</div>
   </div>`, 600, 180));
 
 /* Website assets already live in the site repo; mirror the key ones here. */
 fs.mkdirSync(path.join(D, "Website Assets"), { recursive: true });
-for (const f of ["logo-dark.png", "logo-light.png", "logo-mark-dark.png", "logo-mark-light.png", "favicon.ico"]) {
+/* The site now serves the mark as vector, so these mirror the SVGs it uses. */
+for (const f of ["logo.svg", "logo-light.svg", "logo-mark.svg", "logo-mark-light.svg",
+                 "logo-monogram.svg", "logo-monogram-light.svg", "favicon.ico"]) {
   fs.copyFileSync(path.join("public", f), path.join(D, "Website Assets", f));
   console.log("   Website Assets/" + f);
 }
@@ -147,12 +144,11 @@ const officeCss = P.baseCss + `@page{margin:0}.page{display:flex;overflow:hidden
 /* Door sign — 300 × 100 mm, brushed-dark plate. */
 const doorBody = `<div class="page" style="width:300mm;height:100mm;${darkSurface}
      align-items:center;justify-content:center;gap:18mm">
-  <img src="${monoBone}" style="height:38mm;width:auto;display:block">
+  ${P.logoImg("mono", "light", 38, "mm")}
   <div style="border-left:1.5pt solid ${P.GOLD};padding-left:14mm">
-    <div style="font-family:${P.SANS};font-weight:320;letter-spacing:.26em;font-size:9mm;
-                color:${P.BONE};white-space:nowrap">MMAKO LAW</div>
+    ${P.logoImg("horizontal", "light", 13, "mm")}
     <div style="font-family:${P.SANS};font-size:4mm;letter-spacing:.2em;text-transform:uppercase;
-                color:${P.GOLD};margin-top:4mm">${firm.tagline}</div>
+                color:${P.GOLD};margin-top:6mm">${firm.tagline}</div>
   </div>
 </div>`;
 save(O, "Door Signs", "door-sign-300x100mm.pdf",
@@ -161,10 +157,7 @@ save(O, "Door Signs", "door-sign-300x100mm.pdf",
 /* Reception signage — 900 × 300 mm. */
 const signBody = `<div class="page" style="width:900mm;height:300mm;background:${P.BONE};
      flex-direction:column;align-items:center;justify-content:center">
-  <img src="${monoInk}" style="height:115mm;width:auto;display:block">
-  <div style="font-family:${P.SANS};font-weight:320;letter-spacing:.3em;text-indent:.3em;
-              font-size:26mm;color:${P.INK};margin-top:22mm">MMAKO LAW</div>
-  <div style="width:70mm;height:1.6mm;background:${P.GOLD};margin-top:18mm"></div>
+  ${P.logoImg("lockup", "dark", 190, "mm")}
 </div>`;
 save(O, "Office Signage", "reception-signage-900x300mm.pdf",
   await renderPdf({ body: signBody, css: officeCss, widthMm: 900, heightMm: 300 }));
@@ -172,7 +165,7 @@ save(O, "Office Signage", "reception-signage-900x300mm.pdf",
 /* Presentation folder — front face artwork, A4 capacity (220 × 310 mm). */
 const folderBody = `<div class="page" style="width:226mm;height:316mm;${darkSurface}
      flex-direction:column;justify-content:space-between;padding:26mm 22mm">
-  ${lockup(150, "light", 26)}
+  ${lockup(150, "light")}
   <div>
     <div style="width:22mm;height:1.2mm;background:${P.GOLD};margin-bottom:9mm"></div>
     <div style="font-family:${P.DISPLAY};font-size:15mm;line-height:1.2;color:${P.BONE};max-width:150mm">

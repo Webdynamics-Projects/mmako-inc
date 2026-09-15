@@ -1,18 +1,17 @@
-/** Generates every file in "02 - LOGO". */
+/** Generates every file in "02 - LOGO" from the supplied artwork. */
 import fs from "node:fs";
 import path from "node:path";
-import { firm, colours } from "./lib/tokens.mjs";
-import { monogramSvg, MONO, LOCKUP, WORDMARK } from "./lib/logo.mjs";
+import { colours } from "./lib/tokens.mjs";
+import {
+  monogramSvg, wordmarkSvg, lockupSvg, horizontalSvg, SOURCE_COLOURS,
+} from "./lib/logo.mjs";
 import { renderPng, closeBrowser } from "./lib/render.mjs";
 
 const OUT = path.join("brand", "02 - LOGO");
-const INK = colours.primary[0].hex;
-const GOLD = colours.primary[1].hex;
+const BONE = colours.primary[2].hex;
 
-const dirs = [
-  "Primary Logo", "Secondary Logo", "Monogram",
-  "Black Logo", "White Logo", "Colour Logo", "Favicon",
-];
+const dirs = ["Primary Logo", "Secondary Logo", "Monogram",
+  "Black Logo", "White Logo", "Colour Logo", "Favicon"];
 for (const d of dirs) fs.mkdirSync(path.join(OUT, d), { recursive: true });
 
 const write = (dir, file, data) => {
@@ -20,147 +19,86 @@ const write = (dir, file, data) => {
   console.log("  ", path.join(dir, file));
 };
 
-/* --- Shared page styling for the rendered lockups ------------------------ */
-const css = `
-.stage{display:inline-flex;flex-direction:column;align-items:center;padding:8px}
-.row{display:inline-flex;align-items:center;gap:34px;padding:8px}
-.word{font-family:Inter,Arial,sans-serif;font-weight:300;letter-spacing:${LOCKUP.tracking}em;
-      white-space:nowrap;text-indent:${LOCKUP.tracking}em;line-height:1}
-.rule{height:3px}
-`;
-
-const monogramImg = (mode, h) =>
-  `<img style="height:${h}px;width:auto;display:block" src="data:image/svg+xml;base64,${
-    Buffer.from(monogramSvg(mode, { ink: INK, gold: GOLD })).toString("base64")
-  }">`;
-
-/** The supplied stacked lockup: monogram over wordmark over rule. */
-const lockupBody = (mode, h = 300) => {
-  const ink = mode === "white" ? "#FFFFFF" : mode === "black" ? "#000000" : INK;
-  const gold = mode === "white" ? "#FFFFFF" : mode === "black" ? "#000000" : GOLD;
-  const w = h * (MONO.width / MONO.height);
-  return `<div class="stage" id="art">
-    ${monogramImg(mode, h)}
-    <div class="word" style="font-size:${(h * LOCKUP.wordmarkSize).toFixed(1)}px;color:${ink};
-         margin-top:${(h * LOCKUP.wordmarkGap).toFixed(1)}px">${WORDMARK}</div>
-    <div class="rule" style="width:${(w * LOCKUP.ruleWidth).toFixed(1)}px;background:${gold};
-         margin-top:${(h * LOCKUP.ruleGap).toFixed(1)}px"></div>
-  </div>`;
-};
-
-/** Horizontal lockup: monogram beside the wordmark, for tight headers. */
-const horizontalBody = (mode, h = 150) => {
-  const ink = mode === "white" ? "#FFFFFF" : mode === "black" ? "#000000" : INK;
-  return `<div class="row" id="art">
-    ${monogramImg(mode, h)}
-    <div class="word" style="font-size:${(h * 0.28).toFixed(1)}px;color:${ink}">${WORDMARK}</div>
-  </div>`;
-};
-
-async function png(body, file, dir, width = 1800) {
-  const buf = await renderPng({ body, css, selector: "#art", width, height: 1000, scale: 2 });
-  write(dir, file, buf);
+/** Rasterises an SVG at a given width, on a transparent ground. */
+async function png(svg, width) {
+  const vb = svg.match(/viewBox="([\d.\- ]+)"/)[1].split(/\s+/).map(Number);
+  const height = Math.round((width * vb[3]) / vb[2]);
+  const body = `<img id="art" style="display:block;width:${width}px;height:${height}px"
+    src="data:image/svg+xml;base64,${Buffer.from(svg).toString("base64")}">`;
+  return renderPng({ body, selector: "#art", width: width + 40, height: height + 40, scale: 1 });
 }
 
 console.log("02 - LOGO");
 
-/* --- Primary + Colour (same artwork, both named for the kit's structure) -- */
+/* --- Primary and Colour: the stacked lockup exactly as supplied ----------- */
+const primary = lockupSvg("colour");
 for (const dir of ["Primary Logo", "Colour Logo"]) {
-  write(dir, "mmako-logo-primary.svg", lockupSvg("colour"));
-  await png(lockupBody("colour"), "mmako-logo-primary.png", dir);
+  write(dir, "mmako-logo-primary.svg", primary);
+  write(dir, "mmako-logo-primary.png", await png(primary, 2000));
+  /* Reversed: the ink strokes go to bone so the mark reads on dark grounds,
+     while the gold stays exactly as designed. */
+  const reversed = lockupSvg("colour", { ink: BONE });
+  write(dir, "mmako-logo-primary-reversed.svg", reversed);
+  write(dir, "mmako-logo-primary-reversed.png", await png(reversed, 2000));
 }
 
-/* --- Secondary (horizontal) ---------------------------------------------- */
-write("Secondary Logo", "mmako-logo-horizontal.svg", horizontalSvg("colour"));
-await png(horizontalBody("colour"), "mmako-logo-horizontal.png", "Secondary Logo", 1600);
-await png(horizontalBody("white"), "mmako-logo-horizontal-white.png", "Secondary Logo", 1600);
+/* --- Secondary: horizontal lockup for short bands ------------------------- */
+const horizontal = horizontalSvg("colour");
+write("Secondary Logo", "mmako-logo-horizontal.svg", horizontal);
+write("Secondary Logo", "mmako-logo-horizontal.png", await png(horizontal, 2000));
+const horizontalRev = horizontalSvg("colour", { ink: BONE });
+write("Secondary Logo", "mmako-logo-horizontal-reversed.svg", horizontalRev);
+write("Secondary Logo", "mmako-logo-horizontal-reversed.png", await png(horizontalRev, 2000));
 
-/* --- Monogram ------------------------------------------------------------ */
-write("Monogram", "mmako-monogram.svg", monogramSvg("colour", { ink: INK, gold: GOLD }));
+/* --- Monogram ------------------------------------------------------------- */
+write("Monogram", "mmako-monogram.svg", monogramSvg("colour"));
+write("Monogram", "mmako-monogram.png", await png(monogramSvg("colour"), 1200));
+write("Monogram", "mmako-monogram-reversed.svg", monogramSvg("colour", { ink: BONE }));
+write("Monogram", "mmako-monogram-reversed.png", await png(monogramSvg("colour", { ink: BONE }), 1200));
 write("Monogram", "mmako-monogram-black.svg", monogramSvg("black"));
 write("Monogram", "mmako-monogram-white.svg", monogramSvg("white"));
-await png(`<div id="art" style="padding:8px">${monogramImg("colour", 600)}</div>`, "mmako-monogram.png", "Monogram", 900);
+
+/* --- Wordmark, supplied separately so it can be locked up independently --- */
+write("Secondary Logo", "mmako-wordmark.svg", wordmarkSvg("colour"));
+write("Secondary Logo", "mmako-wordmark.png", await png(wordmarkSvg("colour"), 2000));
 
 /* --- One-colour versions -------------------------------------------------- */
 write("Black Logo", "mmako-logo-black.svg", lockupSvg("black"));
-await png(lockupBody("black"), "mmako-logo-black.png", "Black Logo");
+write("Black Logo", "mmako-logo-black.png", await png(lockupSvg("black"), 2000));
+write("Black Logo", "mmako-logo-horizontal-black.svg", horizontalSvg("black"));
 write("Black Logo", "mmako-monogram-black.svg", monogramSvg("black"));
 
 write("White Logo", "mmako-logo-white.svg", lockupSvg("white"));
-await png(lockupBody("white"), "mmako-logo-white.png", "White Logo");
+write("White Logo", "mmako-logo-white.png", await png(lockupSvg("white"), 2000));
+write("White Logo", "mmako-logo-horizontal-white.svg", horizontalSvg("white"));
 write("White Logo", "mmako-monogram-white.svg", monogramSvg("white"));
 
 /* --- Favicon -------------------------------------------------------------- */
-const faviconSvg = (() => {
-  /* Built from the shared geometry rather than copied by hand, so it can never
-     drift from the monogram. The mark is inset on the brand's ink ground. */
-  const pad = 0.15;
-  const scale = (64 * (1 - pad * 2)) / MONO.width;
-  const x = (64 - MONO.width * scale) / 2;
-  const y = (64 - MONO.height * scale) / 2;
-  const inner = monogramSvg("colour", { ink: "#FAFAF8", gold: GOLD })
-    .replace(/^[\s\S]*?<svg[^>]*>/, "")
-    .replace(/<\/svg>\s*$/, "");
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
-  <rect width="64" height="64" fill="${INK}"/>
-  <g transform="translate(${x.toFixed(2)} ${y.toFixed(2)}) scale(${scale.toFixed(5)})">${inner}</g>
+const mono = monogramSvg("colour", { ink: BONE });
+const vb = mono.match(/viewBox="([\d.\- ]+)"/)[1];
+const [, , mw, mh] = vb.split(/\s+/).map(Number);
+const pad = 0.16;
+const scale = Math.min((1 - pad * 2) / mw, (1 - pad * 2) / mh) * 64;
+write("Favicon", "favicon.svg",
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <rect width="64" height="64" fill="${colours.primary[0].hex}"/>
+  <g transform="translate(${((64 - mw * scale) / 2).toFixed(2)} ${((64 - mh * scale) / 2).toFixed(2)}) scale(${scale.toFixed(5)})">
+${mono.replace(/^[\s\S]*?<svg[^>]*>/, "").replace(/<\/svg>\s*$/, "").replace(/^/gm, "  ")}
+  </g>
 </svg>
-`;
-})();
-write("Favicon", "favicon.svg", faviconSvg);
-fs.copyFileSync("public/favicon.ico", path.join(OUT, "Favicon", "favicon.ico"));
-console.log("   Favicon/favicon.ico");
-fs.copyFileSync("app/icon.png", path.join(OUT, "Favicon", "apple-touch-icon-180.png"));
-console.log("   Favicon/apple-touch-icon-180.png");
-
-/* --- SVG builders that embed the wordmark as text ------------------------- */
-function lockupSvg(mode) {
-  const ink = mode === "white" ? "#FFFFFF" : mode === "black" ? "#000000" : INK;
-  const gold = mode === "white" ? "#FFFFFF" : mode === "black" ? "#000000" : GOLD;
-  const inner = monogramSvg(mode, { ink: INK, gold: GOLD })
-    .replace(/^[\s\S]*?<svg[^>]*>/, "").replace(/<\/svg>\s*$/, "");
-
-  const h = MONO.height;
-  const fs = h * LOCKUP.wordmarkSize;
-  const wordTop = h + h * LOCKUP.wordmarkGap;
-  const baseline = wordTop + fs * 0.727;            // Inter's cap height
-  const ruleY = baseline + h * LOCKUP.ruleGap;
-  const ruleW = MONO.width * LOCKUP.ruleWidth;
-  const boxW = Math.round(MONO.width * 1.56);       // the wordmark is the widest element
-  const boxH = Math.round(ruleY + 8);
-  const cx = boxW / 2;
-
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${boxW} ${boxH}" width="${boxW}" height="${boxH}" role="img" aria-label="${firm.markName} logo">
-  <g transform="translate(${((boxW - MONO.width) / 2).toFixed(1)} 0)">${inner}</g>
-  <text x="${cx.toFixed(1)}" y="${baseline.toFixed(1)}" text-anchor="middle"
-        font-family="Inter, Arial, sans-serif" font-size="${fs.toFixed(1)}" font-weight="300"
-        letter-spacing="${(fs * LOCKUP.tracking).toFixed(2)}"
-        fill="${ink}">${WORDMARK}</text>
-  <rect x="${(cx - ruleW / 2).toFixed(1)}" y="${ruleY.toFixed(1)}" width="${ruleW.toFixed(1)}" height="3" fill="${gold}"/>
-</svg>
-`;
+`);
+for (const f of ["favicon.ico", "apple-touch-icon-180.png"]) {
+  const src = f === "favicon.ico" ? "public/favicon.ico" : "app/icon.png";
+  if (fs.existsSync(src)) {
+    fs.copyFileSync(src, path.join(OUT, "Favicon", f));
+    console.log("   Favicon/" + f);
+  }
 }
 
-function horizontalSvg(mode) {
-  const ink = mode === "white" ? "#FFFFFF" : mode === "black" ? "#000000" : INK;
-  const inner = monogramSvg(mode, { ink: INK, gold: GOLD })
-    .replace(/^[\s\S]*?<svg[^>]*>/, "").replace(/<\/svg>\s*$/, "");
-
-  const h = 140;
-  const scale = h / MONO.height;
-  const markW = MONO.width * scale;
-  const gap = h * 0.26;
-  const fs = h * 0.28;
-  const textX = markW + gap;
-  const boxW = Math.round(textX + fs * 9.2 * (0.62 + LOCKUP.tracking));
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${boxW} ${h}" width="${boxW}" height="${h}" role="img" aria-label="${firm.markName} logo">
-  <g transform="scale(${scale.toFixed(4)})">${inner}</g>
-  <text x="${textX.toFixed(1)}" y="${(h * 0.6).toFixed(1)}" font-family="Inter, Arial, sans-serif"
-        font-size="${fs.toFixed(1)}" font-weight="300"
-        letter-spacing="${(fs * LOCKUP.tracking).toFixed(2)}" fill="${ink}">${WORDMARK}</text>
-</svg>
-`;
-}
+/* --- The artwork itself, so the source travels with the kit ---------------- */
+fs.copyFileSync(path.join("brand", "_source", "logo", "mmako-logo.svg"),
+  path.join(OUT, "Primary Logo", "mmako-logo-source.svg"));
+console.log("   Primary Logo/mmako-logo-source.svg");
 
 await closeBrowser();
-console.log("done");
+console.log(`  (artwork colours: ink ${SOURCE_COLOURS.ink}, gold ${SOURCE_COLOURS.gold})`);
