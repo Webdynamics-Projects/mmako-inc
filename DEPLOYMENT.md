@@ -125,9 +125,36 @@ before spending time on DNS, or the domain will go green and serve nothing.
 
 ## 4. Point GoDaddy at Vercel
 
-In GoDaddy: **My Products → Domains →** `mmakoinc.com` **→ DNS → Manage DNS**.
+### First: disconnect GoDaddy's own website
+
+Buying a domain at GoDaddy usually brings a **Websites + Marketing** (Airo) site
+with it, and GoDaddy often publishes one automatically. It is a real, live site —
+a light-coloured template with a stock photo and a heading like *Justice for
+Every Client* — and while it is connected, GoDaddy manages this domain's web
+records on its behalf. Editing the `A` record by hand is not enough: the builder
+can put its own records back.
+
+Check at **My Products**. If `mmakoinc.com` lists a *Websites + Marketing* or
+*Website Builder* product:
+
+1. Open it → **Settings → Domain** and **disconnect** the domain. Some plans call
+   this *Change domain* — move the builder site back to its free
+   `godaddysites.com` address.
+2. Better, if the firm is not using it: **unpublish or cancel** the product
+   outright. Nothing on it is needed — the real site is on Vercel.
+
+While you are in the domain's settings, check **Forwarding** too. Domain
+forwarding is stored separately from the DNS records and silently overrides
+them. It must be **off** for both the apex and `www`.
+
+> **How to recognise this.** A GoDaddy builder site on the free plan shows a
+> promotional bar across the very top of the page — *"Go from idea to live site
+> in minutes"*, with a **Start for free** button. That bar is never part of your
+> site. If it is visible on `mmakoinc.com`, GoDaddy is still serving the domain.
 
 ### Delete the parked records first
+
+In GoDaddy: **My Products → Domains →** `mmakoinc.com` **→ DNS → Manage DNS**.
 
 This is the step people miss. A new GoDaddy domain ships with records that point
 at GoDaddy's parking page, and adding Vercel's records alongside them does not
@@ -350,4 +377,73 @@ Production** on an earlier build — no redeploy needed.
 | Contact form says "isn't available right now" | `RESEND_API_KEY` missing | Add it in Vercel, redeploy |
 | Contact form says "We couldn't send your message" | Resend rejected it — usually an unverified `CONTACT_FROM_EMAIL` | Unset it, redeploy, finish verification first |
 | Certificate warning after DNS resolves | Vercel hasn't finished issuing | Wait ~15 minutes; then Settings → Domains → **Refresh** |
-| Old site still showing | DNS cached locally | Try a different network or mobile data; TTL has to expire |
+| Old site still showing | GoDaddy still serving the domain, or DNS cached locally | Work through *The domain still shows the GoDaddy page* below |
+
+### The domain still shows the GoDaddy page
+
+Vercel says *Ready*, the domain says *Valid Configuration*, and the browser still
+shows a GoDaddy template. Work through these in order — each step rules something
+out, so do not skip ahead.
+
+**1. Is the deployment itself fine?**
+
+Open the project's own Vercel address, `https://mmako-inc.vercel.app`. If the
+real site loads there, the build and the app are correct and the problem is
+entirely in the domain path — carry on. If it does *not* load there, the problem
+is the deployment rather than DNS; go back to section 1.
+
+**2. What is actually answering the domain?**
+
+Every response Vercel serves carries an `x-vercel-id` header. GoDaddy's does not.
+
+```
+curl -sI https://mmakoinc.com | grep -i "server\|x-vercel-id\|location"
+```
+
+On Windows, in PowerShell:
+
+```
+(Invoke-WebRequest https://mmakoinc.com -MaximumRedirection 0).Headers
+```
+
+- `server: Vercel`, or any `x-vercel-id` → **Vercel is serving the domain.** The
+  page in your browser is a cached copy. Go to step 4.
+- Anything else, or a `location:` header pointing at a `godaddysites.com` or
+  `.godaddy.com` address → **GoDaddy is still in the request path.** Go to step 3.
+
+**3. What does _your_ machine resolve the domain to?**
+
+A green result on `dnschecker.org` describes public resolvers, not your laptop.
+
+```
+nslookup mmakoinc.com          # Windows
+dig +short mmakoinc.com A      # macOS / Linux
+```
+
+The only answer should be the single IP shown in your Vercel dashboard.
+
+- **Two IPs come back** → a second `A` record on `@` survived the edit. Delete the
+  one that is not Vercel's.
+- **A GoDaddy IP comes back** → the record either never saved, or the website
+  builder or forwarding put it back. Re-do section 4, starting with *disconnect
+  GoDaddy's own website*.
+- **The correct IP comes back** → this is cache. Go to step 4.
+
+**4. Clear your own cache.**
+
+```
+ipconfig /flushdns                                              # Windows
+sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder   # macOS
+```
+
+Then hard-refresh the page: **Ctrl+Shift+R**, or **Cmd+Shift+R** on a Mac. If the
+old page persists, try a private window, and then a phone **with WiFi switched
+off** — mobile data goes through a different resolver entirely. That last test is
+the honest one: if the phone on mobile data shows the correct site, the setup is
+working and everything else is cache that will expire by itself.
+
+> **Why some networks lag.** The old GoDaddy records carried their own TTL before
+> you changed anything — often an hour, sometimes 24. Any resolver that fetched
+> the old answer shortly before the change keeps it for that full period, and
+> nothing you do at GoDaddy shortens it. It is normal for the site to be live on
+> one network and stale on another for a day, and it clears on its own.
