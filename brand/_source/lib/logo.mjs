@@ -16,7 +16,7 @@ export { SOURCE_COLOURS };
 /** Monogram dimensions, from the artwork. */
 export const MONO = { width: monogram.box.w, height: monogram.box.h };
 
-export const WORDMARK = "MMAKO LAW";
+export const WORDMARK = "MMAKO INC.";
 
 /**
  * Lockup proportions measured off the artwork, expressed relative to the
@@ -88,7 +88,7 @@ export function monogramSvg(mode = "colour", palette = {}) {
 /** The wordmark alone. */
 export function wordmarkSvg(mode = "colour", palette = {}) {
   return wrap(wordmark.parts, wordmark.box, mode, { ...defaults, ...palette },
-    "Mmako Law wordmark");
+    "Mmako Inc. wordmark");
 }
 
 /** The full stacked lockup exactly as supplied: monogram, wordmark, rule. */
@@ -100,7 +100,7 @@ export function lockupSvg(mode = "colour", palette = {}) {
   const y0 = monogram.box.y;
   const y1 = rule.box.y + rule.box.h;
   return wrap(parts, { x: x0, y: y0, w: x1 - x0, h: y1 - y0 }, mode,
-    { ...defaults, ...palette }, "Mmako Law logo");
+    { ...defaults, ...palette }, "Mmako Inc. logo");
 }
 
 /**
@@ -122,7 +122,7 @@ export function horizontalSvg(mode = "colour", palette = {}) {
   const ty = (m.h - w.h * scale) / 2;
   const boxW = tx + w.w * scale;
 
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${boxW.toFixed(3)} ${m.h.toFixed(3)}" width="${boxW.toFixed(0)}" height="${m.h.toFixed(0)}" role="img" aria-label="Mmako Law logo">
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${boxW.toFixed(3)} ${m.h.toFixed(3)}" width="${boxW.toFixed(0)}" height="${m.h.toFixed(0)}" role="img" aria-label="Mmako Inc. logo">
   <g transform="translate(${(-m.x).toFixed(3)} ${(-m.y).toFixed(3)})">
 ${render(monogram.parts, mode, p)}
   </g>

@@ -5,10 +5,10 @@
 | Colour | HEX | RGB | CMYK | Use |
 | --- | --- | --- | --- | --- |
 | **Mmako Ink** | `#0B0B0C` | 11, 11, 12 | 8 / 8 / 0 / 95 | Primary dark. Headers, footers, body text on light grounds, and the base for all dark surfaces. |
-| **Mmako Gold** | `#B7965E` | 183, 150, 94 | 0 / 18 / 49 / 28 | Brand accent, taken from the logo artwork itself. Rules, underlines, icon accents, button fills, the logo's diagonal. Never a large background fill. |
+| **Mmako Gold** | `#BB9B66` | 187, 155, 102 | 0 / 17 / 45 / 27 | Brand accent, taken from the logo artwork itself. Rules, underlines, icon accents, button fills, the logo's diagonal. Never a large background fill. |
 | **Bone** | `#FAFAF8` | 250, 250, 248 | 0 / 0 / 1 / 2 | Primary light ground. Page and section backgrounds. |
 | **Gold Deep** | `#85693B` | 133, 105, 59 | 0 / 21 / 56 / 48 | Gold text on light grounds. Derived from Mmako Gold by darkening at a fixed hue until it clears 4.5:1 on Bone 200 — the brand gold itself reaches only 2.4:1 there, so it must never be used for text on a light surface. |
-| **Gold Bright** | `#CFB78E` | 207, 183, 142 | 0 / 12 / 31 / 19 | Hover and active states on dark grounds only. A lift of Mmako Gold at the same hue. |
+| **Gold Bright** | `#D2BC96` | 210, 188, 150 | 0 / 10 / 29 / 18 | Hover and active states on dark grounds only. A lift of Mmako Gold at the same hue. |
 | **Warm Grey** | `#6B6A66` | 107, 106, 102 | 0 / 1 / 5 / 58 | Secondary body text, captions, labels on light grounds. |
 | **Bone 200** | `#F1F0EB` | 241, 240, 235 | 0 / 0 / 2 / 5 | Alternating section grounds, table zebra striping, muted panels. |
 | **Bone 300** | `#E3E1D9` | 227, 225, 217 | 0 / 1 / 4 / 11 | Hairlines and dividers on light grounds. |
@@ -46,10 +46,10 @@ Contrast ratios against the two ground colours. Values of 4.5 or above pass WCAG
 | Colour | on Bone `#FAFAF8` | on Ink `#0B0B0C` |
 | --- | --- | --- |
 | Mmako Ink | 18.83:1 ✅ | 1.00:1 ❌ |
-| Mmako Gold | 2.67:1 ❌ | 7.06:1 ✅ |
+| Mmako Gold | 2.51:1 ❌ | 7.49:1 ✅ |
 | Bone | 1.00:1 ❌ | 18.83:1 ✅ |
 | Gold Deep | 4.92:1 ✅ | 3.82:1 ⚠️ large text only |
-| Gold Bright | 1.86:1 ❌ | 10.13:1 ✅ |
+| Gold Bright | 1.77:1 ❌ | 10.66:1 ✅ |
 | Warm Grey | 5.18:1 ✅ | 3.63:1 ⚠️ large text only |
 | Bone 200 | 1.09:1 ❌ | 17.24:1 ✅ |
 | Bone 300 | 1.25:1 ❌ | 15.03:1 ✅ |

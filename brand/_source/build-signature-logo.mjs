@@ -1,7 +1,7 @@
 /**
  * Renders public/logo-signature.png — the logo the email signatures load.
  *
- * Uses the full stacked lockup so the signature carries the MMAKO LAW wordmark,
+ * Uses the full stacked lockup so the signature carries the MMAKO INC. wordmark,
  * not the monogram alone. Rendered at 2× the display size for retina screens.
  */
 import fs from "node:fs";

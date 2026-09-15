@@ -420,7 +420,7 @@ const rows = (list, per = 4) => {
 };
 
 const cover = `<div class="page" style="background-color:${P.INK};
-  background-image:radial-gradient(ellipse 80% 60% at 75% 0%, rgba(183,150,94,.18), transparent 60%);
+  background-image:radial-gradient(ellipse 80% 60% at 75% 0%, rgba(187,155,102,.18), transparent 60%);
   justify-content:space-between;padding:26mm 22mm">
   <div style="display:flex;flex-direction:column;align-items:flex-start">
     ${P.logoImg("lockup", "light", 62, "mm")}
@@ -430,7 +430,7 @@ const cover = `<div class="page" style="background-color:${P.INK};
     <div style="font-family:${P.DISPLAY};font-size:30pt;line-height:34pt;color:${P.BONE}">
       Brand Guidelines</div>
     <div style="font-family:${P.SANS};font-size:10pt;color:rgba(227,225,217,.65);margin-top:5mm">
-      ${firm.name} &nbsp;·&nbsp; Version 1.2 &nbsp;·&nbsp; ${new Date().toLocaleDateString("en-ZA", { month: "long", year: "numeric" })}
+      ${firm.name} &nbsp;·&nbsp; Version 1.3 &nbsp;·&nbsp; ${new Date().toLocaleDateString("en-ZA", { month: "long", year: "numeric" })}
     </div>
   </div>
 </div>`;
@@ -443,8 +443,9 @@ const body = [
     <p style="margin-top:4mm">${S.overview.split("\n\n")[1]}</p>
     <h2>The naming rule</h2>
     ${S.namingRule.split("\n\n").map((p) => `<p>${p}</p>`).join("")}
-    <div class="note"><strong>Open item.</strong> This rule assumes "Mmako Law" is the brand mark and
-    "Mmako Inc." the written name. Confirm before this document is circulated.</div>`),
+    <div class="note"><strong>Settled.</strong> The revised artwork's wordmark reads MMAKO INC., so
+    the mark and the written name agree. The earlier "Mmako Law" wordmark is retired and should not
+    appear in any new asset.</div>`),
 
   pg("01 — Brand Strategy", `<h1>Personality</h1>
     <p class="lead">Four traits. Each is written as a pair, because a trait without its limit
@@ -509,7 +510,7 @@ const body = [
     <div class="dont"><p><strong>Do not</strong> stretch, squash or otherwise change the proportions.</p></div>
     <div class="dont"><p><strong>Do not</strong> recolour the mark. Gold and ink are fixed; the only
       alternatives are the supplied all-black and all-white versions.</p></div>
-    <div class="dont"><p><strong>Do not</strong> retype the wordmark. MMAKO LAW appears only as the
+    <div class="dont"><p><strong>Do not</strong> retype the wordmark. MMAKO INC. appears only as the
       supplied artwork, never reset in a font.</p></div>
     <div class="dont"><p><strong>Do not</strong> add effects — shadows, glows, bevels, outlines or gradients.</p></div>
     <div class="dont"><p><strong>Do not</strong> rotate the logo or set it on an angle.</p></div>
@@ -686,23 +687,20 @@ const body = [
     </table>`),
 
   pg("Open items", `<h1>Before this goes to print</h1>
-    <p class="lead">Three things must be settled. Each affects finished artwork.</p>
-    <div class="note" style="margin:0 0 6mm"><strong>Settled since version 1.1.</strong> The palette
-    now takes its gold straight from the logo artwork — <strong>#B7965E</strong> — so the mark and
-    everything around it finally agree. Gold Deep and Gold Bright were re-derived from it at the
-    same hue. Separately, the whole type system moved to Montserrat, the geometric sans the logo's
-    own wordmark is set in.</div>
-    <h3>1. Mmako Law or Mmako Inc.</h3>
-    <p>The naming rule on page 2 assumes the logo is the brand mark and Mmako Inc. the written name.
-    Confirm it.</p>
-    <h3>2. Company details are placeholders</h3>
+    <p class="lead">Two things must be settled. Each affects finished artwork.</p>
+    <div class="note" style="margin:0 0 6mm"><strong>Settled since version 1.2.</strong> The firm
+    supplied revised artwork whose wordmark reads <strong>MMAKO INC.</strong> — so the mark and the
+    written name now agree and the naming question is closed. The palette takes its gold straight
+    from that artwork (<strong>#BB9B66</strong>), with Gold Deep and Gold Bright re-derived from it
+    at the same hue.</div>
+    <h3>1. Company details are placeholders</h3>
     <p>Registration number, VAT number and banking details appear as bracketed placeholders on the
     letterhead, invoice and legal templates. Supply them before anything is printed or issued.</p>
-    <h3>3. The confidentiality notice needs sign-off</h3>
+    <h3>2. The confidentiality notice needs sign-off</h3>
     <p>The wording in the email signature is a reasonable general form. It has not been reviewed
     against the firm's professional-indemnity or Legal Practice Council obligations.</p>
-    <div class="note">This document is version 1.2. Once the three items above are closed, reissue
-    it as version 1.3 and circulate that as the governing version.</div>`),
+    <div class="note">This document is version 1.3. Once the two items above are closed, reissue it
+    as version 1.4 and circulate that as the governing version.</div>`),
 ].join("");
 
 fs.writeFileSync(path.join(D10, "Mmako Inc. Brand Guidelines.pdf"),

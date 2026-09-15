@@ -26,16 +26,22 @@ const splitSubpaths = (d) =>
 const paths = [...svg.matchAll(/<path d="([^"]+)"[^>]*fill="(#[0-9a-fA-F]+)"/g)]
   .map(([, d, fill]) => ({ fill: fill.toLowerCase(), subs: splitSubpaths(d) }));
 
-const WHITE = "#ffffff";
-const ink = paths.find((p) => p.fill !== WHITE && p.subs.length > 5);
-const gold = paths.find((p) => p.fill !== WHITE && p.subs.length <= 5);
-if (!ink || !gold) throw new Error("Could not identify the ink and gold paths.");
+if (paths.length < 2) throw new Error("Expected at least an ink path and a gold path.");
+
+const viewBox = svg.match(/viewBox="([\d.\- ]+)"/)[1].split(/\s+/).map(Number);
 
 const browser = await chromium.launch(
   process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {},
 );
 const page = await browser.newPage();
-await page.setContent(`<svg id="s" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024"></svg>`);
+await page.setContent(`<svg id="s" xmlns="http://www.w3.org/2000/svg" viewBox="${viewBox.join(" ")}"></svg>`);
+
+/** Perceived lightness, 0–1. Used to spot the near-white backing shape. */
+function lightness(hex) {
+  const h = hex.replace("#", "");
+  const [r, g, b] = [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16) / 255);
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+}
 
 /** Exact bounds of a subpath, measured by the browser. */
 const bbox = async (d) => page.evaluate((dd) => {
@@ -54,17 +60,78 @@ const measure = async (subs, fill) => {
   return out;
 };
 
+/*
+ * Identify the three roles without relying on a specific hex.
+ *
+ * Exports of this logo carry a backing shape the size of the whole canvas with
+ * the artwork punched out of it by the even-odd rule. It is near-white, but the
+ * exact value varies between exports (#ffffff in one, #fefefe in another), so
+ * it is found by geometry and lightness instead: the path that covers almost
+ * the entire viewBox and is very light. Of what remains, the letterform carries
+ * far more subpaths than the accent.
+ */
+const canvasArea = viewBox[2] * viewBox[3];
+const measured = [];
+for (const p of paths) {
+  const first = await bbox(p.subs[0]);
+  measured.push({ ...p, coverage: (first.w * first.h) / canvasArea, light: lightness(p.fill) });
+}
+
+const artwork = measured.filter((p) => !(p.coverage > 0.9 && p.light > 0.85));
+if (artwork.length < 2) {
+  throw new Error(
+    `Expected two artwork paths after dropping the background; found ${artwork.length}. ` +
+    `Fills seen: ${measured.map((p) => `${p.fill} (coverage ${p.coverage.toFixed(2)}, lightness ${p.light.toFixed(2)})`).join(", ")}`,
+  );
+}
+
+const byDetail = [...artwork].sort((a, b) => b.subs.length - a.subs.length);
+const ink = byDetail[0];
+const gold = byDetail[byDetail.length - 1];
+if (ink === gold) throw new Error("Could not separate the ink path from the gold path.");
+
+const dropped = measured.filter((p) => !artwork.includes(p));
+if (dropped.length) {
+  console.log(`  background dropped: ${dropped.map((p) => p.fill).join(", ")}`);
+}
+
 const inkParts = await measure(ink.subs, ink.fill);
 const goldParts = await measure(gold.subs, gold.fill);
 await browser.close();
 
-/* The lockup stacks monogram, wordmark and rule, so a subpath's vertical
-   position is enough to say which component it belongs to. */
+/*
+ * Split the lockup into its three components.
+ *
+ * The monogram is separated from the type below it by the largest vertical gap
+ * in the artwork, which is found rather than assumed — hard-coding a y value
+ * breaks the moment the canvas or the spacing changes. Below that boundary the
+ * two remaining components are told apart by colour, not position: the wordmark
+ * is ink and the rule is gold. Position alone is not enough, because a full
+ * stop at the end of the wordmark sits lower than the letters and would
+ * otherwise be swept in with the rule.
+ */
 const all = [...inkParts, ...goldParts];
-const band = (p) => (p.y + p.h / 2 < 600 ? "monogram" : p.y + p.h / 2 < 700 ? "wordmark" : "rule");
+
+const centres = all.map((p) => p.y + p.h / 2).sort((a, b) => a - b);
+let boundary = centres[0];
+let widest = 0;
+for (let i = 1; i < centres.length; i++) {
+  const gap = centres[i] - centres[i - 1];
+  if (gap > widest) {
+    widest = gap;
+    boundary = (centres[i] + centres[i - 1]) / 2;
+  }
+}
+console.log(`  monogram/type boundary at y ${boundary.toFixed(1)} (gap of ${widest.toFixed(1)})`);
+
+const band = (p) => {
+  if (p.y + p.h / 2 < boundary) return "monogram";
+  return p.fill === gold.fill ? "rule" : "wordmark";
+};
 
 const group = (name) => {
   const parts = all.filter((p) => band(p) === name);
+  if (!parts.length) throw new Error(`No paths landed in the "${name}" group.`);
   const x0 = Math.min(...parts.map((p) => p.x));
   const y0 = Math.min(...parts.map((p) => p.y));
   const x1 = Math.max(...parts.map((p) => p.x + p.w));

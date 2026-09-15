@@ -19,8 +19,8 @@ const save = (base, dir, file, buf) => {
 const darkSurface = `
   background-color:${P.INK};
   background-image:
-    radial-gradient(ellipse 80% 60% at 75% 0%, rgba(183,150,94,.16), transparent 60%),
-    radial-gradient(ellipse 60% 50% at 0% 100%, rgba(183,150,94,.07), transparent 65%),
+    radial-gradient(ellipse 80% 60% at 75% 0%, rgba(187,155,102,.16), transparent 60%),
+    radial-gradient(ellipse 60% 50% at 0% 100%, rgba(187,155,102,.07), transparent 65%),
     linear-gradient(rgba(255,255,255,.022) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255,255,255,.022) 1px, transparent 1px);
   background-size:100% 100%,100% 100%,72px 72px,72px 72px;`;

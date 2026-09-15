@@ -14,7 +14,7 @@ import { site } from "@/lib/site";
  */
 
 /* Aspect ratios of the generated files, from the artwork's own geometry. */
-const RATIO = { lockup: 1.345, horizontal: 4.314 } as const;
+const RATIO = { lockup: 1.337, horizontal: 4.283 } as const;
 
 type LogoProps = {
   tone?: "dark" | "light";
