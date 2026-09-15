@@ -1,0 +1,145 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   Mmako Inc design tokens
+   --------------------------------------------------------------------------- */
+@theme {
+  --color-ink: #0b0b0c;
+  --color-ink-800: #17171a;
+  --color-ink-700: #24242a;
+  --color-ink-600: #3a3a42;
+
+  --color-gold: #b7965e;
+  --color-gold-bright: #cfb78e;
+  /* Derived from --color-gold by darkening at a fixed hue until it clears WCAG
+     AA (4.5:1) on Bone 200, the darkest light ground. Gold *text* on a light
+     surface uses this; --color-gold itself only reaches 2.4:1 there. The base
+     gold stays for rules, icons and text on dark surfaces, where it has
+     plenty of contrast. */
+  --color-gold-dim: #85693b;
+
+  --color-bone: #fafaf8;
+  --color-bone-200: #f1f0eb;
+  --color-bone-300: #e3e1d9;
+
+  --color-warm-grey: #6b6a66;
+  --color-warm-grey-light: #9a9892;
+
+  /* One family carries the whole system. The serif in the identity lives in the
+     logo's monogram; the type is geometric sans throughout, which is what the
+     logo's own wordmark is set in. Both tokens are kept so display and body can
+     diverge later without touching every component. */
+  --font-display: var(--font-montserrat), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-sans: var(--font-montserrat), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --ease-out-soft: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-bone);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    /* Montserrat runs wide, so body copy gets a little more leading than the
+       previous face needed to keep the measure comfortable. */
+    line-height: 1.75;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    /* Montserrat is geometric and fairly light in the middle weights, so
+       headings sit at 600 and take tighter tracking than a serif would. */
+    font-weight: 600;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Visible, on-brand focus ring for keyboard users across the dark/light split. */
+  :focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  ::selection {
+    background-color: var(--color-gold);
+    color: var(--color-ink);
+  }
+}
+
+@layer components {
+  /* Thin gold rule used as a section marker. */
+  .rule-gold {
+    display: block;
+    width: 2.5rem;
+    height: 1px;
+    background-color: var(--color-gold);
+  }
+
+  /* Textured dark surface for the hero and closing bands: a soft radial glow
+     plus a faint grid, so the dark sections have depth without photography. */
+  .surface-dark {
+    background-color: var(--color-ink);
+    background-image:
+      radial-gradient(
+        ellipse 80% 60% at 75% 0%,
+        rgba(183, 150, 94, 0.16),
+        transparent 60%
+      ),
+      radial-gradient(
+        ellipse 60% 50% at 0% 100%,
+        rgba(183, 150, 94, 0.07),
+        transparent 65%
+      ),
+      linear-gradient(rgba(255, 255, 255, 0.022) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px);
+    background-size: 100% 100%, 100% 100%, 72px 72px, 72px 72px;
+  }
+}
+
+@layer utilities {
+  /* Scroll reveal. The default state is visible; the JS in components/Reveal
+     only sets data-reveal="pending" once it has an observer ready to undo it. */
+  .reveal[data-reveal="pending"] {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  .reveal[data-revealed="true"] {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity 0.5s var(--ease-out-soft) var(--reveal-delay, 0ms),
+      transform 0.5s var(--ease-out-soft) var(--reveal-delay, 0ms);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .reveal[data-reveal="pending"] {
+    opacity: 1;
+    transform: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
