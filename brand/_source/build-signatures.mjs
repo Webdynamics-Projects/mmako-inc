@@ -31,17 +31,21 @@ const SERIF = typography.office.stack;
 
 /* Hosted on the firm's own domain so it loads for every recipient. */
 const LOGO_URL = `${firm.url}/logo-signature.png`;
-const p = people.director;
 
 const a = (href, text, color, extra = "") =>
   `<a href="${href}" style="color:${color};text-decoration:none;${extra}">${text}</a>`;
+
+/* A role mailbox has no `title` — "Technical Support" is already the name, and
+   repeating it as a title would read "Technical Support | Technical Support".
+   In that case the subtitle carries the firm name alone. */
+const subtitle = (p, sep) => (p.title ? `${p.title}${sep}${firm.name}` : firm.name);
 
 /* ---------------------------------------------------------------------------
    Primary signature — new outgoing email.
    Full identity: logo, name, title, firm, full contact block, address and the
    confidentiality notice.
    ------------------------------------------------------------------------- */
-const newEmail = `<table cellpadding="0" cellspacing="0" border="0" width="560" style="border-collapse:collapse;font-family:${SANS};width:560px;max-width:560px;">
+const newEmail = (p) => `<table cellpadding="0" cellspacing="0" border="0" width="560" style="border-collapse:collapse;font-family:${SANS};width:560px;max-width:560px;">
   <tr>
     <td width="138" style="padding:2px 22px 0 0;vertical-align:top;width:138px;">
       <img src="${LOGO_URL}" width="116" height="87" alt="${firm.name}"
@@ -54,7 +58,7 @@ const newEmail = `<table cellpadding="0" cellspacing="0" border="0" width="560" 
       </div>
       <div style="font-family:${SANS};font-size:12px;line-height:18px;color:${GOLD_DEEP};
                   letter-spacing:1.4px;text-transform:uppercase;padding-top:2px;">
-        ${p.title} &nbsp;|&nbsp; ${firm.name}
+        ${subtitle(p, " &nbsp;|&nbsp; ")}
       </div>
 
       <table cellpadding="0" cellspacing="0" border="0"
@@ -99,14 +103,14 @@ const newEmail = `<table cellpadding="0" cellspacing="0" border="0" width="560" 
    Stripped to one identity line and one contact line so it does not pile up
    down a long thread. No logo, no disclaimer.
    ------------------------------------------------------------------------- */
-const reply = `<table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;font-family:${SANS};">
+const reply = (p) => `<table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;font-family:${SANS};">
   <tr>
     <td style="border-left:2px solid ${GOLD};padding:2px 0 2px 14px;">
       <div style="font-family:${SERIF};font-size:14px;line-height:19px;color:${INK};font-weight:bold;">
         ${p.name}
         <span style="font-family:${SANS};font-size:11px;font-weight:normal;color:${GOLD_DEEP};
                      letter-spacing:1.2px;text-transform:uppercase;">
-          &nbsp;&nbsp;${p.title}, ${firm.name}
+          &nbsp;&nbsp;${subtitle(p, ", ")}
         </span>
       </div>
       <div style="font-family:${SANS};font-size:12px;line-height:19px;color:${GREY};padding-top:3px;">
@@ -127,18 +131,9 @@ const page = (title, note, sig) => `<!doctype html>
 ${sig}
 </body></html>`;
 
-fs.writeFileSync(path.join(OUT, "signature-new-email.html"),
-  page("Mmako Inc. — signature (new email)",
-       "PRIMARY SIGNATURE. Use on new outgoing email.", newEmail));
-
-fs.writeFileSync(path.join(OUT, "signature-reply.html"),
-  page("Mmako Inc. — signature (reply)",
-       "SECONDARY SIGNATURE. Use on replies and forwards.", reply));
-
-/* Plain-text fallbacks, for clients set to compose in plain text. */
-fs.writeFileSync(path.join(OUT, "signature-new-email.txt"),
+const textNew = (p) =>
 `${p.name}
-${p.title} | ${firm.name}
+${subtitle(p, " | ")}
 
 ${p.phone}
 ${p.email}
@@ -151,12 +146,33 @@ This email and any attachments are confidential and intended solely for the
 addressee. If you have received it in error, please notify us and delete it.
 ${firm.legalName} accepts no liability for any unauthorised use or disclosure
 of its contents.
-`);
+`;
 
-fs.writeFileSync(path.join(OUT, "signature-reply.txt"),
-`${p.name} | ${p.title}, ${firm.name}
+const textReply = (p) =>
+`${p.name} | ${subtitle(p, ", ")}
 ${p.phone} · ${p.email} · ${firm.url}
-`);
+`;
+
+/* The director's files keep their original unprefixed names — they are the
+   ones already installed and referenced in the kit's README. */
+const sets = [
+  { person: people.director, prefix: "signature", who: people.director.name },
+  { person: people.support, prefix: "signature-support", who: people.support.name },
+];
+
+for (const { person, prefix, who } of sets) {
+  fs.writeFileSync(path.join(OUT, `${prefix}-new-email.html`),
+    page(`${firm.name} — signature (new email, ${who})`,
+         `PRIMARY SIGNATURE — ${who}. Use on new outgoing email.`, newEmail(person)));
+
+  fs.writeFileSync(path.join(OUT, `${prefix}-reply.html`),
+    page(`${firm.name} — signature (reply, ${who})`,
+         `SECONDARY SIGNATURE — ${who}. Use on replies and forwards.`, reply(person)));
+
+  /* Plain-text fallbacks, for clients set to compose in plain text. */
+  fs.writeFileSync(path.join(OUT, `${prefix}-new-email.txt`), textNew(person));
+  fs.writeFileSync(path.join(OUT, `${prefix}-reply.txt`), textReply(person));
+}
 
 console.log("06 - STATIONERY/Email Signature");
 for (const f of fs.readdirSync(OUT)) console.log("  ", f);

@@ -75,14 +75,23 @@ Word will then open a fresh copy each time instead of the original.
 
 ## Installing the email signatures
 
-Two signatures are supplied, in `06 - STATIONERY/Email Signature/`.
+Two pairs are supplied, in `06 - STATIONERY/Email Signature/` — one for the director and one
+for the `info@` support mailbox. Each pair has a full version for new mail and a short one for
+replies, so a signature does not pile up down a long thread.
 
 | File | When to use it |
 | --- | --- |
-| `signature-new-email.html` | **Primary** — new outgoing email. Full identity block. |
-| `signature-reply.html` | **Secondary** — replies and forwards. One identity line, no logo. |
+| `signature-new-email.html` | **Dalen Mmako, primary** — new outgoing email. Full identity block. |
+| `signature-reply.html` | **Dalen Mmako, secondary** — replies and forwards. One identity line, no logo. |
+| `signature-support-new-email.html` | **Technical Support, primary** — new outgoing email from `info@`. |
+| `signature-support-reply.html` | **Technical Support, secondary** — replies and forwards from `info@`. |
 
 Plain-text versions (`.txt`) are included for anyone composing in plain text.
+
+The support pair is for a role mailbox rather than a person, so it carries no job title —
+"Technical Support" is the name, and the line beneath it is the firm. Its telephone number is the
+director's, as instructed, which means support calls ring his mobile; if a separate support line is
+added later, set it in `people.support` in `_source/lib/tokens.mjs` and rebuild.
 
 **Before installing:** the signature loads its logo from `https://mmakoinc.com/logo-signature.png`.
 That file ships with the website, so it works as soon as the site is live. If the site is not yet
