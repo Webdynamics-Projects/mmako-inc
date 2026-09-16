@@ -115,14 +115,49 @@ ignores webfonts), no background images, and a fixed 560px width.
 
 ### Before you start
 
-**Install Montserrat on every machine.** Without it the signature composes in Century Gothic or
-Arial. Free from [Google Fonts](https://fonts.google.com/specimen/Montserrat): download, unzip,
-select the `.ttf` files, right-click → **Install for all users**. The same font the Word templates
-need, so this is one job for both.
+**Install Montserrat on every machine**, or the signature composes in Century Gothic or Arial. It
+is free from [Google Fonts](https://fonts.google.com/specimen/Montserrat), and it is the same font
+the Word templates need, so this is one job for both.
 
-**Work out which Outlook is in front of you.** There are two on Windows and the menus are nothing
-alike. Look at the top-right of the window: a **New Outlook** toggle means the new one; a **File**
-menu at the top-left means classic.
+The download contains two variable fonts at the top level and a **`static`** folder. **Install the
+ones in `static`.** Office handles variable fonts poorly, and installing only those is why
+Montserrat sometimes appears in the font menu but will not apply.
+
+*On a Mac:* quit Outlook and Word first (**Cmd+Q**, not just closing the window — Office reads the
+font list at launch). Open the unzipped folder, go into `static`, select every `.ttf` with
+**Cmd+A**, then double-click. Font Book opens with them listed — click **Install**. If it warns
+about duplicates, resolve them automatically. Reopen Outlook.
+
+*On Windows:* select the `.ttf` files in `static`, right-click → **Install for all users**.
+
+**Work out which Outlook is in front of you**, because the menus differ:
+
+| | Where signatures live |
+| --- | --- |
+| **Outlook for Mac** | **Outlook → Settings** (Cmd+,) → **Signatures**. Older builds: Outlook → Preferences → Signatures. |
+| **New Outlook for Windows** (a *New Outlook* toggle, top right) | gear → Accounts → Signatures |
+| **Classic Outlook for Windows** (a *File* menu, top left) | File → Options → Mail → Signatures |
+
+### Outlook for Mac
+
+1. **Outlook → Settings** (**Cmd+,**) → **Signatures**.
+2. Click **+**. Name it `Mmako — new mail`.
+3. Open `signature-new-email.html` in Chrome or Safari, **Cmd+A**, **Cmd+C**, click into the
+   signature editing area and **Cmd+V**. Close the editing window — it saves on close.
+4. Repeat with **+** for `Mmako — reply`, pasting `signature-reply.html`.
+5. Back on the Signatures screen, under **Choose default signature**, pick the **account** first,
+   then set **New messages** to the first and **Replies/forwards** to the second.
+6. Open a new message to check. Signatures do not appear in windows that were already open.
+
+> **If the paste arrives as plain text or loses the gold rule**, the wrong paste command was used.
+> **Cmd+V** keeps the formatting; **Cmd+Shift+V** strips it, which is the opposite of what is
+> wanted here.
+
+> **There is no file-copy shortcut on a Mac.** Outlook for Mac keeps signatures inside its profile
+> database rather than as loose files, so the Windows trick below does not apply — repeat the paste
+> on each laptop. It takes about two minutes each. Where the mailboxes are Microsoft 365 accounts,
+> signatures set in the newest Outlook for Mac may sync by themselves; check the second laptop
+> before assuming it for the rest.
 
 ### New Outlook for Windows
 
@@ -161,9 +196,10 @@ practical consequence when one person handles both mailboxes:
 Adding `info@` as a separate account is the tidier arrangement wherever the mailbox has its own
 credentials.
 
-### Rolling it out to several PCs
+### Rolling it out to several Windows PCs
 
-Set one machine up, check it, then copy rather than repeating the paste on each.
+Set one machine up, check it, then copy rather than repeating the paste on each. This applies to
+classic Outlook on Windows only — see above for Macs.
 
 Classic Outlook keeps signatures as files. Paste this into File Explorer's address bar:
 
