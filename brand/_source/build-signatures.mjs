@@ -41,56 +41,45 @@ const a = (href, text, color, extra = "") =>
 const subtitle = (p, sep) => (p.title ? `${p.title}${sep}${firm.name}` : firm.name);
 
 /* ---------------------------------------------------------------------------
-   Primary signature — new outgoing email.
-   Full identity: logo, name, title, firm, full contact block, address and the
-   confidentiality notice.
+   Kept deliberately flat.
+
+   Outlook composes through Word's HTML writer, which rewrites every inline
+   style into a class definition, keeps the inline copy, and adds an `mso-`
+   equivalent for each property it recognises. The expansion runs to roughly
+   thirty times the source, so a signature that is merely tidy on disk can push
+   a short message past Gmail's 102KB body limit and be shown as "Message
+   clipped".
+
+   Three things keep that in check, and they are the reason this markup looks
+   plainer than it needs to:
+     - one table, not nested ones;
+     - the font stack set on the table and its two cells, not on every line;
+     - capitals typed as capitals rather than produced with `text-transform`,
+       which Word expands into several properties per element.
    ------------------------------------------------------------------------- */
-const newEmail = (p) => `<table cellpadding="0" cellspacing="0" border="0" width="560" style="border-collapse:collapse;font-family:${SANS};width:560px;max-width:560px;">
+
+const caps = (t) => t.toUpperCase();
+
+/* Primary signature — new outgoing email. Full identity, address and notice. */
+const newEmail = (p) => `<table cellpadding="0" cellspacing="0" border="0" width="560" style="border-collapse:collapse;font-family:${SANS};color:${GREY};font-size:12px;">
   <tr>
-    <td width="138" style="padding:2px 22px 0 0;vertical-align:top;width:138px;">
-      <img src="${LOGO_URL}" width="116" height="87" alt="${firm.name}"
-           style="display:block;border:0;outline:none;text-decoration:none;width:116px;height:87px;">
+    <td width="138" valign="top" style="padding:2px 22px 16px 0;">
+      <img src="${LOGO_URL}" width="116" height="87" alt="${firm.name}" style="display:block;border:0;">
     </td>
-    <td style="padding:0 0 0 22px;border-left:2px solid ${GOLD};vertical-align:top;">
-
-      <div style="font-family:${SERIF};font-size:17px;line-height:22px;color:${INK};font-weight:bold;">
-        ${p.name}
+    <td valign="top" style="padding:0 0 16px 22px;border-left:2px solid ${GOLD};font-family:${SANS};">
+      <div style="font-size:17px;line-height:22px;color:${INK};font-weight:bold;">${p.name}</div>
+      <div style="font-size:12px;line-height:18px;color:${GOLD_DEEP};letter-spacing:1.4px;padding-top:2px;">${caps(subtitle(p, " | "))}</div>
+      <div style="font-size:12px;line-height:20px;padding-top:20px;">
+        ${a(`tel:${p.phoneE164}`, p.phone, GREY)} &middot; ${a(`mailto:${p.email}`, p.email, GREY)}<br>
+        ${a(firm.url, firm.domain, GOLD_DEEP, "font-weight:bold;")}
       </div>
-      <div style="font-family:${SANS};font-size:12px;line-height:18px;color:${GOLD_DEEP};
-                  letter-spacing:1.4px;text-transform:uppercase;padding-top:2px;">
-        ${subtitle(p, " &nbsp;|&nbsp; ")}
+      <div style="font-size:11px;line-height:17px;padding-top:8px;">
+        ${firm.address.line1}, ${firm.address.line2}<br>${firm.address.city}, ${firm.address.postalCode}
       </div>
-
-      <table cellpadding="0" cellspacing="0" border="0"
-             style="border-collapse:collapse;padding-top:10px;margin-top:10px;">
-        <tr>
-          <td style="font-family:${SANS};font-size:12px;line-height:20px;color:${GREY};padding-top:10px;">
-            ${a(`tel:${p.phoneE164}`, p.phone, GREY)}
-            &nbsp;&middot;&nbsp;
-            ${a(`mailto:${p.email}`, p.email, GREY)}
-            <br>
-            ${a(firm.url, firm.domain, GOLD_DEEP, "font-weight:bold;")}
-          </td>
-        </tr>
-        <tr>
-          <td style="font-family:${SANS};font-size:11px;line-height:17px;color:${GREY};padding-top:8px;">
-            ${firm.address.line1}, ${firm.address.line2}<br>
-            ${firm.address.city}, ${firm.address.postalCode}
-          </td>
-        </tr>
-      </table>
-
     </td>
   </tr>
   <tr>
-    <td colspan="2" style="padding-top:16px;">
-      <table cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;">
-        <tr><td style="border-top:1px solid ${RULE};font-size:0;line-height:0;height:1px;">&nbsp;</td></tr>
-      </table>
-    </td>
-  </tr>
-  <tr>
-    <td colspan="2" style="font-family:${SANS};font-size:10px;line-height:15px;color:#8A8984;padding-top:10px;">
+    <td colspan="2" style="border-top:1px solid ${RULE};font-family:${SANS};font-size:10px;line-height:15px;color:#8A8984;padding-top:10px;">
       This email and any attachments are confidential and intended solely for the addressee.
       If you have received it in error, please notify us and delete it. ${firm.legalName} accepts
       no liability for any unauthorised use or disclosure of its contents.
@@ -98,27 +87,14 @@ const newEmail = (p) => `<table cellpadding="0" cellspacing="0" border="0" width
   </tr>
 </table>`;
 
-/* ---------------------------------------------------------------------------
-   Secondary signature — replies and forwards.
-   Stripped to one identity line and one contact line so it does not pile up
-   down a long thread. No logo, no disclaimer.
-   ------------------------------------------------------------------------- */
-const reply = (p) => `<table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;font-family:${SANS};">
+/* Secondary signature — replies and forwards. One identity line, one contact
+   line, no logo and no notice, so it does not pile up down a long thread. */
+const reply = (p) => `<table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;font-family:${SANS};color:${GREY};font-size:12px;">
   <tr>
-    <td style="border-left:2px solid ${GOLD};padding:2px 0 2px 14px;">
-      <div style="font-family:${SERIF};font-size:14px;line-height:19px;color:${INK};font-weight:bold;">
-        ${p.name}
-        <span style="font-family:${SANS};font-size:11px;font-weight:normal;color:${GOLD_DEEP};
-                     letter-spacing:1.2px;text-transform:uppercase;">
-          &nbsp;&nbsp;${subtitle(p, ", ")}
-        </span>
-      </div>
-      <div style="font-family:${SANS};font-size:12px;line-height:19px;color:${GREY};padding-top:3px;">
-        ${a(`tel:${p.phoneE164}`, p.phone, GREY)}
-        &nbsp;&middot;&nbsp;
-        ${a(`mailto:${p.email}`, p.email, GREY)}
-        &nbsp;&middot;&nbsp;
-        ${a(firm.url, firm.domain, GOLD_DEEP, "font-weight:bold;")}
+    <td style="border-left:2px solid ${GOLD};padding:2px 0 2px 14px;font-family:${SANS};">
+      <div style="font-size:14px;line-height:19px;color:${INK};font-weight:bold;">${p.name}<span style="font-size:11px;font-weight:normal;color:${GOLD_DEEP};letter-spacing:1.2px;">&nbsp;&nbsp;${caps(subtitle(p, ", "))}</span></div>
+      <div style="font-size:12px;line-height:19px;padding-top:3px;">
+        ${a(`tel:${p.phoneE164}`, p.phone, GREY)} &middot; ${a(`mailto:${p.email}`, p.email, GREY)} &middot; ${a(firm.url, firm.domain, GOLD_DEEP, "font-weight:bold;")}
       </div>
     </td>
   </tr>
