@@ -25,7 +25,7 @@ export default function AboutPage() {
         eyebrow="About"
         title="A modern approach to legal practice"
         subtitle="Built for the pace of modern business."
-        body="Mmako Inc. was founded to give everyday businesses and individuals legal support that's clear, practical, and genuinely useful — not buried in jargon or billed by the hour."
+        body="Mmako Inc. is a modern law firm with a straightforward approach to the law. We believe in clear advice, thoughtful legal thinking and practical solutions, delivered with the care and professionalism that every matter deserves."
       />
 
       {/* Not the traditional firm ------------------------------------------ */}

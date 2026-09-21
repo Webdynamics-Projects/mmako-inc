@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Mmako Inc. — Modern Legal Partner",
     description:
-      "Legal counsel built for how business actually moves. Clear, fast, outcome-focused legal support.",
+      "Legal counsel built for how the world actually moves. Modern, practical legal counsel grounded in sound legal principles.",
     url: "/",
   },
 };
@@ -89,11 +89,11 @@ export default function HomePage() {
         <div className="flex flex-col items-start gap-8 lg:flex-row lg:items-center lg:justify-between">
           <div className="max-w-xl">
             <h2 className="text-3xl leading-[1.15] text-bone sm:text-4xl">
-              Let&apos;s talk about what you&apos;re dealing with
+              Let&apos;s talk about your legal needs
             </h2>
             <p className="mt-4 text-base leading-relaxed text-bone-300/70">
-              Tell us the situation and we&apos;ll tell you, plainly, where you
-              stand.
+              Tell us a little about your matter, and let&apos;s discuss how we
+              can assist.
             </p>
           </div>
           <Button href="/contact" size="lg" className="shrink-0">

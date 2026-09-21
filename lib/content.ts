@@ -1,12 +1,11 @@
 export const services = [
   {
     number: "01",
-    title: "Business & Corporate Advisory",
+    title: "Legal and Corporate Advisory",
     description: "Solid foundations for modern enterprises — structured to scale.",
     items: [
-      "Company formation",
-      "Structuring & restructuring",
-      "Shareholder agreements",
+      "Company incorporation",
+      "Corporate restructuring",
       "Corporate governance",
     ],
   },

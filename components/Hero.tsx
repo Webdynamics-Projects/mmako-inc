@@ -43,13 +43,13 @@ export function Hero() {
 
           <h1 className="text-[2.375rem] leading-[1.12] text-bone sm:text-[3.25rem] lg:text-[4rem]">
             Legal counsel built for{" "}
-            <span className="italic text-gold">how business actually moves</span>
+            <span className="italic text-gold">how the world actually moves</span>
           </h1>
 
           <p className="mt-7 max-w-2xl text-base leading-relaxed text-bone-300/75 sm:text-lg">
-            From first contract to first dispute, Mmako Inc. gives founders,
-            growing companies, and individuals legal support that&apos;s clear,
-            fast, and focused on outcomes.
+            Mmako Inc. offers modern, practical legal counsel grounded in sound
+            legal principles and a clear understanding of our clients&rsquo;
+            needs.
           </p>
 
           <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
