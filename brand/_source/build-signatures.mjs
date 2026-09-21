@@ -27,7 +27,6 @@ const RULE = colours.secondary[4].hex;
 /* Montserrat first for anyone who has it installed, then the safe fallbacks.
    Mail clients that ignore the first two land on Arial, which is fine. */
 const SANS = typography.office.stack;
-const SERIF = typography.office.stack;
 
 /* Hosted on the firm's own domain so it loads for every recipient. */
 const LOGO_URL = `${firm.url}/logo-signature.png`;

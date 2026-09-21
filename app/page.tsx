@@ -2,17 +2,9 @@ import type { Metadata } from "next";
 import { Hero } from "@/components/Hero";
 import { Section, SectionHeader } from "@/components/Section";
 import { Button } from "@/components/Button";
-import { Card } from "@/components/Card";
 import { ServiceCard } from "@/components/ServiceCard";
 import { Reveal } from "@/components/Reveal";
-import { iconMap } from "@/components/Icons";
-import {
-  valueStrip,
-  clientTypes,
-  services,
-  whyMmako,
-  process,
-} from "@/lib/content";
+import { services, whyMmako } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "Modern Legal Partner",
@@ -31,57 +23,6 @@ export default function HomePage() {
   return (
     <>
       <Hero />
-
-      {/* Value strip ------------------------------------------------------ */}
-      <Section tone="light" size="sm">
-        <ul className="grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
-          {valueStrip.map((value, i) => {
-            const Icon = iconMap[value.icon];
-            return (
-              <Reveal key={value.label} index={i} as="li" className="flex flex-col">
-                  <Icon className="h-6 w-6 text-gold-dim" />
-                  <h2 className="mt-4 font-sans text-sm font-semibold uppercase tracking-[0.12em] text-ink">
-                    {value.label}
-                  </h2>
-                  <p className="mt-2 text-sm leading-relaxed text-warm-grey">
-                    {value.detail}
-                  </p>
-              </Reveal>
-            );
-          })}
-        </ul>
-      </Section>
-
-      {/* Who we work with ------------------------------------------------- */}
-      <Section tone="muted">
-        <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
-          <div className="lg:col-span-4">
-            <SectionHeader
-              eyebrow="Who we work with"
-              title="Counsel matched to where you are"
-            />
-          </div>
-
-          <ul className="grid gap-5 sm:grid-cols-2 lg:col-span-8">
-            {clientTypes.map((client, i) => (
-              <Reveal key={client.title} index={i} as="li" className="h-full">
-                <Card className="h-full">
-                  <h3 className="text-lg leading-snug text-ink">
-                    {client.title}
-                  </h3>
-                  <p className="mt-3 text-sm leading-relaxed text-warm-grey">
-                    {client.detail}
-                  </p>
-                  <span
-                    aria-hidden="true"
-                    className="mt-6 block h-px w-8 bg-gold/50 transition-all duration-300 group-hover:w-14"
-                  />
-                </Card>
-              </Reveal>
-            ))}
-          </ul>
-        </div>
-      </Section>
 
       {/* Services teaser --------------------------------------------------- */}
       <Section tone="light">
@@ -112,14 +53,16 @@ export default function HomePage() {
         </div>
       </Section>
 
-      {/* Why Mmako Inc ----------------------------------------------------- */}
-      <Section tone="dark" size="sm">
+      {/* Why Mmako Inc -----------------------------------------------------
+          Light-toned so the closing CTA below reads as a distinct band. With
+          the sections either side of it removed, a dark treatment here ran
+          into the CTA and the footer as one unbroken dark block. */}
+      <Section tone="muted" size="sm">
         <div className="grid gap-10 lg:grid-cols-12 lg:items-center lg:gap-16">
           <div className="lg:col-span-5">
             <SectionHeader
               eyebrow="Why Mmako Inc."
               title="What working with us looks like"
-              tone="dark"
             />
           </div>
           <ul className="grid gap-x-10 gap-y-5 sm:grid-cols-2 lg:col-span-7">
@@ -128,7 +71,7 @@ export default function HomePage() {
                 key={reason}
                 index={i}
                 as="li"
-                className="flex items-start gap-3 border-b border-white/10 pb-5 text-bone-300/85"
+                className="flex items-start gap-3 border-b border-ink/10 pb-5 text-warm-grey"
               >
                   <span
                     aria-hidden="true"
@@ -139,32 +82,6 @@ export default function HomePage() {
             ))}
           </ul>
         </div>
-      </Section>
-
-      {/* How we work ------------------------------------------------------- */}
-      <Section tone="light">
-        <SectionHeader
-          eyebrow="How we work"
-          title="A process built to remove guesswork"
-        />
-
-        <ol className="mt-14 grid gap-px overflow-hidden border border-ink/10 bg-ink/10 md:grid-cols-3">
-          {process.map((step, i) => (
-            <li key={step.step} className="bg-bone p-7 sm:p-9">
-              <Reveal index={i}>
-                <span className="font-display text-3xl text-gold-dim">
-                  {step.step}
-                </span>
-                <h3 className="mt-5 text-xl leading-snug text-ink">
-                  {step.title}
-                </h3>
-                <p className="mt-3 text-sm leading-relaxed text-warm-grey">
-                  {step.detail}
-                </p>
-              </Reveal>
-            </li>
-          ))}
-        </ol>
       </Section>
 
       {/* Closing CTA ------------------------------------------------------- */}

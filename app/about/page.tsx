@@ -3,7 +3,7 @@ import { PageHero } from "@/components/PageHero";
 import { Section, SectionHeader } from "@/components/Section";
 import { CtaBand } from "@/components/CtaBand";
 import { Reveal } from "@/components/Reveal";
-import { philosophy, notTraditional } from "@/lib/content";
+import { notTraditional } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "About",
@@ -27,37 +27,6 @@ export default function AboutPage() {
         subtitle="Built for the pace of modern business."
         body="Mmako Inc. was founded to give everyday businesses and individuals legal support that's clear, practical, and genuinely useful — not buried in jargon or billed by the hour."
       />
-
-      {/* Philosophy -------------------------------------------------------- */}
-      <Section tone="light">
-        <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
-          <div className="lg:col-span-5">
-            <SectionHeader
-              eyebrow="Our philosophy"
-              title="How we think about the work"
-              subtitle="Guided by clarity and precision."
-            />
-          </div>
-
-          <ul className="lg:col-span-7">
-            {philosophy.map((item, i) => (
-              <Reveal
-                key={item.title}
-                index={i}
-                as="li"
-                className="grid gap-2 border-t border-ink/10 py-7 first:border-t-0 first:pt-0 sm:grid-cols-12 sm:gap-8"
-              >
-                  <h3 className="text-lg leading-snug text-ink sm:col-span-5">
-                    {item.title}
-                  </h3>
-                  <p className="text-sm leading-relaxed text-warm-grey sm:col-span-7 sm:pt-1">
-                    {item.detail}
-                  </p>
-              </Reveal>
-            ))}
-          </ul>
-        </div>
-      </Section>
 
       {/* Not the traditional firm ------------------------------------------ */}
       <Section tone="muted">
