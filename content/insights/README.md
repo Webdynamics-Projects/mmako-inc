@@ -1,5 +1,9 @@
 # Insights
 
+Most articles are written in the editor at `/keystatic`, which saves them here
+as ordinary files. What follows describes that format, for anyone editing one
+directly rather than through the editor — the two are interchangeable.
+
 One `.mdx` file per article. The filename becomes the URL, so
 `why-contracts-matter.mdx` is published at `/insights/why-contracts-matter`.
 Use lowercase words separated by hyphens, and do not rename a file once it is
@@ -15,6 +19,7 @@ category: "Commercial Contracts"
 date: "2026-07-29"
 readTime: "4 min read"
 excerpt: "One or two sentences. Shown on the listing page, and used as the description in search results and link previews."
+readTime: "4 min read"   # optional — calculated from the article when omitted
 ---
 
 The article itself goes here, in Markdown. A blank line separates paragraphs.
@@ -32,6 +37,9 @@ The article itself goes here, in Markdown. A blank line separates paragraphs.
 `date` must be `YYYY-MM-DD` — articles are listed newest first, by this field.
 `category` is the small gold label on the listing card; reuse existing wording
 rather than inventing a new one each time, so the labels stay a short set.
+
+`readTime` may be left out entirely, in which case it is worked out from the
+length of the article at 200 words a minute. Set it only to override that.
 
 Add `draft: true` to the frontmatter to keep a file out of the site while it is
 being written. It stays in the repository but is not published, does not appear

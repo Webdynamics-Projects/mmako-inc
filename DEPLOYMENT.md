@@ -468,7 +468,76 @@ its own MX records; leave those alone when editing DNS.
 
 ---
 
-## 7. Check it worked
+## 7. Let the firm publish its own insights
+
+Articles live as `.mdx` files in `content/insights/`. Adding one to `main`
+publishes it, which is fine for a developer and no use at all to the client, so
+the site carries an editor: **Keystatic**, reachable at `/keystatic`.
+
+It is not a separate system. The editor writes the same files, in the same
+folder, with the same frontmatter the site already reads, and saving commits to
+this repository. Publishing an article is a commit, and a commit to `main` is a
+deploy. Nothing new holds the content, so it stays backed up, versioned and
+readable without it.
+
+Until the steps below are done, `/keystatic` is the only part of the site that
+does not work. The build deliberately does not depend on this being configured,
+so an unconfigured editor can never take the site down with it.
+
+### Create the GitHub App
+
+Keystatic does this for you rather than making you fill in a form on GitHub.
+
+1. Deploy, then open `https://mmakoinc.com/keystatic`. It offers to set itself
+   up.
+2. Follow it. GitHub asks which repository to grant access to — choose
+   **`Webdynamics-Projects/mmako-inc`** and nothing else.
+3. It finishes by showing four values. Copy them.
+
+### Put them in Vercel
+
+**Settings → Environment Variables**, all four, for every environment:
+
+| Variable | What it is |
+| --- | --- |
+| `KEYSTATIC_GITHUB_CLIENT_ID` | Identifies the app to GitHub |
+| `KEYSTATIC_GITHUB_CLIENT_SECRET` | Its password. Treat it as one. |
+| `KEYSTATIC_SECRET` | Signs the editor's own sessions |
+| `NEXT_PUBLIC_KEYSTATIC_GITHUB_APP_SLUG` | The app's name in its GitHub URL |
+
+Then **redeploy** — the first three are read at runtime, but the fourth is a
+`NEXT_PUBLIC_` variable and is baked into the build, so it will not take effect
+otherwise.
+
+> Never commit these. `.env*.local` is already ignored, which is where they go
+> if you run the editor against GitHub locally.
+
+### Give the client access
+
+They sign in at `https://mmakoinc.com/keystatic` with a GitHub account, so they
+need one — free, and an email address is all it takes. Invite that account to
+the repository with **Write** access; anything less and their saves are
+rejected.
+
+They never have to understand Git. The editor shows a list of articles, a form
+for the title, date, category and excerpt, and a normal rich-text area for the
+article. **Save** publishes it, and the site updates a minute or two later.
+
+### What they should know
+
+- **Reading time works itself out.** Left empty, it is calculated from the
+  length of the piece. It is there to be overridden, not filled in.
+- **Draft** keeps a piece off the site while it is being written. It is saved
+  to the repository either way, just not published, not listed, and not in the
+  sitemap.
+- **The URL comes from the title** and can be edited beside it. Changing it
+  after publishing breaks any link anyone has already shared.
+- **Images** dragged into an article are committed to `public/images/insights/`
+  and served from the site, so no third-party image host is involved.
+
+---
+
+## 8. Check it worked
 
 Once DNS has resolved and everything is redeployed:
 

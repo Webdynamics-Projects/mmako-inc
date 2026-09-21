@@ -40,6 +40,10 @@ before deploying.
 | `CONTACT_TO_EMAIL` | No | Inbox that receives enquiries. Defaults to `info@mmakoinc.com`. |
 | `CONTACT_FROM_EMAIL` | No | The address Resend sends *from*. Its domain must be verified in Resend. Defaults to `onboarding@resend.dev`, which works for testing only. |
 | `NEXT_PUBLIC_SITE_URL` | Yes | Canonical origin, e.g. `https://mmakoinc.com`. Used for `sitemap.xml`, `robots.txt` and Open Graph tags. |
+| `KEYSTATIC_GITHUB_CLIENT_ID` | No | Editor. Unset, `/keystatic` runs against the working copy rather than GitHub. |
+| `KEYSTATIC_GITHUB_CLIENT_SECRET` | No | Editor. As above. |
+| `KEYSTATIC_SECRET` | No | Editor. As above. |
+| `NEXT_PUBLIC_KEYSTATIC_GITHUB_APP_SLUG` | No | Editor. Build-time, so it needs a redeploy to take effect. |
 
 ### Setting up Resend
 
