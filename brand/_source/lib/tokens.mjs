@@ -34,13 +34,25 @@ export const firm = {
   },
 };
 
+const director = {
+  name: "Dalen Mmako",
+  title: "Director",
+  phone: "082 564 3345",
+  phoneE164: "+27825643345",
+  email: "dalen@mmakoinc.com",
+};
+
 export const people = {
-  director: {
-    name: "Dalen Mmako",
-    title: "Director",
-    phone: "082 564 3345",
-    phoneE164: "+27825643345",
-    email: "dalen@mmakoinc.com",
+  director,
+  /* A role mailbox rather than a person, so it carries no `title`: the
+     signature templates fall back to the firm name alone where a personal
+     signature would read "Title | Firm". Calls reach the director's line by
+     the client's instruction — there is no separate support number. */
+  support: {
+    name: "Technical Support",
+    phone: director.phone,
+    phoneE164: director.phoneE164,
+    email: firm.email,
   },
 };
 

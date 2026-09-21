@@ -44,7 +44,7 @@ save(D, "LinkedIn", "linkedin-banner-1584x396.png", await png(`
       <div style="font-family:${P.SANS};font-size:15px;letter-spacing:.22em;text-transform:uppercase;
                   color:${P.GOLD};margin-bottom:18px">${firm.tagline}</div>
       <div style="font-family:${P.DISPLAY};font-size:52px;line-height:1.12;color:${P.BONE};max-width:820px">
-        Legal counsel built for<br><em style="color:${P.GOLD}">how business actually moves</em>
+        Legal counsel built for<br><em style="color:${P.GOLD}">how the world actually moves</em>
       </div>
       <div style="font-family:${P.SANS};font-size:17px;color:rgba(227,225,217,.72);margin-top:22px">
         ${firm.domain}
@@ -169,7 +169,7 @@ const folderBody = `<div class="page" style="width:226mm;height:316mm;${darkSurf
   <div>
     <div style="width:22mm;height:1.2mm;background:${P.GOLD};margin-bottom:9mm"></div>
     <div style="font-family:${P.DISPLAY};font-size:15mm;line-height:1.2;color:${P.BONE};max-width:150mm">
-      Legal counsel built for how business actually moves
+      Legal counsel built for how the world actually moves
     </div>
   </div>
   <div style="font-family:${P.SANS};font-size:3.6mm;line-height:6mm;color:rgba(227,225,217,.66)">
