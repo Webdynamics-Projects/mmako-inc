@@ -3,7 +3,7 @@ import { Montserrat } from "next/font/google";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { site, siteUrl } from "@/lib/site";
-import "./globals.css";
+import "../globals.css";
 
 /*
  * Montserrat carries the whole type system — headings and body. It is the
