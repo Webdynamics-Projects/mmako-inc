@@ -466,6 +466,41 @@ Workspace, Microsoft 365, or GoDaddy's own email. That is separate from Resend,
 which only *sends*. If the mailbox is set up at GoDaddy or Google, it will add
 its own MX records; leave those alone when editing DNS.
 
+> **If the mailbox provider ever changes, check these two afterwards.** Moving
+> from GoDaddy's own email to Microsoft 365 or Google Workspace rewrites the
+> apex `MX` and `v=spf1` records, and those flows have rewritten more than they
+> needed to on this domain before. Two records from section 6 must survive, or
+> the contact form stops sending with no warning on the website itself:
+>
+> - `TXT` on `resend._domainkey` — the DKIM key
+> - the `MX` and `TXT` on **`send`** — the return path
+>
+> Neither belongs to the mailbox, so a careful migration leaves both alone.
+> Confirm it rather than assume it: Resend → Domains still reading **Verified**
+> is the check.
+
+### Which email product the firm has
+
+Worth knowing, because the two GoDaddy sells behave very differently. Their own
+**Professional Email** is IMAP/POP only. Mail works in any client, but Outlook
+gets no shared calendar or contacts — it makes a local-only calendar — and
+signing in to Outlook with *Microsoft 365 / Exchange* fails with *"We couldn't
+find a work or school account with that email address"*, which is accurate
+rather than a misconfiguration. **Microsoft 365**, which GoDaddy also resells,
+is a real Exchange mailbox and does all of it.
+
+Two ways to tell them apart:
+
+| Check | GoDaddy's own email | Microsoft 365 |
+| --- | --- | --- |
+| The apex `MX` record | `…secureserver.net` | `…mail.protection.outlook.com` |
+| Autodiscover | `SRV _autodiscover._tcp` | `CNAME autodiscover → autodiscover.outlook.com` |
+
+There is no Outlook setting that bridges the gap. Scheduling from Outlook means
+an Exchange mailbox, so it means moving to Microsoft 365 — or to Google
+Workspace, where Outlook can sync calendars through Google's GWSMO add-in,
+installed per machine.
+
 ---
 
 ## 7. Let the firm publish its own insights
