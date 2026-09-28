@@ -503,7 +503,161 @@ installed per machine.
 
 ---
 
-## 7. Let the firm publish its own insights
+## 7. Move the firm's mailboxes to Microsoft 365
+
+GoDaddy's own email is IMAP only, so Outlook gets no real calendar and cannot
+schedule (see *Which email product the firm has*, above). Moving to a Microsoft
+365 tenant fixes that. The order below matters: done in the wrong sequence, mail
+that arrives mid-cutover is lost, and a cancelled GoDaddy mailbox takes its
+contents with it.
+
+**Nothing here touches the website.** The only overlap is DNS, and the two
+records the contact form depends on live at names Microsoft never asks for.
+Step 6 confirms that.
+
+### Before you start: licences
+
+One licence per **person**, not per address.
+
+| | What it gives | Use it when |
+| --- | --- | --- |
+| **Business Basic** | Exchange mailbox, calendar, web and mobile Outlook | Mail and scheduling only |
+| **Business Standard** | The above plus desktop Word, Excel, Outlook and PowerPoint | Anyone opening the firm's `.docx` templates |
+
+The brand kit's letterhead, legal letter, opinion, invoice and proposal are Word
+files, so whoever uses them needs Word. On that basis Business Standard is the
+honest recommendation for the director; a second person who only reads mail can
+sit on Basic.
+
+**`info@` should not be a licensed user.** Make it a **shared mailbox** —
+Exchange admin centre → *Recipients → Mailboxes → Add a shared mailbox*. Shared
+mailboxes are free, hold 50GB, and appear in the director's Outlook
+automatically once he has permission. One licence, two addresses.
+
+> The trade-off, given the two signatures in the brand kit: Outlook picks a
+> signature by account, and a shared mailbox is not a separate account. The
+> Technical Support signature has to be chosen by hand from **Message →
+> Signature** when writing as `info@`. Making `info@` a second licensed user
+> would make that automatic, at the cost of another licence a month.
+
+### 1. Add the domain — this changes nothing yet
+
+Microsoft 365 admin centre → **Settings → Domains → Add domain** →
+`mmakoinc.com`.
+
+It asks for one `TXT` record at the apex, of the form `MS=ms________`. Add it at
+GoDaddy with Name `@`. **Verification only** — it does not route mail, and
+nothing changes while it sits there.
+
+When the wizard then offers to set up your DNS, choose **"Add your own DNS
+records"** or **"I'll manage my own DNS"** and stop. Do not let it continue: its
+next step repoints your MX, and mail would start arriving in empty mailboxes
+before anything has been migrated.
+
+### 2. Create the mailboxes
+
+Admin centre → **Users → Active users → Add a user** for the director, with
+`dalen@mmakoinc.com` as the sign-in name and a licence assigned. Then add
+`info@mmakoinc.com` as a shared mailbox, and give the director **Full access**
+and **Send as** on it.
+
+Both mailboxes now exist and are empty. Mail is still being delivered to GoDaddy,
+which is what we want.
+
+### 3. Migrate the mail, while GoDaddy is still receiving
+
+Exchange admin centre → **Migration → Add migration batch → Migration to
+Exchange Online → IMAP migration**.
+
+| Field | Value |
+| --- | --- |
+| IMAP server | `imap.secureserver.net` |
+| Port | 993 |
+| Encryption | SSL |
+
+It wants a CSV listing, for each mailbox: the new M365 address, the GoDaddy
+username, and the GoDaddy password. You need those passwords — get them from the
+client rather than resetting anything.
+
+Run the batch and let it finish. It copies mail into the new mailboxes while the
+old ones keep receiving, so there is no outage and nothing is deleted.
+
+> **IMAP migration moves mail only** — not contacts, not calendar. If there is
+> anything in either, export it from the old account and import it after the
+> cutover. On a mailbox that has had no working calendar, there is usually
+> nothing to move, which is the whole reason for this exercise.
+
+### 4. Cut over the DNS
+
+Only now. At GoDaddy, in Manage DNS, take the values **from the Microsoft portal
+rather than from this table** — it lists the shapes, not the values:
+
+| Type | Name | Value | Priority |
+| --- | --- | --- | --- |
+| MX | `@` | `mmakoinc-com.mail.protection.outlook.com` | 0 |
+| CNAME | `autodiscover` | `autodiscover.outlook.com` | — |
+| TXT | `@` | `v=spf1 include:spf.protection.outlook.com -all` | — |
+| CNAME | `selector1._domainkey` | from the portal | — |
+| CNAME | `selector2._domainkey` | from the portal | — |
+
+Remove, at the same time:
+
+- the old GoDaddy `MX` records pointing at `secureserver.net`
+- the old apex `TXT` beginning `v=spf1` — **replace it, never add a second.**
+  One `v=spf1` per domain; two is a `PermError` that breaks authentication for
+  every message the domain sends
+- the `SRV _autodiscover._tcp` record, which is GoDaddy's autodiscover and now
+  contradicts the new CNAME
+- `CNAME email`, which was GoDaddy webmail
+
+Mail begins arriving in Microsoft 365 as the records propagate, typically within
+the hour.
+
+### 5. Catch what arrived during the switch
+
+Re-run the same IMAP migration batch once, a day later. It picks up anything
+GoDaddy received between the last sync and the MX change. This is the step
+people skip, and it is where the missing morning's mail usually went.
+
+### 6. Confirm the website's email still works
+
+Four records must have survived, none of which Microsoft asks about:
+
+- [ ] `TXT resend._domainkey` on the apex — Resend's DKIM key. Microsoft uses
+      `selector1` and `selector2`, so there is no collision unless someone tidied
+- [ ] `MX` on **`send`** — Resend's return path
+- [ ] `TXT` on **`send`** — its SPF, which is why replacing the apex SPF is safe
+- [ ] `TXT _dmarc` — unchanged
+
+Then: Resend → Domains still reads **Verified**, and a test submission of the
+contact form arrives at `info@mmakoinc.com`.
+
+> **Why the apex SPF can become Microsoft's alone.** Resend sends with a return
+> path of `send.mmakoinc.com`, so SPF is evaluated against that subdomain, not
+> the apex. The `-all` in Microsoft's record does not affect it, and DMARC still
+> aligns: Resend's DKIM signs as `mmakoinc.com` directly.
+
+### 7. Connect Outlook
+
+Now the original error is gone, because a work account genuinely exists.
+
+On each Mac: **Outlook → Settings → Accounts → Add account**, enter
+`dalen@mmakoinc.com`, and it finds the tenant by itself through the autodiscover
+CNAME. No server names to type. The shared `info@` mailbox appears on its own
+once permissions have propagated, which can take a few hours on the first day.
+
+Remove the old IMAP account only once the new one has everything.
+
+### 8. Only now, cancel GoDaddy email
+
+Cancelling deletes the mailboxes and their contents. Leave it a fortnight after
+the cutover, with the old account still in Outlook, until everyone is satisfied
+nothing is missing. Keep the domain itself at GoDaddy — that is the registrar,
+and is unaffected.
+
+---
+
+## 8. Let the firm publish its own insights
 
 Articles live as `.mdx` files in `content/insights/`. Adding one to `main`
 publishes it, which is fine for a developer and no use at all to the client, so
@@ -572,7 +726,7 @@ article. **Save** publishes it, and the site updates a minute or two later.
 
 ---
 
-## 8. Check it worked
+## 9. Check it worked
 
 Once DNS has resolved and everything is redeployed:
 
