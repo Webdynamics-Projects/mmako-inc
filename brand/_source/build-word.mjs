@@ -98,6 +98,7 @@ function header() {
             cell([
               p(t(a.line1, { size: 15, color: GREY }), { align: AlignmentType.RIGHT, after: 0 }),
               p(t(a.line2, { size: 15, color: GREY }), { align: AlignmentType.RIGHT, after: 0 }),
+              p(t(a.line3, { size: 15, color: GREY }), { align: AlignmentType.RIGHT, after: 0 }),
               p(t(`${a.city}, ${a.postalCode}`, { size: 15, color: GREY }), { align: AlignmentType.RIGHT, after: 0 }),
               p(t(firm.domain, { size: 15, color: GOLD_DEEP, bold: true }), { align: AlignmentType.RIGHT, after: 0 }),
             ], { width: 6000 }),

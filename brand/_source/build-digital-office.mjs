@@ -173,7 +173,7 @@ const folderBody = `<div class="page" style="width:226mm;height:316mm;${darkSurf
     </div>
   </div>
   <div style="font-family:${P.SANS};font-size:3.6mm;line-height:6mm;color:rgba(227,225,217,.66)">
-    ${a.line1}, ${a.line2}, ${a.city}, ${a.postalCode}<br>
+    ${a.line1}, ${a.line2}, ${a.line3}, ${a.city}, ${a.postalCode}<br>
     <span style="color:${P.GOLD}">${firm.domain}</span> &nbsp;·&nbsp; ${firm.email}
   </div>
 </div>`;

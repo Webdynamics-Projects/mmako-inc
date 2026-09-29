@@ -16,11 +16,14 @@ export const firm = {
   domain: "mmakoinc.com",
   url: "https://mmakoinc.com",
   email: "info@mmakoinc.com",
+  phone: "+27 10 013 3400",
+  phoneE164: "+27100133400",
   address: {
-    line1: "4A Pioneer Road",
-    line2: "Irene Security Estate",
-    city: "Centurion",
-    postalCode: "0157",
+    line1: "Regus Waterfall City, Maxwell Office Park",
+    line2: "Ground Floor, Mac Mac Building",
+    line3: "Magwa Cres, Waterfall City",
+    city: "Midrand",
+    postalCode: "2090",
     country: "South Africa",
   },
   /* TODO: supply before the stationery and invoice templates go to print. */
@@ -34,11 +37,13 @@ export const firm = {
   },
 };
 
+/* One number for the practice, so it is defined once on `firm` and referred
+   to from here rather than repeated per person. */
 const director = {
   name: "Dalen Mmako",
   title: "Director",
-  phone: "082 564 3345",
-  phoneE164: "+27825643345",
+  phone: firm.phone,
+  phoneE164: firm.phoneE164,
   email: "dalen@mmakoinc.com",
 };
 

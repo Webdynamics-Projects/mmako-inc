@@ -48,12 +48,26 @@ export default function ContactPage() {
               </div>
 
               <div>
+                <dt className="text-sm text-warm-grey">Telephone</dt>
+                <dd className="mt-1">
+                  <a
+                    href={`tel:${site.phoneE164}`}
+                    className="text-base text-ink underline-offset-4 transition-colors hover:text-gold-dim hover:underline"
+                  >
+                    {site.phone}
+                  </a>
+                </dd>
+              </div>
+
+              <div>
                 <dt className="text-sm text-warm-grey">Office</dt>
                 <dd className="mt-1">
                   <address className="text-base not-italic leading-relaxed text-ink">
                     {site.address.line1}
                     <br />
                     {site.address.line2}
+                    <br />
+                    {site.address.line3}
                     <br />
                     {site.address.city}, {site.address.postalCode}
                   </address>

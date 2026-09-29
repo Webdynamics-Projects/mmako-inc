@@ -56,9 +56,19 @@ export function Footer() {
                 </a>
               </div>
               <div>
+                <a
+                  href={`tel:${site.phoneE164}`}
+                  className="transition-colors hover:text-gold"
+                >
+                  {site.phone}
+                </a>
+              </div>
+              <div>
                 {site.address.line1}
                 <br />
                 {site.address.line2}
+                <br />
+                {site.address.line3}
                 <br />
                 {site.address.city}, {site.address.postalCode}
               </div>

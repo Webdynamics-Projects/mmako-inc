@@ -30,7 +30,7 @@ const letterheadBody = `<div class="page">
   <table width="100%"><tr>
     <td style="vertical-align:top">${lockup(17, "dark")}</td>
     <td style="vertical-align:top;text-align:right;font-size:8pt;line-height:13pt;color:${P.GREY}">
-      ${a.line1}<br>${a.line2}<br>${a.city}, ${a.postalCode}<br>
+      ${a.line1}<br>${a.line2}<br>${a.line3}<br>${a.city}, ${a.postalCode}<br>
       <span style="color:${P.GOLD_DEEP};font-weight:600">${firm.domain}</span>
     </td>
   </tr></table>
@@ -74,7 +74,7 @@ const cardBack = `<div class="page" style="background:${P.BONE};display:block;pa
     <span style="color:${P.GOLD_DEEP};font-weight:600">${firm.domain}</span>
   </div>
   <div style="position:absolute;left:8mm;bottom:8mm;font-size:6.5pt;line-height:9.5pt;color:${P.GREY}">
-    ${a.line1}, ${a.line2}<br>${a.city}, ${a.postalCode}
+    ${a.line1}<br>${a.line2}, ${a.line3}<br>${a.city}, ${a.postalCode}
   </div>
 </div>`;
 save("Business Card", "business-card-front.pdf",
@@ -92,7 +92,7 @@ const envBody = `<div class="page">
     <td style="vertical-align:middle;border-left:1.5pt solid ${P.GOLD};padding-left:8mm;
                font-size:8pt;line-height:12.5pt;color:${P.GREY}">
       <span style="font-family:${P.DISPLAY};font-size:10pt;color:${P.INK}">${firm.name}</span><br>
-      ${a.line1}, ${a.line2}<br>${a.city}, ${a.postalCode}
+      ${a.line1}<br>${a.line2}, ${a.line3}<br>${a.city}, ${a.postalCode}
     </td>
   </tr></table>
   <!-- Recipient window area, kept clear of the return address. -->
@@ -115,7 +115,7 @@ const slipBody = `<div class="page">
   <hr class="rule-gold" style="margin:7mm 0 0;width:22mm">
   <div style="position:absolute;left:20mm;right:20mm;bottom:11mm;font-size:7pt;line-height:11pt;color:${P.GREY}">
     <hr class="hair" style="margin:0 0 4mm">
-    ${a.line1}, ${a.line2}, ${a.city}, ${a.postalCode}
+    ${a.line1}, ${a.line2}, ${a.line3}, ${a.city}, ${a.postalCode}
     &nbsp;·&nbsp; ${firm.email}
     &nbsp;·&nbsp; <span style="color:${P.GOLD_DEEP};font-weight:600">${firm.domain}</span>
   </div>
