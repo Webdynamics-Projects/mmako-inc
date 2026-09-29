@@ -70,7 +70,7 @@ const organisationSchema = {
   areaServed: "ZA",
   address: {
     "@type": "PostalAddress",
-    streetAddress: `${site.address.line1}, ${site.address.line2}`,
+    streetAddress: `${site.address.line1}, ${site.address.line2}, ${site.address.line3}`,
     addressLocality: site.address.city,
     postalCode: site.address.postalCode,
     addressCountry: "ZA",

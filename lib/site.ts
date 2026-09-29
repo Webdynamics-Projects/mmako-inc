@@ -10,11 +10,15 @@ export const site = {
   description:
     "Mmako Inc. is a South African business law firm giving founders, growing companies and individuals legal support that is clear, fast and focused on outcomes.",
   email: "info@mmakoinc.com",
+  /* Display form, and the E.164 form for `tel:` links. */
+  phone: "+27 10 013 3400",
+  phoneE164: "+27100133400",
   address: {
-    line1: "4A Pioneer Road",
-    line2: "Irene Security Estate",
-    city: "Centurion",
-    postalCode: "0157",
+    line1: "Regus Waterfall City, Maxwell Office Park",
+    line2: "Ground Floor, Mac Mac Building",
+    line3: "Magwa Cres, Waterfall City",
+    city: "Midrand",
+    postalCode: "2090",
     country: "South Africa",
   },
 } as const;

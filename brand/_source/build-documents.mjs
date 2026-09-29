@@ -35,7 +35,7 @@ const css = P.baseCss + `
 const head = () => `<table width="100%" style="margin-bottom:8mm"><tr>
   <td style="vertical-align:top">${P.logoImg("lockup", "dark", 21, "mm")}</td>
   <td style="vertical-align:top;text-align:right;font-size:7.5pt;line-height:12pt;color:${P.GREY}">
-    ${a.line1}<br>${a.line2}<br>${a.city}, ${a.postalCode}<br>
+    ${a.line1}<br>${a.line2}<br>${a.line3}<br>${a.city}, ${a.postalCode}<br>
     <span style="color:${P.GOLD_DEEP};font-weight:600">${firm.domain}</span>
   </td>
 </tr></table>

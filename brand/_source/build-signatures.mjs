@@ -73,7 +73,7 @@ const newEmail = (p) => `<table cellpadding="0" cellspacing="0" border="0" width
         ${a(firm.url, firm.domain, GOLD_DEEP, "font-weight:bold;")}
       </div>
       <div style="font-size:11px;line-height:17px;padding-top:8px;">
-        ${firm.address.line1}, ${firm.address.line2}<br>${firm.address.city}, ${firm.address.postalCode}
+        ${firm.address.line1}<br>${firm.address.line2}, ${firm.address.line3}<br>${firm.address.city}, ${firm.address.postalCode}
       </div>
     </td>
   </tr>
@@ -114,7 +114,8 @@ ${p.phone}
 ${p.email}
 ${firm.url}
 
-${firm.address.line1}, ${firm.address.line2}
+${firm.address.line1}
+${firm.address.line2}, ${firm.address.line3}
 ${firm.address.city}, ${firm.address.postalCode}
 
 This email and any attachments are confidential and intended solely for the
