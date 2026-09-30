@@ -59,7 +59,23 @@ const subtitle = (p, sep) => (p.title ? `${p.title}${sep}${firm.name}` : firm.na
 
 const caps = (t) => t.toUpperCase();
 
-/* Primary signature — new outgoing email. Full identity, address and notice. */
+/* An office's address as display lines. The first two street lines share a
+   line when there is no third, as the Pretoria address does. */
+const officeLines = ({ address: o }) => [
+  o.line3 ? o.line1 : `${o.line1}, ${o.line2}`,
+  ...(o.line3 ? [`${o.line2}, ${o.line3}`] : []),
+  `${o.city}, ${o.postalCode}`,
+];
+
+const officesHtml = () => firm.offices.map((office) =>
+  `<div style="font-size:11px;line-height:17px;padding-top:8px;">
+        <span style="color:${GOLD_DEEP};letter-spacing:1.2px;">${caps(`${office.name} office`)}</span><br>${officeLines(office).join("<br>")}
+      </div>`).join("\n      ");
+
+const officesText = () => firm.offices.map((office) =>
+  [`${office.name} office`, ...officeLines(office)].join("\n")).join("\n\n");
+
+/* Primary signature — new outgoing email. Full identity, office addresses and notice. */
 const newEmail = (p) => `<table cellpadding="0" cellspacing="0" border="0" width="560" style="border-collapse:collapse;font-family:${SANS};color:${GREY};font-size:12px;">
   <tr>
     <td width="138" valign="top" style="padding:2px 22px 16px 0;">
@@ -72,9 +88,7 @@ const newEmail = (p) => `<table cellpadding="0" cellspacing="0" border="0" width
         ${a(`tel:${p.phoneE164}`, p.phone, GREY)} &middot; ${a(`mailto:${p.email}`, p.email, GREY)}<br>
         ${a(firm.url, firm.domain, GOLD_DEEP, "font-weight:bold;")}
       </div>
-      <div style="font-size:11px;line-height:17px;padding-top:8px;">
-        ${firm.address.line1}<br>${firm.address.line2}, ${firm.address.line3}<br>${firm.address.city}, ${firm.address.postalCode}
-      </div>
+      ${officesHtml()}
     </td>
   </tr>
   <tr>
@@ -114,9 +128,7 @@ ${p.phone}
 ${p.email}
 ${firm.url}
 
-${firm.address.line1}
-${firm.address.line2}, ${firm.address.line3}
-${firm.address.city}, ${firm.address.postalCode}
+${officesText()}
 
 This email and any attachments are confidential and intended solely for the
 addressee. If you have received it in error, please notify us and delete it.

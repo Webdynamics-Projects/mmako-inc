@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Logo } from "@/components/Logo";
-import { site, navLinks } from "@/lib/site";
+import { site, navLinks, streetLines } from "@/lib/site";
 import { services } from "@/lib/content";
 
 export function Footer() {
@@ -63,15 +63,21 @@ export function Footer() {
                   {site.phone}
                 </a>
               </div>
-              <div>
-                {site.address.line1}
-                <br />
-                {site.address.line2}
-                <br />
-                {site.address.line3}
-                <br />
-                {site.address.city}, {site.address.postalCode}
-              </div>
+              {site.offices.map((office) => (
+                <div key={office.name}>
+                  <span className="text-warm-grey-light">
+                    {office.name} office
+                  </span>
+                  <br />
+                  {streetLines(office).map((line) => (
+                    <span key={line}>
+                      {line}
+                      <br />
+                    </span>
+                  ))}
+                  {office.address.city}, {office.address.postalCode}
+                </div>
+              ))}
             </address>
 
             <ul className="mt-6 space-y-2">
@@ -93,7 +99,10 @@ export function Footer() {
           <p>
             © {year} {site.legalName}. All rights reserved.
           </p>
-          <p>{site.address.city}, {site.address.country}</p>
+          <p>
+            {site.offices.map((office) => office.name).join(" · ")},{" "}
+            {site.offices[0].address.country}
+          </p>
         </div>
       </div>
     </footer>

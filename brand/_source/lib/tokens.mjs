@@ -18,14 +18,31 @@ export const firm = {
   email: "info@mmakoinc.com",
   phone: "+27 10 013 3400",
   phoneE164: "+27100133400",
-  address: {
-    line1: "Regus Waterfall City, Maxwell Office Park",
-    line2: "Ground Floor, Mac Mac Building",
-    line3: "Magwa Cres, Waterfall City",
-    city: "Midrand",
-    postalCode: "2090",
-    country: "South Africa",
-  },
+  /* Listed in display order. `line3` is optional: the Pretoria address fits
+     in two lines. */
+  offices: [
+    {
+      name: "Midrand",
+      address: {
+        line1: "Regus Waterfall City, Maxwell Office Park",
+        line2: "Ground Floor, Mac Mac Building",
+        line3: "Magwa Cres, Waterfall City",
+        city: "Midrand",
+        postalCode: "2090",
+        country: "South Africa",
+      },
+    },
+    {
+      name: "Pretoria",
+      address: {
+        line1: "4A Pioneer Road",
+        line2: "Irene Security Estate",
+        city: "Centurion",
+        postalCode: "0157",
+        country: "South Africa",
+      },
+    },
+  ],
   /* TODO: supply before the stationery and invoice templates go to print. */
   registrationNumber: "[COMPANY REGISTRATION NO.]",
   vatNumber: "[VAT NO.]",
@@ -36,6 +53,10 @@ export const firm = {
     branchCode: "[BRANCH CODE]",
   },
 };
+
+/* The printed stationery carries a single return address, the Midrand
+   office's. The email signatures list every office. */
+firm.address = firm.offices[0].address;
 
 /* One number for the practice, so it is defined once on `firm` and referred
    to from here rather than repeated per person. */
