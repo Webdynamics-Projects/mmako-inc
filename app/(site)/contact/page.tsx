@@ -2,12 +2,12 @@ import type { Metadata } from "next";
 import { PageHero } from "@/components/PageHero";
 import { Section } from "@/components/Section";
 import { ContactForm } from "@/components/ContactForm";
-import { site } from "@/lib/site";
+import { site, streetLines } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Contact",
   description:
-    "Get in touch with Mmako Inc. We aim to respond within 24 hours. Offices in Irene, Centurion.",
+    "Get in touch with Mmako Inc. We aim to respond within 24 hours. Offices in Midrand and Pretoria.",
   alternates: { canonical: "/contact" },
   openGraph: {
     title: "Contact — Mmako Inc.",
@@ -59,20 +59,24 @@ export default function ContactPage() {
                 </dd>
               </div>
 
-              <div>
-                <dt className="text-sm text-warm-grey">Office</dt>
-                <dd className="mt-1">
-                  <address className="text-base not-italic leading-relaxed text-ink">
-                    {site.address.line1}
-                    <br />
-                    {site.address.line2}
-                    <br />
-                    {site.address.line3}
-                    <br />
-                    {site.address.city}, {site.address.postalCode}
-                  </address>
-                </dd>
-              </div>
+              {site.offices.map((office) => (
+                <div key={office.name}>
+                  <dt className="text-sm text-warm-grey">
+                    {office.name} office
+                  </dt>
+                  <dd className="mt-1">
+                    <address className="text-base not-italic leading-relaxed text-ink">
+                      {streetLines(office).map((line) => (
+                        <span key={line}>
+                          {line}
+                          <br />
+                        </span>
+                      ))}
+                      {office.address.city}, {office.address.postalCode}
+                    </address>
+                  </dd>
+                </div>
+              ))}
             </dl>
 
             <p className="mt-10 border-t border-ink/10 pt-6 text-sm leading-relaxed text-warm-grey">

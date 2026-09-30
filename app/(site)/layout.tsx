@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
-import { site, siteUrl } from "@/lib/site";
+import { site, siteUrl, streetLines } from "@/lib/site";
 import "../globals.css";
 
 /*
@@ -27,7 +27,8 @@ export const metadata: Metadata = {
   keywords: [
     "business law firm South Africa",
     "commercial contracts attorney",
-    "corporate advisory Centurion",
+    "corporate advisory Pretoria",
+    "business attorney Midrand",
     "dispute resolution attorney",
     "startup lawyer South Africa",
   ],
@@ -68,13 +69,14 @@ const organisationSchema = {
   url: siteUrl,
   email: site.email,
   areaServed: "ZA",
-  address: {
+  address: site.offices.map((office) => ({
     "@type": "PostalAddress",
-    streetAddress: `${site.address.line1}, ${site.address.line2}, ${site.address.line3}`,
-    addressLocality: site.address.city,
-    postalCode: site.address.postalCode,
+    name: `${site.name} ${office.name}`,
+    streetAddress: streetLines(office).join(", "),
+    addressLocality: office.address.city,
+    postalCode: office.address.postalCode,
     addressCountry: "ZA",
-  },
+  })),
 };
 
 export default function RootLayout({
