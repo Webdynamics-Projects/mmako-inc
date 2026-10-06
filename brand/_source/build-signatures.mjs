@@ -59,6 +59,9 @@ const subtitle = (p, sep) => (p.title ? `${p.title}${sep}${firm.name}` : firm.na
 
 const caps = (t) => t.toUpperCase();
 
+/* For text placed in the HTML signatures; "Founder & Director" carries one. */
+const esc = (t) => t.replace(/&/g, "&amp;");
+
 /* An office's address as display lines. The first two street lines share a
    line when there is no third, as the Pretoria address does. */
 const officeLines = ({ address: o }) => [
@@ -83,7 +86,7 @@ const newEmail = (p) => `<table cellpadding="0" cellspacing="0" border="0" width
     </td>
     <td valign="top" style="padding:0 0 16px 22px;border-left:2px solid ${GOLD};font-family:${SANS};">
       <div style="font-size:17px;line-height:22px;color:${INK};font-weight:bold;">${p.name}</div>
-      <div style="font-size:12px;line-height:18px;color:${GOLD_DEEP};letter-spacing:1.4px;padding-top:2px;">${caps(subtitle(p, " | "))}</div>
+      <div style="font-size:12px;line-height:18px;color:${GOLD_DEEP};letter-spacing:1.4px;padding-top:2px;">${esc(caps(subtitle(p, " | ")))}</div>
       <div style="font-size:12px;line-height:20px;padding-top:20px;">
         ${a(`tel:${p.phoneE164}`, p.phone, GREY)} &middot; ${a(`mailto:${p.email}`, p.email, GREY)}<br>
         ${a(firm.url, firm.domain, GOLD_DEEP, "font-weight:bold;")}
@@ -105,7 +108,7 @@ const newEmail = (p) => `<table cellpadding="0" cellspacing="0" border="0" width
 const reply = (p) => `<table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;font-family:${SANS};color:${GREY};font-size:12px;">
   <tr>
     <td style="border-left:2px solid ${GOLD};padding:2px 0 2px 14px;font-family:${SANS};">
-      <div style="font-size:14px;line-height:19px;color:${INK};font-weight:bold;">${p.name}<span style="font-size:11px;font-weight:normal;color:${GOLD_DEEP};letter-spacing:1.2px;">&nbsp;&nbsp;${caps(subtitle(p, ", "))}</span></div>
+      <div style="font-size:14px;line-height:19px;color:${INK};font-weight:bold;">${p.name}<span style="font-size:11px;font-weight:normal;color:${GOLD_DEEP};letter-spacing:1.2px;">&nbsp;&nbsp;${esc(caps(subtitle(p, ", ")))}</span></div>
       <div style="font-size:12px;line-height:19px;padding-top:3px;">
         ${a(`tel:${p.phoneE164}`, p.phone, GREY)} &middot; ${a(`mailto:${p.email}`, p.email, GREY)} &middot; ${a(firm.url, firm.domain, GOLD_DEEP, "font-weight:bold;")}
       </div>

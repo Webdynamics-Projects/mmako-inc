@@ -62,7 +62,7 @@ firm.address = firm.offices[0].address;
    to from here rather than repeated per person. */
 const director = {
   name: "Dalen Mmako",
-  title: "Director",
+  title: "Founder & Director",
   phone: firm.phone,
   phoneE164: firm.phoneE164,
   email: "dalen@mmakoinc.com",
