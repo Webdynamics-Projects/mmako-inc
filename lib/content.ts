@@ -70,3 +70,20 @@ export const notTraditional = [
       "We focus on solving your problem efficiently, not running up billable time.",
   },
 ] as const;
+
+/* Copy is from the client's own profile. Photos live in
+   public/team. */
+export const team = [
+  {
+    name: "Dalen Mmako",
+    role: "Founder & Director",
+    photo: { src: "/team/dalen-mmako.jpg", width: 1088, height: 1445 },
+    bio: [
+      "Dalen Mmako is an attorney of the High Court of South Africa and the Founder and Director of Mmako Inc.",
+      "Dalen’s practice focuses on commercial litigation and arbitration, contractual disputes, insolvency and creditor enforcement, and corporate and commercial advisory. He has acted in High Court proceedings, liquidation applications, contractual enforcement matters and complex commercial disputes involving significant financial and commercial interests.",
+      "Dalen approaches each matter with a clear understanding of the client’s objectives and the commercial context in which the issue arises. His advice is focused on identifying the legal and commercial risks, evaluating the available options and determining the most effective course of action, whether through litigation, negotiation, restructuring, mediation or arbitration.",
+      "Dalen holds a BA Law, LLB and Postgraduate Diploma in Entrepreneurship from the University of Pretoria. His experience in legal practice, commercial risk, restructuring and recoveries, together with his entrepreneurial background, informs the approach behind Mmako Inc — providing technically sound legal advice that is practical, commercially grounded and responsive to the realities facing clients.",
+      "Beyond legal practice, Dalen is involved in youth development through the Dalen Mmako Foundation, which uses sport to create opportunities for young people.",
+    ],
+  },
+] as const;

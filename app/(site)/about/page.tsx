@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { PageHero } from "@/components/PageHero";
 import { Section, SectionHeader } from "@/components/Section";
 import { CtaBand } from "@/components/CtaBand";
 import { Reveal } from "@/components/Reveal";
-import { notTraditional } from "@/lib/content";
+import { notTraditional, team } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "About",
@@ -55,10 +56,47 @@ export default function AboutPage() {
         </div>
       </Section>
 
-      {/* Team placeholder ---------------------------------------------------
-          TODO: replace with real photography and team bios once the client
-          supplies them. Deliberately left out of the live page rather than
-          filled with stock imagery or invented credentials. */}
+      {/* Meet our team ---------------------------------------------------- */}
+      <Section>
+        <SectionHeader eyebrow="Our people" title="Meet our team" />
+
+        {team.map((member) => (
+          <article
+            key={member.name}
+            className="mt-14 grid gap-10 lg:grid-cols-12 lg:gap-16"
+          >
+            <Reveal className="lg:col-span-5">
+              <div className="relative max-w-md">
+                <span
+                  aria-hidden="true"
+                  className="absolute -bottom-3 -right-3 hidden h-full w-full border border-gold/60 sm:block"
+                />
+                <Image
+                  src={member.photo.src}
+                  width={member.photo.width}
+                  height={member.photo.height}
+                  alt={`Portrait of ${member.name}`}
+                  sizes="(min-width: 1024px) 400px, (min-width: 640px) 70vw, 100vw"
+                  className="relative h-auto w-full"
+                />
+              </div>
+            </Reveal>
+
+            <div className="lg:col-span-7">
+              <h3 className="text-2xl text-ink sm:text-3xl">{member.name}</h3>
+              <p className="mt-2 text-xs font-medium uppercase tracking-[0.2em] text-gold-dim">
+                {member.role}
+              </p>
+              <span aria-hidden="true" className="mt-6 block h-px w-8 bg-gold" />
+              <div className="mt-6 space-y-5 text-base leading-relaxed text-warm-grey">
+                {member.bio.map((paragraph) => (
+                  <p key={paragraph}>{paragraph}</p>
+                ))}
+              </div>
+            </div>
+          </article>
+        ))}
+      </Section>
 
       <CtaBand
         eyebrow="Next step"
