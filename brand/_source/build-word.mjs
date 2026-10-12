@@ -13,6 +13,7 @@ import {
   WidthType, BorderStyle, AlignmentType, Header, Footer, PageNumber, ShadingType,
   HeadingLevel, TabStopType, TabStopPosition,
 } from "docx";
+import JSZip from "jszip";
 import { firm, people, colours, typography } from "./lib/tokens.mjs";
 
 const a = firm.address;
@@ -228,6 +229,10 @@ const letterhead = () => [
   p(fill("[ Begin typing here. The header and footer are set — do not edit them. ]"), { before: 200 }),
 ];
 
+/* 1b. Word's default template — the same chrome with page numbers and an
+   empty body, so every new blank document opens already branded. */
+const normal = () => [p(t(""), { after: 0 })];
+
 /* 2. General document template — adds a title block, styles and page numbers. */
 const template = () => [
   p(t("[Document title]", { font: SERIF, size: 40, color: INK, bold: true }), { after: 100 }),
@@ -426,13 +431,27 @@ const jobs = [
   ["07 - LEGAL DOCUMENTS/Legal Opinion Template", "Mmako Inc - Legal Opinion.docx", legalOpinion(), { title: "Legal opinion", pageNumbers: true }],
   ["07 - LEGAL DOCUMENTS/Invoice", "Mmako Inc - Invoice.docx", invoice(), { title: "Invoice" }],
   ["07 - LEGAL DOCUMENTS/Proposal - Quotation", "Mmako Inc - Proposal.docx", proposal(), { title: "Proposal", pageNumbers: true }],
+  ["06 - STATIONERY/Word Default Template", "Normal.dotm", normal(), { title: "", pageNumbers: true }],
 ];
+
+/** Re-label a .docx package as a macro-enabled template, which is the only
+    format Word accepts as Normal.dotm. It carries no macros. */
+async function asTemplate(buf) {
+  const zip = await JSZip.loadAsync(buf);
+  const types = await zip.file("[Content_Types].xml").async("string");
+  zip.file("[Content_Types].xml", types.replace(
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml",
+    "application/vnd.ms-word.template.macroEnabledTemplate.main+xml",
+  ));
+  return zip.generateAsync({ type: "nodebuffer", compression: "DEFLATE" });
+}
 
 console.log("Word templates");
 for (const [dir, file, children, opts] of jobs) {
   const out = path.join("brand", dir);
   fs.mkdirSync(out, { recursive: true });
-  const buf = await Packer.toBuffer(doc(children, opts));
+  let buf = await Packer.toBuffer(doc(children, opts));
+  if (file.endsWith(".dotm")) buf = await asTemplate(buf);
   fs.writeFileSync(path.join(out, file), buf);
   console.log("  ", path.join(dir, file), `(${(buf.length / 1024).toFixed(0)} KB)`);
 }

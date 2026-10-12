@@ -55,6 +55,7 @@ produces is supplied as a print-ready PDF. Several items exist in both forms.
 | `Mmako Inc - Legal Opinion.docx` | 07 - LEGAL DOCUMENTS | Eight-section opinion structure, from instructions through to limitations. |
 | `Mmako Inc - Invoice.docx` | 07 - LEGAL DOCUMENTS | Line-item table, totals with VAT, banking panel. |
 | `Mmako Inc - Proposal.docx` | 07 - LEGAL DOCUMENTS | Scope, exclusions, fee table, terms, signature block. |
+| `Normal.dotm` | 06 - STATIONERY/Word Default Template | Word's default template: header, footer and page numbers on an empty page. Installed once per machine, it makes **every new blank document** open branded. See below. |
 
 **How they are built.** Headers and footers are set in the Word header/footer layer, so they repeat
 on every page and cannot be edited by accident while typing. Grey bracketed text — `[like this]` —
@@ -70,6 +71,37 @@ Windows and Mac. See `04 - TYPOGRAPHY/Secondary Font.md`.
 
 **To turn one into a reusable Word template:** open it, then *Save As* → *Word Template (.dotx)*.
 Word will then open a fresh copy each time instead of the original.
+
+### Making every new Word document open with the header and footer
+
+Word builds each new blank document (**File → New → Blank document**, or **Ctrl+N** / **Cmd+N**)
+from a file called `Normal.dotm`. Replacing it with the one in
+`06 - STATIONERY/Word Default Template` makes every new document open with the firm's header,
+footer, page numbers and Montserrat body text. It contains no macros. Do this once on each machine.
+
+*On Windows:*
+
+1. Quit Word completely (and Outlook, which also uses `Normal.dotm`).
+2. Press **Win+R**, paste `%appdata%\Microsoft\Templates` and press Enter.
+3. Rename the existing `Normal.dotm` to `Normal-old.dotm` — this is the backup.
+4. Copy the firm's `Normal.dotm` into that folder.
+5. Open Word and create a blank document — the header and footer are there.
+
+*On a Mac:*
+
+1. Quit Word completely (**Cmd+Q**).
+2. In Finder, press **Cmd+Shift+G** and paste
+   `~/Library/Group Containers/UBF8T346G9.Office/User Content/Templates`
+3. Rename the existing `Normal.dotm` to `Normal-old.dotm`.
+4. Copy the firm's `Normal.dotm` into that folder, then reopen Word.
+
+**To undo it,** quit Word, delete `Normal.dotm` and rename `Normal-old.dotm` back. (Deleting it
+with no backup is also safe — Word recreates a plain one on next launch.)
+
+**Doing it by hand instead.** If you would rather keep your own `Normal.dotm` and its settings:
+open `Mmako Inc - Letterhead.docx`, double-click the header, select everything in it (**Ctrl+A**)
+and copy; then *File → Open* your `Normal.dotm` from the folder above, double-click its header,
+paste, and repeat for the footer. Save and close. New documents pick it up from then on.
 
 ---
 
@@ -263,16 +295,17 @@ After rebuilding, check the aspect ratios the logo script prints against the con
 | `node brand/_source/build-documents.mjs` | 07 - LEGAL DOCUMENTS |
 | `node brand/_source/build-digital-office.mjs` | 08 - DIGITAL and 09 - OFFICE |
 | `node brand/_source/build-guidelines.mjs` | 01, 03, 04, 05 and the guidelines PDF |
-| `node brand/_source/build-word.mjs` | The six Word templates |
+| `node brand/_source/build-word.mjs` | The six Word templates and `Normal.dotm` |
 
 The generators need two tools the website does not — install them together, since npm prunes
 `--no-save` packages that are not named in the same command:
 
 ```bash
-npm install --no-save playwright docx
+npm install --no-save playwright docx jszip
 ```
 
-Playwright renders the PDFs and PNGs; `docx` writes the Word templates. Nobody *using* the kit
+Playwright renders the PDFs and PNGs; `docx` writes the Word templates, and `jszip` re-labels
+one of them as `Normal.dotm`. Nobody *using* the kit
 needs either installed.
 
 Everything reads from `brand/_source/lib/tokens.mjs`. Change a colour, an address or a phone number
