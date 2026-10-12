@@ -54,8 +54,9 @@ export const firm = {
   },
 };
 
-/* The printed stationery carries a single return address, the Midrand
-   office's. The email signatures list every office. */
+/* The envelope, compliment slip and business card carry a single return
+   address, the Midrand office's. The letterhead, the Word templates and the
+   email signatures list every office. */
 firm.address = firm.offices[0].address;
 
 /* One number for the practice, so it is defined once on `firm` and referred

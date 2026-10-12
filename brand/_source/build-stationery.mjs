@@ -26,25 +26,31 @@ const letterheadCss = P.baseCss + `
   .page{width:210mm;height:297mm;padding:22mm 20mm 18mm}
   .foot{position:absolute;left:20mm;right:20mm;bottom:12mm;font-size:7pt;line-height:11pt;color:${P.GREY}}
 `;
+/* The letterhead lists every office, in the header and again in the footer. */
+const addressLines = ({ address: o }) =>
+  [o.line1, o.line2, o.line3, `${o.city}, ${o.postalCode}`].filter(Boolean);
+const officeLabel = (office) =>
+  `<span style="color:${P.GOLD_DEEP};font-weight:600;font-size:6.5pt;letter-spacing:.12em;text-transform:uppercase">${office.name} office</span>`;
 const letterheadBody = `<div class="page">
   <table width="100%"><tr>
     <td style="vertical-align:top">${lockup(17, "dark")}</td>
-    <td style="vertical-align:top;text-align:right;font-size:8pt;line-height:13pt;color:${P.GREY}">
-      ${a.line1}<br>${a.line2}<br>${a.line3}<br>${a.city}, ${a.postalCode}<br>
-      <span style="color:${P.GOLD_DEEP};font-weight:600">${firm.domain}</span>
-    </td>
+    ${firm.offices.map((office, i) => `<td style="vertical-align:top;text-align:right;font-size:8pt;line-height:13pt;color:${P.GREY};padding-left:8mm">
+      ${officeLabel(office)}<br>${addressLines(office).join("<br>")}${i === firm.offices.length - 1
+        ? `<br><span style="color:${P.GOLD_DEEP};font-weight:600">${firm.domain}</span>` : ""}
+    </td>`).join("\n    ")}
   </tr></table>
 
   <hr class="rule-gold" style="margin:9mm 0 0;width:28mm">
 
   <!-- Body area. Content sits between the rule above and the footer below. -->
-  <div style="min-height:185mm;padding-top:14mm;font-size:10pt;line-height:16pt;color:${P.GREY}">
+  <div style="min-height:175mm;padding-top:14mm;font-size:10pt;line-height:16pt;color:${P.GREY}">
     <span style="color:#B9B7B0">[ Letter body area — 210 × 297 mm, live text area 170 mm wide ]</span>
   </div>
 
   <div class="foot">
-    <hr class="hair" style="margin:0 0 5mm">
-    <table width="100%"><tr>
+    <hr class="hair" style="margin:0 0 4mm">
+    ${firm.offices.map((office) => `<div><span style="color:${P.GOLD_DEEP};font-weight:600">${office.name} office</span>&nbsp; ${addressLines(office).join(", ")}</div>`).join("\n    ")}
+    <table width="100%" style="margin-top:1.5mm"><tr>
       <td>${firm.legalName} &nbsp;·&nbsp; Reg. ${firm.registrationNumber} &nbsp;·&nbsp; VAT ${firm.vatNumber}</td>
       <td style="text-align:right">Director: ${people.director.name} &nbsp;·&nbsp; ${firm.email}</td>
     </tr></table>
