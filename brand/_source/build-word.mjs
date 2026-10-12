@@ -13,9 +13,9 @@ import {
   WidthType, BorderStyle, AlignmentType, Header, Footer, PageNumber, ShadingType,
   HeadingLevel, TabStopType, TabStopPosition,
 } from "docx";
+import JSZip from "jszip";
 import { firm, people, colours, typography } from "./lib/tokens.mjs";
 
-const a = firm.address;
 const d = people.director;
 
 const INK = colours.primary[0].hex.replace("#", "");
@@ -82,7 +82,21 @@ const layoutTable = (rows, columnWidths) => new Table({
 });
 
 /* --- header and footer ------------------------------------------------------ */
+/** An office's address as display lines: street lines, then city and code. */
+const addressLines = ({ address: o }) =>
+  [o.line1, o.line2, o.line3, `${o.city}, ${o.postalCode}`].filter(Boolean);
+
+/** One office's address block in the header, right-aligned under a gold label. */
+const headerOffice = (office, extra = []) => [
+  p(t(`${office.name} office`, { size: 13, bold: true, caps: true, color: GOLD_DEEP, spacing: 20 }),
+    { align: AlignmentType.RIGHT, after: 20 }),
+  ...addressLines(office).map((line) =>
+    p(t(line, { size: 15, color: GREY }), { align: AlignmentType.RIGHT, after: 0 })),
+  ...extra,
+];
+
 function header() {
+  const [first, second] = firm.offices;
   return new Header({
     children: [
       layoutTable([
@@ -94,28 +108,32 @@ function header() {
                 transformation: { width: LOGO_W, height: LOGO_H },
               })],
               spacing: { after: 0 },
-            })], { width: 3200 }),
-            cell([
-              p(t(a.line1, { size: 15, color: GREY }), { align: AlignmentType.RIGHT, after: 0 }),
-              p(t(a.line2, { size: 15, color: GREY }), { align: AlignmentType.RIGHT, after: 0 }),
-              p(t(a.line3, { size: 15, color: GREY }), { align: AlignmentType.RIGHT, after: 0 }),
-              p(t(`${a.city}, ${a.postalCode}`, { size: 15, color: GREY }), { align: AlignmentType.RIGHT, after: 0 }),
+            })], { width: 2600 }),
+            cell(headerOffice(first), { width: 3600 }),
+            cell(headerOffice(second, [
               p(t(firm.domain, { size: 15, color: GOLD_DEEP, bold: true }), { align: AlignmentType.RIGHT, after: 0 }),
-            ], { width: 6000 }),
+            ]), { width: 3000 }),
           ],
         }),
-      ], [3200, 6000]),
+      ], [2600, 3600, 3000]),
       goldRule(),
     ],
   });
 }
 
 function footer({ pageNumbers = false } = {}) {
-  const left = `${firm.legalName}  ·  Reg. ${firm.registrationNumber}  ·  VAT ${firm.vatNumber}`;
+  const left = firm.legalName;
   const right = `Director: ${d.name}  ·  ${firm.email}`;
   return new Footer({
     children: [
       hairline(),
+      ...firm.offices.map((office) => new Paragraph({
+        children: [
+          t(`${office.name} office  `, { size: 13, bold: true, color: GOLD_DEEP }),
+          t(addressLines(office).join(", "), { size: 13, color: GREY }),
+        ],
+        spacing: { after: 20 },
+      })),
       new Paragraph({
         children: [
           t(left, { size: 13, color: GREY }),
@@ -123,7 +141,7 @@ function footer({ pageNumbers = false } = {}) {
           t(right, { size: 13, color: GREY }),
         ],
         tabStops: [{ type: TabStopType.RIGHT, position: TabStopPosition.MAX }],
-        spacing: { after: 0 },
+        spacing: { before: 40, after: 0 },
       }),
       ...(pageNumbers ? [new Paragraph({
         children: [t("Page ", { size: 13, color: GREY }),
@@ -161,7 +179,7 @@ function doc(children, { pageNumbers = false, title } = {}) {
       properties: {
         page: {
           size: { width: 11906, height: 16838 },          // A4
-          margin: { top: 1985, right: 1134, bottom: 1418, left: 1134, header: 680, footer: 567 },
+          margin: { top: 2381, right: 1134, bottom: 1758, left: 1134, header: 624, footer: 510 },
         },
       },
       headers: { default: header() },
@@ -227,6 +245,10 @@ const R = AlignmentType.RIGHT;
 const letterhead = () => [
   p(fill("[ Begin typing here. The header and footer are set — do not edit them. ]"), { before: 200 }),
 ];
+
+/* 1b. Word's default template — the same chrome with page numbers and an
+   empty body, so every new blank document opens already branded. */
+const normal = () => [p(t(""), { after: 0 })];
 
 /* 2. General document template — adds a title block, styles and page numbers. */
 const template = () => [
@@ -426,13 +448,27 @@ const jobs = [
   ["07 - LEGAL DOCUMENTS/Legal Opinion Template", "Mmako Inc - Legal Opinion.docx", legalOpinion(), { title: "Legal opinion", pageNumbers: true }],
   ["07 - LEGAL DOCUMENTS/Invoice", "Mmako Inc - Invoice.docx", invoice(), { title: "Invoice" }],
   ["07 - LEGAL DOCUMENTS/Proposal - Quotation", "Mmako Inc - Proposal.docx", proposal(), { title: "Proposal", pageNumbers: true }],
+  ["06 - STATIONERY/Word Default Template", "Normal.dotm", normal(), { title: "", pageNumbers: true }],
 ];
+
+/** Re-label a .docx package as a macro-enabled template, which is the only
+    format Word accepts as Normal.dotm. It carries no macros. */
+async function asTemplate(buf) {
+  const zip = await JSZip.loadAsync(buf);
+  const types = await zip.file("[Content_Types].xml").async("string");
+  zip.file("[Content_Types].xml", types.replace(
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml",
+    "application/vnd.ms-word.template.macroEnabledTemplate.main+xml",
+  ));
+  return zip.generateAsync({ type: "nodebuffer", compression: "DEFLATE" });
+}
 
 console.log("Word templates");
 for (const [dir, file, children, opts] of jobs) {
   const out = path.join("brand", dir);
   fs.mkdirSync(out, { recursive: true });
-  const buf = await Packer.toBuffer(doc(children, opts));
+  let buf = await Packer.toBuffer(doc(children, opts));
+  if (file.endsWith(".dotm")) buf = await asTemplate(buf);
   fs.writeFileSync(path.join(out, file), buf);
   console.log("  ", path.join(dir, file), `(${(buf.length / 1024).toFixed(0)} KB)`);
 }
