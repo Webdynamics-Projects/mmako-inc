@@ -43,7 +43,7 @@ const head = () => `<table width="100%" style="margin-bottom:8mm"><tr>
 
 const foot = () => `<div style="margin-top:12mm;padding-top:4mm;border-top:.5pt solid ${P.RULE};
      font-size:6.5pt;line-height:10pt;color:${P.GREY}">
-  ${firm.legalName} &nbsp;·&nbsp; Reg. ${firm.registrationNumber} &nbsp;·&nbsp; VAT ${firm.vatNumber}
+  ${firm.legalName}
   &nbsp;·&nbsp; Director: ${d.name} &nbsp;·&nbsp; ${firm.email}
 </div>`;
 

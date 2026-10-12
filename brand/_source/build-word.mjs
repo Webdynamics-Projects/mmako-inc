@@ -122,7 +122,7 @@ function header() {
 }
 
 function footer({ pageNumbers = false } = {}) {
-  const left = `${firm.legalName}  ·  Reg. ${firm.registrationNumber}  ·  VAT ${firm.vatNumber}`;
+  const left = firm.legalName;
   const right = `Director: ${d.name}  ·  ${firm.email}`;
   return new Footer({
     children: [

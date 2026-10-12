@@ -51,7 +51,7 @@ const letterheadBody = `<div class="page">
     <hr class="hair" style="margin:0 0 4mm">
     ${firm.offices.map((office) => `<div><span style="color:${P.GOLD_DEEP};font-weight:600">${office.name} office</span>&nbsp; ${addressLines(office).join(", ")}</div>`).join("\n    ")}
     <table width="100%" style="margin-top:1.5mm"><tr>
-      <td>${firm.legalName} &nbsp;·&nbsp; Reg. ${firm.registrationNumber} &nbsp;·&nbsp; VAT ${firm.vatNumber}</td>
+      <td>${firm.legalName}</td>
       <td style="text-align:right">Director: ${people.director.name} &nbsp;·&nbsp; ${firm.email}</td>
     </tr></table>
   </div>

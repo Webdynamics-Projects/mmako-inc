@@ -32,9 +32,10 @@ Two things are unresolved. Each affects finished artwork.
 > (`#D2BC96`) re-derived at the same hue. The type system is **Montserrat**, the geometric sans the
 > logo's own wordmark is set in.
 
-**1. Company details are placeholders.** Registration number, VAT number and banking details appear
-as bracketed placeholders on the letterhead, invoice and legal templates. Supply them before
-anything is printed or issued.
+**1. Banking details are placeholders.** They appear as bracketed placeholders on the invoice.
+Supply them before anything is issued. The registration and VAT numbers are no longer printed in
+the footers; a VAT-registered firm's tax invoice must still show its VAT number, so add it to the
+invoice before issuing one.
 
 **2. The confidentiality notice needs sign-off.** The wording in the email signature is a reasonable
 general form. It has not been reviewed against the firm's professional-indemnity or Legal Practice
