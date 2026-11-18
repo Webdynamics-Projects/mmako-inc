@@ -34,8 +34,8 @@ const LOGO_URL = `${firm.url}/logo-signature.png`;
 const a = (href, text, color, extra = "") =>
   `<a href="${href}" style="color:${color};text-decoration:none;${extra}">${text}</a>`;
 
-/* A role mailbox has no `title` — "Technical Support" is already the name, and
-   repeating it as a title would read "Technical Support | Technical Support".
+/* A role mailbox has no `title` — "Legal Assistance" is already the name, and
+   repeating it as a title would read "Legal Assistance | Legal Assistance".
    In that case the subtitle carries the firm name alone. */
 const subtitle = (p, sep) => (p.title ? `${p.title}${sep}${firm.name}` : firm.name);
 
@@ -145,7 +145,7 @@ ${p.phone} · ${p.email} · ${firm.url}
    ones already installed and referenced in the kit's README. */
 const sets = [
   { person: people.director, prefix: "signature", who: people.director.name },
-  { person: people.support, prefix: "signature-support", who: people.support.name },
+  { person: people.legalAssistance, prefix: "signature-legal-assistance", who: people.legalAssistance.name },
 ];
 
 for (const { person, prefix, who } of sets) {

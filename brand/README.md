@@ -109,22 +109,22 @@ paste, and repeat for the footer. Save and close. New documents pick it up from 
 ## Installing the email signatures
 
 Two pairs are supplied, in `06 - STATIONERY/Email Signature/` — one for the director and one
-for the `info@` support mailbox. Each pair has a full version for new mail and a short one for
+for the `info@` Legal Assistance mailbox. Each pair has a full version for new mail and a short one for
 replies, so a signature does not pile up down a long thread.
 
 | File | When to use it |
 | --- | --- |
 | `signature-new-email.html` | **Dalen Mmako, primary** — new outgoing email. Full identity block. |
 | `signature-reply.html` | **Dalen Mmako, secondary** — replies and forwards. One identity line, no logo. |
-| `signature-support-new-email.html` | **Technical Support, primary** — new outgoing email from `info@`. |
-| `signature-support-reply.html` | **Technical Support, secondary** — replies and forwards from `info@`. |
+| `signature-legal-assistance-new-email.html` | **Legal Assistance, primary** — new outgoing email from `info@`. |
+| `signature-legal-assistance-reply.html` | **Legal Assistance, secondary** — replies and forwards from `info@`. |
 
 Plain-text versions (`.txt`) are included for anyone composing in plain text.
 
-The support pair is for a role mailbox rather than a person, so it carries no job title —
-"Technical Support" is the name, and the line beneath it is the firm. Its telephone number is the
-director's, as instructed, which means support calls ring his mobile; if a separate support line is
-added later, set it in `people.support` in `_source/lib/tokens.mjs` and rebuild.
+The Legal Assistance pair is for a role mailbox rather than a person, so it carries no job title —
+"Legal Assistance" is the name, and the line beneath it is the firm. Its telephone number is the
+director's, as instructed, which means calls from this signature ring his mobile; if a separate
+line is added later, set it in `people.legalAssistance` in `_source/lib/tokens.mjs` and rebuild.
 
 **Before installing:** the signature loads its logo from `https://mmakoinc.com/logo-signature.png`.
 That file ships with the website, so it works as soon as the site is live. If the site is not yet
@@ -222,9 +222,9 @@ practical consequence when one person handles both mailboxes:
 - If `info@` is added as **its own account** (File → Add Account, with its own password), each
   account gets its own default signature and the right one appears automatically.
 - If `info@` is a **shared mailbox** opened alongside the main account, Outlook will not switch
-  signatures when the From address changes. The support signature has to be inserted by hand:
-  **Message → Signature → Mmako — support**. Install it under whichever account is used to send,
-  and expect to pick it each time.
+  signatures when the From address changes. The Legal Assistance signature has to be inserted by
+  hand: **Message → Signature → Mmako — legal assistance**. Install it under whichever account is
+  used to send, and expect to pick it each time.
 
 Adding `info@` as a separate account is the tidier arrangement wherever the mailbox has its own
 credentials.
