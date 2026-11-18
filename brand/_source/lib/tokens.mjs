@@ -71,12 +71,12 @@ const director = {
 
 export const people = {
   director,
-  /* A role mailbox rather than a person, so it carries no `title`: the
-     signature templates fall back to the firm name alone where a personal
+  /* The info@ role mailbox rather than a person, so it carries no `title`:
+     the signature templates fall back to the firm name alone where a personal
      signature would read "Title | Firm". Calls reach the director's line by
-     the client's instruction — there is no separate support number. */
-  support: {
-    name: "Technical Support",
+     the client's instruction — there is no separate number for the mailbox. */
+  legalAssistance: {
+    name: "Legal Assistance",
     phone: director.phone,
     phoneE164: director.phoneE164,
     email: firm.email,
